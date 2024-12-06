@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.CategoryMapper">
+
+    <select id="queryCategoryList"
+            resultType="com.liu.club_ms.model.Category"
+            parameterType="com.liu.club_ms.model.Category">
+        select * from category
+        <where>
+            <if test="categoryName!=null and categoryName!=''">
+                and category_name like CONCAT('%', #{categoryName}, '%')
+            </if>
+        </where>
+        <if test="order!=null and order!=''">
+            ORDER BY category_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+</mapper>
