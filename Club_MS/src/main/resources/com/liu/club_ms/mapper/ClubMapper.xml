@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.ClubMapper">
+<!--  通用查询映射结果  -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.Club">
+        <id column="club_id" property="clubId"/>
+        <result column="club_name" property="clubName"/>
+        <result column="create_by" property="createBy"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="captain_id" property="captainId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="status" property="status"/>
+        <result column="images" property="images"/>
+    </resultMap>
+
+
+<!--  高级查询社团信息  -->
+    <resultMap id="queryClubListMap" type="com.liu.club_ms.model.Club"
+               extends="BaseResultMap">
+        <!-- 配置类型 -->
+        <association property="category" javaType="com.liu.club_ms.model.Category">
+            <id column="category_id" property="categoryId"/>
+            <result column="category_name" property="categoryName"/>
+        </association>
+
+        <association property="user" javaType="com.liu.club_ms.model.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_name" property="userName"/>
+        </association>
+    </resultMap>
+<!--  编辑社团  -->
+    <update id="editClub" parameterType="com.liu.club_ms.model.Club">
+    UPDATE club
+    <set>
+        <if test="clubName != null">club_name = #{clubName},</if>
+        <if test="createBy != null">create_by = #{createBy},</if>
+        <if test="categoryId != null">category_id = #{categoryId},</if>
+        <if test="captainId != null">captain_id = #{captainId},</if>
+        <if test="createTime != null">create_time = #{createTime},</if>
+        <if test="status != null">`status` = #{status},</if>
+        <if test="images != null">images = #{images},</if>
+    </set>
+    WHERE club_id = #{clubId}
+
+    </update>
+
+    <!--  删除社团  -->
+    <delete id="deleteClubById">
+        DELETE FROM club WHERE club_id = #{clubId}
+    </delete>
+
+    <!--  高级查询  -->
+    <select id="queryClubList"
+            resultMap="queryClubListMap"
+            parameterType="com.liu.club_ms.model.Club">
+    SELECT club.*, category.category_name, user.user_name
+    FROM club
+    left join category ON category.category_id = club.category_id
+    left join user ON user.user_id = club.captain_id
+    left join user as c ON c.user_id = club.create_by
+    <where>
+        <if test="clubName != null and clubName != ''">
+            and club.club_name like CONCAT('%', #{clubName}, '%')
+        </if>
+        <if test="categoryId != null">
+            and category.category_id = #{categoryId}
+        </if>
+    </where>
+
+    </select>
+</mapper>
