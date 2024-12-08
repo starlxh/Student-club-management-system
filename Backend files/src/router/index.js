@@ -203,6 +203,42 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/membership',
+    component: Layout,
+    redirect: '/membership/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/membership/index'),
+        name: 'Membership',
+        meta: {
+          title: '社团成员管理',
+          icon: 'form',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/activity/index'),
+        name: 'Activity',
+        meta: {
+          title: '社团活动管理',
+          icon: 'form',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

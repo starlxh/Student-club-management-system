@@ -297,15 +297,14 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        user:{
-          tel: undefined,
-        },
-        club: undefined
+        user: { tel: undefined },
+        clubId: undefined
       },
       tempApplyList: [],
       showReviewer: false,
       tempStatus: '',
       temp: {
+        user: {},
         club: {}
       },
       dialogFormDetailVisible: false,
@@ -342,10 +341,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryApplyInfoList', 
-      {
-        params:this.listQuery
-      }).then(res => {
+      request.get(this.baseUrl + 'queryApplyInfoList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
@@ -380,7 +376,7 @@ export default {
         this.tempStatus = '已拒绝'
       }
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = '入团申请详情——' + row.realName
+      this.textMap['detail'] = '入团申请详情——' + row.user.realName
       this.dialogFormDetailVisible = true
     },
     handleCheck(row) {
