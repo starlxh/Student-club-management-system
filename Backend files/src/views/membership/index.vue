@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
       </el-select>
@@ -19,63 +20,53 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="用户Id" prop="userId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span>{{ row.userId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Date" width="150px" align="center">
+      <el-table-column label="真实姓名" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.user.realName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Title" min-width="150px">
+      <el-table-column label="性别" width="50px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-          <el-tag>{{ row.type | typeFilter }}</el-tag>
+          <span>{{ row.user.sex }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110px" align="center">
+      <el-table-column label="电话" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.user.tel }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
+      <el-table-column label="邮箱" min-width="250px" align="center">
         <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
+          <span>{{ row.user.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Imp" width="80px">
+      <el-table-column label="社团Id" width="120px" align="center">
         <template slot-scope="{row}">
-          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
+          <span>{{ row.clubId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Readings" align="center" width="95">
+      <el-table-column label="社团名称" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
-          <span v-else>0</span>
+          <span>{{ row.clubName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" class-name="status-col" width="100">
+      <el-table-column label="入团时间" min-width="200px" align="center">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
+          <span>{{ row.joIntime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            Edit
-          </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            Draft
+            详情
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            Delete
+            删除
           </el-button>
         </template>
       </el-table-column>
@@ -171,13 +162,60 @@ export default {
     return {
       baseUrl: 'clubMember/',
       tableKey: 0,
-      list: null,
+      // list: null,
+      list: [{
+        clubMemberId: 1,
+        userId: 1,
+        joIntime: '2019-01-01 12:00:00',
+        clubId: 1,
+        clubName: '传统派',
+        user: {
+          userName: '芙蓉王',
+          realName: '王源',
+          sex: '男',
+          tel: '13800138000',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }, {
+        clubMemberId: 1,
+        userId: 2,
+        joIntime: '2019-01-02 12:00:00',
+        clubId: 2,
+        clubName: '维新派',
+        user: {
+          userName: '礼堂王',
+          realName: '丁真',
+          sex: '男',
+          tel: '13800138001',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }, {
+        clubMemberId: 2,
+        userId: 3,
+        joIntime: '2019-01-03 12:00:00',
+        clubId: 2,
+        clubName: '维新派',
+        user: {
+          userName: '说的道莉',
+          realName: '道莉',
+          sex: '女',
+          tel: '13800138002',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }],
       clubList: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
+        realName: undefined,
         clubId: undefined
       },
       importanceOptions: [1, 2, 3],
@@ -231,13 +269,6 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data

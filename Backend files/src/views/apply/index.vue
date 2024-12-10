@@ -46,13 +46,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="电话" align="center" width="150px">
+      <el-table-column label="电话" align="center" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user.tel }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="邮箱" align="center" min-width="150px">
+      <el-table-column label="邮箱" align="center" min-width="250px">
         <template slot-scope="{row}">
           <span>{{ row.user.email }}</span>
         </template>
