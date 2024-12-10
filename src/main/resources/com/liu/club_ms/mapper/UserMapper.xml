@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.UserMapper">
+    <select id="queryUserList"
+            resultType="com.liu.club_ms.model.User">
+        SELECT user_id, user_name, password, real_name, sex, tel, email, qq, wx, image, type, create_time from user
+    </select>
+
+<!--  社团页面查询数据  -->
+    <select id="queryUserIdNameList"
+            resultType="com.liu.club_ms.model.User">
+        SELECT user_id, user_name FROM user
+    </select>
+<!--    -->
+    <select id="queryUserByNamePwdType"
+            resultType="com.liu.club_ms.model.User"
+            parameterType="com.liu.club_ms.model.User" >
+        SELECT user_id, user_name, type FROM user
+        WHERE type = #{type}
+          and user_name = #{userName}
+          and password = #{password}
+    </select>
+</mapper>
