@@ -8,6 +8,9 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+        添加社团成员
+      </el-button>
     </div>
 
     <el-table
@@ -57,12 +60,12 @@
       </el-table-column>
       <el-table-column label="入团时间" min-width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.joIntime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.joinTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
@@ -74,37 +77,68 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
+      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
+        <el-form-item label="真实姓名">
+          <el-input v-model="temp.user.realName" readonly />
+        </el-form-item>
+        <el-form-item label="成员昵称">
+          <el-input v-model="temp.user.userName" readonly />
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-input v-model="temp.user.sex" readonly />
+        </el-form-item>
+        <el-form-item v-if="dialogStatus==='detail'" label="所属社团">
+          <el-input v-model="temp.clubName" readonly />
+        </el-form-item>
+        <el-form-item v-if="dialogStatus==='update'" label="所属社团" prop="clubId">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        <el-form-item label="入团时间">
+          <el-input v-model="temp.joinTime" readonly />
         </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="电话">
+          <el-input v-model="temp.user.tel" readonly :placeholder="placeholder" />
         </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
+        <el-form-item label="邮箱">
+          <el-input v-model="temp.user.email" readonly :placeholder="placeholder" />
         </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
+        <el-form-item label="QQ">
+          <el-input v-model="temp.user.qq" readonly :placeholder="placeholder" />
         </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+        <el-form-item label="微信">
+          <el-input v-model="temp.user.wx" readonly :placeholder="placeholder" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
+        <el-button type="primary" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+          {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+        <el-button @click="dialogDetailFormVisible = false">
+          关闭
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
+      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
+        <el-form-item label="成员Id" prop="userId">
+          <el-input v-model.number="temp.userId" />
+        </el-form-item>
+        <el-form-item label="社团" prop="clubId">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="createData()">
+          添加
+        </el-button>
+        <el-button @click="dialogCreateFormVisible = false">
+          关闭
         </el-button>
       </div>
     </el-dialog>
@@ -122,7 +156,7 @@
 </template>
 
 <script>
-import { fetchPv, createArticle, updateArticle } from '@/api/article'
+import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -162,53 +196,53 @@ export default {
     return {
       baseUrl: 'clubMember/',
       tableKey: 0,
-      // list: null,
-      list: [{
-        clubMemberId: 1,
-        userId: 1,
-        joIntime: '2019-01-01 12:00:00',
-        clubId: 1,
-        clubName: '传统派',
-        user: {
-          userName: '芙蓉王',
-          realName: '王源',
-          sex: '男',
-          tel: '13800138000',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }, {
-        clubMemberId: 1,
-        userId: 2,
-        joIntime: '2019-01-02 12:00:00',
-        clubId: 2,
-        clubName: '维新派',
-        user: {
-          userName: '礼堂王',
-          realName: '丁真',
-          sex: '男',
-          tel: '13800138001',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }, {
-        clubMemberId: 2,
-        userId: 3,
-        joIntime: '2019-01-03 12:00:00',
-        clubId: 2,
-        clubName: '维新派',
-        user: {
-          userName: '说的道莉',
-          realName: '道莉',
-          sex: '女',
-          tel: '13800138002',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }],
+      list: null,
+      //   list: [{
+      //     clubMemberId: 1,
+      //     userId: 1,
+      //     joinTime: '2019-01-01 12:00:00',
+      //     clubId: 1,
+      //     clubName: '传统派',
+      //     user: {
+      //       userName: '芙蓉王',
+      //       realName: '王源',
+      //       sex: '男',
+      //       tel: '13800138000',
+      //       email: '123456@qq.com',
+      //       qq: '123456',
+      //       wx: '123456'
+      //     }
+      //   }, {
+      //     clubMemberId: 1,
+      //     userId: 2,
+      //     joinTime: '2019-01-02 12:00:00',
+      //     clubId: 2,
+      //     clubName: '维新派',
+      //     user: {
+      //       userName: '礼堂王',
+      //       realName: '丁真',
+      //       sex: '男',
+      //       tel: '13800138001',
+      //       email: '123456@qq.com',
+      //       qq: '123456',
+      //       wx: '123456'
+      //     }
+      //   }, {
+      //     clubMemberId: 2,
+      //     userId: 3,
+      //     joinTime: '2019-01-03 12:00:00',
+      //     clubId: 2,
+      //     clubName: '维新派',
+      //     user: {
+      //       userName: '说的道莉',
+      //       realName: '道莉',
+      //       sex: '女',
+      //       tel: '13800138002',
+      //       email: '123456@qq.com',
+      //       qq: '123456',
+      //       wx: '123456'
+      //     }
+      //   }],
       clubList: null,
       total: 0,
       listLoading: true,
@@ -224,33 +258,34 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        user: {}
       },
-      dialogFormVisible: false,
+      dialogDetailFormVisible: false,
+      dialogCreateFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        detail: '社团成员详情',
+        update: '修改社团成员详情',
+        create: '添加社团成员'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      createRules: {
+        userId: [
+          { required: true, message: '成员Id不能为空', trigger: 'blur' },
+          { type: 'number', message: '成员Id必须为数字', trigger: 'blur' }
+        ],
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
+      },
+      downloadLoading: false,
+      placeholder: '无'
     }
   },
   created() {
     this.getClubList()
-    // this.getList()
   },
   methods: {
     getList() {
@@ -286,46 +321,60 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        user: {}
       }
     },
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.dialogCreateFormVisible = true
+      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
     createData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
+          this.temp.joinTime = new Date().toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'addClubMember', JSON.parse(JSON.stringify(this.temp, ['userId', 'joinTime', 'clubId']))).then(
+            res => {
+              this.dialogCreatelFormVisible = false
+              if (res.code === 20000) {
+                this.$notify({
+                  title: '成功',
+                  message: '添加社团成员成功！',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+              } else {
+                this.$notify({
+                  title: '失败',
+                  message: '添加社团成员失败！',
+                  type: 'fail',
+                  duration: 2000
+                })
+              }
             })
-          })
         }
       })
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+    handleDetail(row) {
+      this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
+      this.dialogStatus = 'detail'
+      this.textMap['detail'] = '社团成员详情——' + this.temp.user.realName
+      this.dialogFormReadonly = true
+      this.dialogDetailFormVisible = true
+      this.placeholder = '无'
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleUpdate() {
       this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+      this.dialogFormReadonly = false
+      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -333,30 +382,43 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
+          request.post(this.baseUrl + 'editClubMember', JSON.parse(JSON.stringify(this.temp, ['clubMemberId', 'joinTime', 'clubId']))).then(
+            res => {
+              this.dialogDetailFormVisible = false
+              if (res.code === 20000) {
+                this.$notify({
+                  title: '成功',
+                  message: '编辑社团类型成功！',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+              } else {
+                this.$notify({
+                  title: '失败',
+                  message: '编辑社团类型失败！',
+                  type: 'fail',
+                  duration: 2000
+                })
+              }
             })
-          })
         }
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
+      request.delete(this.baseUrl + 'deleteById?clubMemberId=' + row.clubMemberId).then(
+        res => {
+          if (res.code === 20000) {
+            this.$notify({
+              title: '成功',
+              message: '删除社团成员成功！',
+              type: 'success',
+              duration: 2000
+            })
+            this.list.splice(index, 1)
+          }
+        }
+      )
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
@@ -398,6 +460,24 @@ export default {
 <style scoped>
 .filter-container .filter-item {
   margin-left: 10px;
+}
+
+.form-select {
+  max-width: 305px;
+}
+
+@media (min-width: 1860px) {
+  .membership-form {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px 50px
+  }
+}
+
+@media (max-width: 1860px) {
+  .membership-form {
+    text-align: center;
+  }
 }
 
 </style>

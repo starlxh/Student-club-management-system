@@ -409,7 +409,7 @@ export default {
   margin-left: 10px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1860px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
@@ -426,7 +426,7 @@ export default {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1860px) {
   .apply-form {
     text-align: center;
   }
