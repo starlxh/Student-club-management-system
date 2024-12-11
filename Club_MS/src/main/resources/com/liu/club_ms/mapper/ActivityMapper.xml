@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.ActivityMapper">
+
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.Activity">
+        <id column="activity_id" property="activityId"/>
+        <result column="name" property="name"/>
+        <result column="club_id" property="clubId"/>
+        <result column="tel" property="tel"/>
+        <result column="images" property="images"/>
+        <result column="ac_info" property="acInfo"/>
+        <result column="ac_time" property="acTime"/>
+        <result column="ac_address" property="acAddress"/>
+        <result column="user_id" property="userId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="host_id" property="hostId"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <resultMap id="queryActivityInfoListMap"
+                type="com.liu.club_ms.model.Activity"
+                extends="BaseResultMap">
+        <result column="club_name" property="clubName"/>
+        <result column="host_name" property="hostName"/>
+        <result column="creator_name" property="creatorName"/>
+    </resultMap>
+
+    <!-- 查询活动信息 -->
+    <select id="queryActivityInfoList"
+            resultMap="queryActivityInfoListMap">
+            SELECT
+                ac.activity_id,
+                ac.name,
+                ac.club_id,
+                ac.tel,
+                ac.images,
+                ac.ac_info,
+                ac.ac_time,
+                ac.ac_address,
+                ac.user_id,
+                ac.create_time,
+                ac.host_id,
+                ac.status,
+                club.club_name as club_name
+                h.real_name as hostName,
+                c.real_name as creator_name
+            FROM activity as ac
+            LEFT JOIN club ON club.club_id = activity.club_id
+            LEFT JOIN user as c ON c.user_id = activity.host_id
+            LEFT JOIN user as h ON h.user_id = activity.user_id
+            <where>
+                <if test="name!=null and name!=''">
+                    and ac.name like CONCAT('%', #{name}, '%')
+                </if>
+                <if test="tel!=null and tel!=''">
+                    and ac.tel like CONCAT('%', #{tel}, '%')
+                </if>
+                <if test="userId!=null">
+                    and ac.user_id =#{captainId}
+                </if>
+            </where>
+    </select>
+
+<!--  编辑活动状态  -->
+    <update id="editStatusById">
+        UPDATE activity
+        SET status = #{status}
+        WHERE activity_id = #{activityId}
+    </update>
+
+<!--  添加活动  -->
+    <insert id="addActivity">
+        INSERT INTO activity(name,
+                             club_id,
+                             tel,
+                             images,
+                             ac_info,
+                             ac_time,
+                             ac_address,
+                             user_id,
+                             create_time,
+                             host_id,
+                             status
+        )
+        VALUES(#{name},
+               #{clubId},
+               #{tel},
+               #{images},
+               #{acInfo},
+               #{acTime},
+               #{acAddress},
+               #{userId},
+               #{createTime},
+               #{hostId},
+               #{status})
+    </insert>
+
+<!--  通过ID删除活动  -->
+    <delete id="deleteById">
+        DELETE FROM activity
+        WHERE activity_id = #{activityId}
+    </delete>
+
+</mapper>

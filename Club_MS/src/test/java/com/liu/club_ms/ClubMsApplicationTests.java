@@ -7,7 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ClubMsApplicationTests {
 
     @Test
-    void contextLoads() {
+    void testmail() {
+//        boolean result = MailUtils.sendMail("wanyaba@outlook.com", "Test Mail", "Hello, this is a test email.");
+//        if (result) {
+//            System.out.println("Mail sent successfully!");
+//        } else {
+//            System.out.println("Failed to send mail.");
+//        }
     }
 
 }

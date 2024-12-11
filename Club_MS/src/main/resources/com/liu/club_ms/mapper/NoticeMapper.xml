@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.NoticeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.Notice">
+        <id column="notice_id" property="noticeId"/>
+        <result column="content" property="content"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="queryNoticeListMap"
+               type="com.liu.club_ms.model.Notice"
+               extends="BaseResultMap">
+        <result column="user_name" property="userName"/>
+        <result column="real_name" property="realName"/>
+    </resultMap>
+
+
+    <select id="queryNoticeList"
+            resultMap="queryNoticeListMap">
+        SELECT n.content,
+        n.title,
+        n.user_id,
+        n.create_time,
+        u.user_name,
+        u.real_name
+        FROM notice as n
+        LEFT JOIN user as u
+        ON u.user_id = n.user_id
+        <where>
+            <if test="realName != null and realName!=''">
+                and u.real_name LIKE CONCAT('%', #{realName}, '%')
+            </if>
+            <if test="title != null and title!=''">
+                and n.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="userId!=null">
+                and n.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <update id="editNotice"
+            parameterType="com.liu.club_ms.model.Notice">
+        UPDATE notice
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="title!=null and title!=''">title = #{title},</if>
+            <if test="content!=null and content!=''">content = #{content},</if>
+            <if test="createTime!=null and createTime!=''">create_time = #{createTime},</if>
+        </set>
+        WHERE notice.notice_id = #{noticeId}
+    </update>
+
+    <insert id="addNotice"
+    parameterType="com.liu.club_ms.model.Notice">
+        INSERT INTO notice(content,
+                           title,
+                           user_id,
+                           create_time)
+        VALUES(#{content},
+               #{title},
+               #{userId},
+               #{createTime})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM notice
+        WHERE notice_id = #{noticeId}
+    </delete>
+</mapper>

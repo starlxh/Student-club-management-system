@@ -9,13 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Category {
+public class AdminStatus {
     @TableId(type = IdType.AUTO)
-    private Integer categoryId;
+    private Integer adminId;
 
-    private String categoryName;
-
-    private String remarks;
-
-    private String order;
+    private Integer status;
 }

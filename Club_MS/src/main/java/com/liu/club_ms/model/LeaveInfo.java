@@ -3,37 +3,35 @@ package com.liu.club_ms.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
-@AllArgsConstructor
+import java.util.Date;
+
 @NoArgsConstructor
-public class Club {
+@AllArgsConstructor
+@Data
+public class LeaveInfo {
     @TableId(type = IdType.AUTO)
+    private Integer leaveInfoId;
+
+    private Integer userId;
+
     private Integer clubId;
 
-    private String clubName;
-
-    private Integer createBy;
-
-    private Integer categoryId;
-
-    private Integer captainId;
+    private String content;
 
     private String createTime;
 
-    private Integer status;
-
-    private String images;
+    @TableField(exist = false)
+    private String userName;
 
     @TableField(exist = false)
-    private String creatorName;
+    private String realName;
 
     @TableField(exist = false)
-    private String categoryName;
-
-    @TableField(exist = false)
-    private String captainName;
+    private String clubName;
 }

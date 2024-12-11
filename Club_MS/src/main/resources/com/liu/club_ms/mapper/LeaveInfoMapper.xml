@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.LeaveInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.LeaveInfo">
+        <id column="leave_info_id" property="leaveInfoId"/>
+        <result column="user_id" property="userId"/>
+        <result column="club_id" property="clubId"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 高级映射结果 -->
+    <resultMap id="queryLeaveInfoListMap"
+               type="com.liu.club_ms.model.LeaveInfo"
+                extends="BaseResultMap">
+        <result column="real_name" property="realName"/>
+        <result column="club_name" property="clubName"/>
+        <result column="user_name" property="userName"/>
+    </resultMap>
+
+
+    <select id="queryLeaveInfoList"
+            resultMap="queryLeaveInfoListMap">
+            SELECT li.leave_info_id,
+                   li.user_id,
+                   li.club_id,
+                   li.content,
+                   li.create_time,
+                   user.real_name,
+                   user.user_name,
+                   club.club_name
+            FROM leave_info as li
+            LEFT JOIN user ON leave_info.user_id = user.user_id
+            LEFT JOIN club ON leave_info.club_id = club.club_id
+            <where>
+                <if test="realName!=null and realName!=''">
+                    and user.real_name LIKE CONCAT('%', #{realName}, '%')
+                </if>
+                <if test="clubId!=null">
+                    and club.club_id = #{clubId}
+                </if>
+                <if test="captainId!=null">
+                    and club.captain_id = #{captainId}
+                </if>
+            </where>
+    </select>
+
+    <update id="editLeaveInfo">
+        UPDATE leave_info
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="clubId!=null">club_id = #{clubId},</if>
+            <if test="content!=null and content!=''">content = #{content},</if>
+            <if test="createTime!=null and createTime!=''">create_time = #{createTime},</if>
+        </set>
+        WHERE leave_info.leave_info_id = #{leaveInfoId}
+    </update>
+
+    <insert id="addLeaveInfo"
+            parameterType="com.liu.club_ms.model.LeaveInfo">
+        INSERT INTO leave_info(user_id,
+                               club_id,
+                               content,
+                               create_time)
+        VALUES(#{userId},
+               #{clubId},
+               #{content},
+               #{createTime})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM leave_info
+        WHERE leave_info_id = #{leaveInfoId}
+    </delete>
+</mapper>

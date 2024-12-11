@@ -10,21 +10,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ApplyList {
+public class ClubMember {
     @TableId(type = IdType.AUTO)
-    private Integer applyListId;
+    private Integer clubMemberId;
 
-    private Integer  applyInfoId;
+    private Integer clubId;
 
-    private String content;
+    private Integer userId;
 
-    private String createTime;
-
-    private Integer authorId;
+    private String joinTime;
 
     @TableField(exist = false)
-    private Integer status;
+    private User user;
 
     @TableField(exist = false)
-    private String authorName;
+    private Club club;
+
 }

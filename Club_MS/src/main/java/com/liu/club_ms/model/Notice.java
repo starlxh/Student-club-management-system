@@ -7,33 +7,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Club {
+@AllArgsConstructor
+@Data
+public class Notice {
     @TableId(type = IdType.AUTO)
-    private Integer clubId;
+    private Integer noticeId;
 
-    private String clubName;
+    private String title;
 
-    private Integer createBy;
+    private String content;
 
-    private Integer categoryId;
-
-    private Integer captainId;
+    private Integer userId;
 
     private String createTime;
 
-    private Integer status;
-
-    private String images;
+    @TableField(exist = false)
+    private String userName;
 
     @TableField(exist = false)
-    private String creatorName;
-
-    @TableField(exist = false)
-    private String categoryName;
-
-    @TableField(exist = false)
-    private String captainName;
+    private String realName;
 }

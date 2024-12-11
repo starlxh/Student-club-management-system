@@ -16,9 +16,13 @@ public interface ApplyMapper {
 //  根据申请id 查询审核记录
     List<ApplyList> queryApplyListByApplyInfoId(@Param("applyInfoId") Integer applyInfoId);
 
-//  修改状态
-    Integer updateStatus(ApplyInfo applyInfo);
+    int addApplyList(ApplyList applyList);
 
-//  添加审批记录信息
-    Integer insertApplyList(ApplyList applyList);
+    int addApplyInfo(ApplyInfo applyInfo);
+
+    int editApplyInfoStatusById(Integer status, Integer applyInfoId);
+
+    int deleteApplyListByApplyInfoId(Integer applyInfoId);
+
+    int deleteApplyInfoById(Integer applyInfoId);
 }
