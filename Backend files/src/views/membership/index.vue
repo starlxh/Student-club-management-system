@@ -23,9 +23,9 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="用户Id" prop="userId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="clubMemberId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.userId }}</span>
+          <span>{{ row.clubMemberId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="真实姓名" width="150px" align="center">
@@ -80,13 +80,13 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
         <el-form-item label="真实姓名">
-          <el-input v-model="temp.user.realName" readonly />
+          <el-input v-model="temp.user.realName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="成员昵称">
-          <el-input v-model="temp.user.userName" readonly />
+          <el-input v-model="temp.user.userName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="性别">
-          <el-input v-model="temp.user.sex" readonly />
+          <el-input v-model="temp.user.sex" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item v-if="dialogStatus==='detail'" label="所属社团">
           <el-input v-model="temp.clubName" readonly />
@@ -96,20 +96,21 @@
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
-        <el-form-item label="入团时间">
-          <el-input v-model="temp.joinTime" readonly />
+        <el-form-item label="入团时间" prop="joinTime">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.joinTime" readonly />
+          <el-date-picker v-else v-model="temp.joinTime" type="datetime" placeholder="Please pick a date" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="电话">
-          <el-input v-model="temp.user.tel" readonly :placeholder="placeholder" />
+          <el-input v-model="temp.user.tel" readonly :placeholder="placeholder" :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input v-model="temp.user.email" readonly :placeholder="placeholder" />
+          <el-input v-model="temp.user.email" readonly :placeholder="placeholder" :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="QQ">
-          <el-input v-model="temp.user.qq" readonly :placeholder="placeholder" />
+          <el-input v-model="temp.user.qq" readonly :placeholder="placeholder" :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="微信">
-          <el-input v-model="temp.user.wx" readonly :placeholder="placeholder" />
+          <el-input v-model="temp.user.wx" readonly :placeholder="placeholder" :disabled="formDisabled" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -213,7 +214,7 @@ export default {
       //       wx: '123456'
       //     }
       //   }, {
-      //     clubMemberId: 1,
+      //     clubMemberId: 2,
       //     userId: 2,
       //     joinTime: '2019-01-02 12:00:00',
       //     clubId: 2,
@@ -228,7 +229,7 @@ export default {
       //       wx: '123456'
       //     }
       //   }, {
-      //     clubMemberId: 2,
+      //     clubMemberId: 3,
       //     userId: 3,
       //     joinTime: '2019-01-03 12:00:00',
       //     clubId: 2,
@@ -262,6 +263,7 @@ export default {
       },
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
+      formDisabled: false,
       dialogStatus: '',
       textMap: {
         detail: '社团成员详情',
@@ -271,7 +273,8 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
+        joinTime: [{ required: true, message: '入团时间不能为空', trigger: 'blur' }]
       },
       createRules: {
         userId: [
@@ -366,6 +369,7 @@ export default {
       this.textMap['detail'] = '社团成员详情——' + this.temp.user.realName
       this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
+      this.formDisabled = false
       this.placeholder = '无'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -374,6 +378,7 @@ export default {
     handleUpdate() {
       this.dialogStatus = 'update'
       this.dialogFormReadonly = false
+      this.formDisabled = true
       this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -382,6 +387,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.temp.joinTime = new Date(this.temp.joinTime).toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'editClubMember', JSON.parse(JSON.stringify(this.temp, ['clubMemberId', 'joinTime', 'clubId']))).then(
             res => {
               this.dialogDetailFormVisible = false
@@ -466,6 +472,11 @@ export default {
   max-width: 305px;
 }
 
+.form-timestamp {
+  width: inherit;
+  max-width: 305px;
+}
+
 @media (min-width: 1860px) {
   .membership-form {
     display: flex;
@@ -476,7 +487,7 @@ export default {
 
 @media (max-width: 1860px) {
   .membership-form {
-    text-align: center;
+    text-align: inherit;
   }
 }
 
