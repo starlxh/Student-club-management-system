@@ -46,13 +46,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="电话" align="center" width="150px">
+      <el-table-column label="电话" align="center" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user.tel }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="邮箱" align="center" min-width="150px">
+      <el-table-column label="邮箱" align="center" min-width="250px">
         <template slot-scope="{row}">
           <span>{{ row.user.email }}</span>
         </template>
@@ -297,15 +297,14 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        user:{
-          tel: undefined,
-        },
-        club: undefined
+        user: { tel: undefined },
+        clubId: undefined
       },
       tempApplyList: [],
       showReviewer: false,
       tempStatus: '',
       temp: {
+        user: {},
         club: {}
       },
       dialogFormDetailVisible: false,
@@ -342,10 +341,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryApplyInfoList', 
-      {
-        params:this.listQuery
-      }).then(res => {
+      request.get(this.baseUrl + 'queryApplyInfoList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
@@ -380,7 +376,7 @@ export default {
         this.tempStatus = '已拒绝'
       }
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = '入团申请详情——' + row.realName
+      this.textMap['detail'] = '入团申请详情——' + row.user.realName
       this.dialogFormDetailVisible = true
     },
     handleCheck(row) {
@@ -413,7 +409,7 @@ export default {
   margin-left: 10px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1860px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
@@ -430,7 +426,7 @@ export default {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1860px) {
   .apply-form {
     text-align: center;
   }
