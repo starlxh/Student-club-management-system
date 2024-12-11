@@ -19,4 +19,7 @@ public interface ClubMemberMapper {
     /*用于删除社团成员*/
     @Delete("delete from club_member where club_member_id = #{clubMemberId}")
     Integer delete(Integer clubMemberId);
+
+    /*用于修改社团成员信息*/
+    Integer editClubMember(ClubMember clubMember);
 }

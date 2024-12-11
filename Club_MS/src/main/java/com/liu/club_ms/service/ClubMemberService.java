@@ -12,4 +12,7 @@ public interface ClubMemberService {
 
     /*用于删除社团成员*/
     Integer deleteClubMemberById(Integer clubMemberId);
+
+    /*用于修改社团成员信息*/
+    Integer editClubMember(ClubMember clubMember);
 }

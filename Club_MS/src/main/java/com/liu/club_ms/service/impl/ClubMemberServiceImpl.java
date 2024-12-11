@@ -3,7 +3,6 @@ package com.liu.club_ms.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.mapper.ClubMemberMapper;
-import com.liu.club_ms.model.ApplyInfo;
 import com.liu.club_ms.model.ClubMember;
 import com.liu.club_ms.service.ClubMemberService;
 import org.springframework.stereotype.Service;
@@ -33,5 +32,11 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public Integer deleteClubMemberById(Integer clubMemberId) {
         return clubMemberMapper.delete(clubMemberId) > 0 ? 1 : 0;
+    }
+
+    /*用于修改社团成员信息*/
+    @Override
+    public Integer editClubMember(ClubMember clubMember) {
+        return clubMemberMapper.editClubMember(clubMember);
     }
 }

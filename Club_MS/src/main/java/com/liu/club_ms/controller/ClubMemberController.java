@@ -67,4 +67,13 @@ public class ClubMemberController {
         return Response.fail("删除社团成员失败！");
     }
 
+    /*用于修改社团成员信息*/
+    @PostMapping("/editClubMember")
+    public Response editClubMember(@RequestBody ClubMember clubMember) {
+        if(clubMemberService.editClubMember(clubMember) > 0){
+            return Response.ok();
+        }
+        return Response.fail("修改社团成员信息失败！");
+    }
+
 }
