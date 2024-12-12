@@ -1,9 +1,10 @@
 <template>
+
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.user.tel"
-        placeholder="电话号码"
+        v-model="listQuery.user.realName"
+        placeholder="真实姓名"
         style="width: 200px; margin-left: 0px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -46,13 +47,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="电话" align="center" min-width="150px">
+      <el-table-column label="电话" align="center" width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user.tel }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="邮箱" align="center" min-width="250px">
+      <el-table-column label="邮箱" align="center" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user.email }}</span>
         </template>
@@ -297,8 +298,10 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        user: { tel: undefined },
-        clubId: undefined
+        user: {
+          realName: undefined
+        },
+        club: undefined
       },
       tempApplyList: [],
       showReviewer: false,
@@ -341,7 +344,10 @@ export default {
     },
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryApplyInfoList', { params: this.listQuery }).then(res => {
+      request.get(this.baseUrl + 'queryApplyInfoList',
+        {
+          params: this.listQuery
+        }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
