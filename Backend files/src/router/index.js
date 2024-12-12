@@ -156,7 +156,7 @@ export const constantRoutes = [
     redirect: '/users/index',
     children: [
       {
-        path: 'users/index',
+        path: 'index',
         component: () => import('@/views/users/index'),
         name: 'Users',
         meta: {
@@ -181,7 +181,7 @@ export const asyncRoutes = [
     redirect: '/category/index',
     children: [
       {
-        path: 'category/index',
+        path: 'index',
         component: () => import('@/views/category/index'),
         name: 'Category',
         meta: {
@@ -199,7 +199,7 @@ export const asyncRoutes = [
     redirect: '/club/index',
     children: [
       {
-        path: 'club/index',
+        path: 'index',
         component: () => import('@/views/club/index'),
         name: 'Club',
         meta: {
@@ -217,7 +217,7 @@ export const asyncRoutes = [
     redirect: '/apply/index',
     children: [
       {
-        path: 'apply/index',
+        path: 'index',
         component: () => import('@/views/apply/index'),
         name: 'Apply',
         meta: {
