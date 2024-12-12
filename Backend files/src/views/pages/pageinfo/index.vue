@@ -230,7 +230,7 @@ export default {
         if (valid) {
           // 向后端发送请求，实现添加功能
           request.post('applyInfo/addInfo', this.temp).then(res => {
-            if (res.code == 20000) {
+            if (res.code === 20000) {
               // 关闭弹出框
               this.$alert(res.msg)
             } else {
