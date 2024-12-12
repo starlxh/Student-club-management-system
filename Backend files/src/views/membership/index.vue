@@ -197,53 +197,53 @@ export default {
     return {
       baseUrl: 'clubMember/',
       tableKey: 0,
-      list: null,
-      //   list: [{
-      //     clubMemberId: 1,
-      //     userId: 1,
-      //     joinTime: '2019-01-01 12:00:00',
-      //     clubId: 1,
-      //     clubName: '传统派',
-      //     user: {
-      //       userName: '芙蓉王',
-      //       realName: '王源',
-      //       sex: '男',
-      //       tel: '13800138000',
-      //       email: '123456@qq.com',
-      //       qq: '123456',
-      //       wx: '123456'
-      //     }
-      //   }, {
-      //     clubMemberId: 2,
-      //     userId: 2,
-      //     joinTime: '2019-01-02 12:00:00',
-      //     clubId: 2,
-      //     clubName: '维新派',
-      //     user: {
-      //       userName: '礼堂王',
-      //       realName: '丁真',
-      //       sex: '男',
-      //       tel: '13800138001',
-      //       email: '123456@qq.com',
-      //       qq: '123456',
-      //       wx: '123456'
-      //     }
-      //   }, {
-      //     clubMemberId: 3,
-      //     userId: 3,
-      //     joinTime: '2019-01-03 12:00:00',
-      //     clubId: 2,
-      //     clubName: '维新派',
-      //     user: {
-      //       userName: '说的道莉',
-      //       realName: '道莉',
-      //       sex: '女',
-      //       tel: '13800138002',
-      //       email: '123456@qq.com',
-      //       qq: '123456',
-      //       wx: '123456'
-      //     }
-      //   }],
+      //   list: null,
+      list: [{
+        clubMemberId: 1,
+        userId: 1,
+        joinTime: '2019-01-01 12:00:00',
+        clubId: 1,
+        clubName: '传统派',
+        user: {
+          userName: '芙蓉王',
+          realName: '王源',
+          sex: '男',
+          tel: '13800138000',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }, {
+        clubMemberId: 2,
+        userId: 2,
+        joinTime: '2019-01-02 12:00:00',
+        clubId: 2,
+        clubName: '维新派',
+        user: {
+          userName: '礼堂王',
+          realName: '丁真',
+          sex: '男',
+          tel: '13800138001',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }, {
+        clubMemberId: 3,
+        userId: 3,
+        joinTime: '2019-01-03 12:00:00',
+        clubId: 2,
+        clubName: '维新派',
+        user: {
+          userName: '说的道莉',
+          realName: '道莉',
+          sex: '女',
+          tel: '13800138002',
+          email: '123456@qq.com',
+          qq: '123456',
+          wx: '123456'
+        }
+      }],
       clubList: null,
       total: 0,
       listLoading: true,
@@ -486,6 +486,10 @@ export default {
 }
 
 @media (max-width: 1860px) {
+  .membership-form {
+    text-align: center;
+  }
+
   .membership-form {
     text-align: inherit;
   }

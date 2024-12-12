@@ -1,12 +1,8 @@
 diff a/Backend files/src/views/apply/index.vue b/Backend files/src/views/apply/index.vue	(rejected hunks)
-@@ -1,9 +1,10 @@
- <template>
-+
+@@ -3,6 +3,8 @@
    <div class="app-container">
      <div class="filter-container">
        <el-input
--        v-model="listQuery.user.tel"
--        placeholder="电话号码"
 +        v-model="listQuery.user.realName"
 +        placeholder="真实姓名"
          style="width: 200px; margin-left: 0px;"
