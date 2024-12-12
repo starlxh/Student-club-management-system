@@ -198,11 +198,11 @@
         >暂无审核记录</span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
-          进行审核
-        </el-button>
         <el-button @click="dialogFormDetailVisible = false">
           关闭
+        </el-button>
+        <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
+          进行审核
         </el-button>
       </div>
     </el-dialog>
@@ -250,11 +250,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="success" @click="handleJudge(1)">
-          通过
-        </el-button>
         <el-button type="danger" @click="handleJudge(2)">
           拒绝
+        </el-button>
+        <el-button type="success" @click="handleJudge(1)">
+          通过
         </el-button>
       </div>
     </el-dialog>

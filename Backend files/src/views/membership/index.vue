@@ -114,11 +114,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogStatus==='detail'?handleUpdate():updateData()">
-          {{ dialogStatus==='detail'?'修改':'提交' }}
-        </el-button>
         <el-button @click="dialogDetailFormVisible = false">
           关闭
+        </el-button>
+        <el-button type="primary" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+          {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
     </el-dialog>
@@ -135,11 +135,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="createData()">
-          添加
-        </el-button>
         <el-button @click="dialogCreateFormVisible = false">
           关闭
+        </el-button>
+        <el-button type="primary" @click="createData()">
+          添加
         </el-button>
       </div>
     </el-dialog>
@@ -477,7 +477,7 @@ export default {
   max-width: 305px;
 }
 
-@media (min-width: 1860px) {
+@media (min-width: 1660px) {
   .membership-form {
     display: flex;
     flex-wrap: wrap;
@@ -485,13 +485,13 @@ export default {
   }
 }
 
-@media (max-width: 1860px) {
+@media (max-width: 1660px) {
   .membership-form {
     text-align: center;
   }
 
   .membership-form {
-    text-align: inherit;
+    text-align: center;
   }
 }
 

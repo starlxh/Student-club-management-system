@@ -100,8 +100,8 @@
         :rules="rules"
         :model="temp"
         label-position="left"
-        label-width="80px"
-        style="width: 400px; margin-left:50px;"
+        label-width="100px"
+        style="width: 400px; margin: auto;"
       >
         <el-form-item label="社团名称" prop="clubName">
           <el-input v-model="temp.clubName" />
@@ -131,6 +131,7 @@
             v-model="temp.createTime"
             type="datetime"
             placeholder="请填写"
+            class="form-timestamp"
           />
         </el-form-item>
 
@@ -416,6 +417,15 @@ export default {
 
 .filter-container .filter-item {
   margin-left: 10px;
+}
+
+.form-select {
+  width: 400px;
+}
+
+.form-timestamp {
+  width: inherit;
+  max-width: 305px;
 }
 
   .avatar-uploader >>> .el-upload {
