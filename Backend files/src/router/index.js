@@ -230,6 +230,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/membership',
+    component: Layout,
+    redirect: '/membership/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/membership/index'),
+        name: 'Membership',
+        meta: {
+          title: '社团成员管理',
+          icon: 'form',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
