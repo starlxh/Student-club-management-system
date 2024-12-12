@@ -1,6 +1,5 @@
 package com.liu.club_ms.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.mapper.ApplyMapper;
@@ -21,8 +20,8 @@ public class ApplyServiceImpl
     @Override
     public PageInfo<ApplyInfo> queryApplyInfoListByPage(int page, int limit, ApplyInfo applyInfo) {
         PageHelper.startPage(page, limit);
-        List<ApplyInfo> list = applyMapper.queryApplyInfoList(applyInfo);
-        return new PageInfo<>(list);
+        List<ApplyInfo> applyInfoList = applyMapper.queryApplyInfoList(applyInfo);
+        return new PageInfo<>(applyInfoList);
     }
 
     @Override
@@ -31,12 +30,28 @@ public class ApplyServiceImpl
     }
 
     @Override
-    public boolean updateStatus(ApplyInfo applyInfo) {
-        return applyMapper.updateStatus(applyInfo) > 0;
+    public boolean addApplyList(ApplyList applyList) {
+        return applyMapper.addApplyList(applyList) > 0;
     }
 
     @Override
-    public boolean insertApplyList(ApplyList applyList) {
-        return applyMapper.insertApplyList(applyList) > 0;
+    public boolean editApplyInfoStatusById(Integer status, Integer applyInfoId) {
+        return applyMapper.editApplyInfoStatusById(status, applyInfoId) > 0;
     }
+
+    @Override
+    public boolean addApplyInfo(ApplyInfo applyInfo) {
+        return applyMapper.addApplyInfo(applyInfo) > 0;
+    }
+
+    @Override
+    public boolean deleteApplyListByApplyInfoId(Integer applyInfoId) {
+        return applyMapper.deleteApplyListByApplyInfoId(applyInfoId) > 0;
+    }
+
+    @Override
+    public boolean deleteApplyInfoById(Integer applyInfoId) {
+        return applyMapper.deleteApplyInfoById(applyInfoId) > 0;
+    }
+
 }

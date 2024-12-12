@@ -11,13 +11,16 @@ public interface ApplyService {
     //  高级查询
     PageInfo<ApplyInfo> queryApplyInfoListByPage(int page, int limit, ApplyInfo applyInfo);
 
-
     //  根据申请id 查询审核记录
     List<ApplyList> queryApplyListByApplyInfoId(Integer applyInfoId);
 
-    //  修改状态
-    boolean updateStatus(ApplyInfo applyInfo);
+    boolean addApplyList(ApplyList applyList);
 
-    //  添加审批记录信息
-    boolean insertApplyList(ApplyList applyList);
+    boolean editApplyInfoStatusById(Integer status, Integer applyInfoId);
+
+    boolean addApplyInfo(ApplyInfo applyInfo);
+
+    boolean deleteApplyListByApplyInfoId(Integer applyInfoId);
+
+    boolean deleteApplyInfoById(Integer applyInfoId);
 }

@@ -18,12 +18,13 @@ public class ApplyList {
 
     private String content;
 
-    private Integer  status;
-
     private String createTime;
 
-    private Integer  applyAuthorId;
+    private Integer authorId;
 
-    @TableField(exist = true)
-    private User user;
+    @TableField(exist = false)
+    private Integer status;
+
+    @TableField(exist = false)
+    private String authorName;
 }

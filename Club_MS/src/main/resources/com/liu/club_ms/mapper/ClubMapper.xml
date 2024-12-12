@@ -13,32 +13,17 @@
         <result column="images" property="images"/>
     </resultMap>
 
-
-<!--  高级查询社团信息  -->
-    <resultMap id="queryClubListMap" type="com.liu.club_ms.model.Club"
-               extends="BaseResultMap">
-        <!-- 配置类型 -->
-        <association property="category" javaType="com.liu.club_ms.model.Category">
-            <id column="category_id" property="categoryId"/>
-            <result column="category_name" property="categoryName"/>
-        </association>
-
-        <association property="user" javaType="com.liu.club_ms.model.User">
-            <id column="user_id" property="userId"/>
-            <result column="user_name" property="userName"/>
-        </association>
-    </resultMap>
 <!--  编辑社团  -->
     <update id="editClub" parameterType="com.liu.club_ms.model.Club">
     UPDATE club
     <set>
-        <if test="clubName != null">club_name = #{clubName},</if>
+        <if test="clubName != null and clubName != ''">club_name = #{clubName},</if>
         <if test="createBy != null">create_by = #{createBy},</if>
         <if test="categoryId != null">category_id = #{categoryId},</if>
         <if test="captainId != null">captain_id = #{captainId},</if>
-        <if test="createTime != null">create_time = #{createTime},</if>
+        <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
         <if test="status != null">`status` = #{status},</if>
-        <if test="images != null">images = #{images},</if>
+        <if test="images != null  and createTime != ''">images = #{images},</if>
     </set>
     WHERE club_id = #{clubId}
 
@@ -49,11 +34,20 @@
         DELETE FROM club WHERE club_id = #{clubId}
     </delete>
 
+
+    <!--  高级查询社团信息  -->
+    <resultMap id="queryClubListMap" type="com.liu.club_ms.model.Club"
+               extends="BaseResultMap">
+        <result column="category_name" property="categoryName"/>
+        <result column="creator_name" property="creatorName"/>
+        <result column="captain_name" property="captainName"/>
+    </resultMap>
+
     <!--  高级查询  -->
     <select id="queryClubList"
             resultMap="queryClubListMap"
             parameterType="com.liu.club_ms.model.Club">
-    SELECT club.*, category.category_name, user.user_name
+    SELECT club.*, category.category_name, c.real_name as creator_name, user.real_name as captain_name
     FROM club
     left join category ON category.category_id = club.category_id
     left join user ON user.user_id = club.captain_id

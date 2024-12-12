@@ -1,9 +1,10 @@
 <template>
+
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.user.tel"
-        placeholder="电话号码"
+        v-model="listQuery.user.realName"
+        placeholder="真实姓名"
         style="width: 200px; margin-left: 0px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -197,11 +198,11 @@
         >暂无审核记录</span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormDetailVisible = false">
-          关闭
-        </el-button>
         <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
           进行审核
+        </el-button>
+        <el-button @click="dialogFormDetailVisible = false">
+          关闭
         </el-button>
       </div>
     </el-dialog>
@@ -216,40 +217,40 @@
         label-width="80px"
         class="apply-form"
       >
-        <el-form-item label="真实姓名" prop="categoryName">
-          <el-input v-model="temp.realName" readonly />
+        <el-form-item label="真实姓名">
+          <el-input v-model="temp.user.realName" readonly />
         </el-form-item>
 
-        <el-form-item label="申请社团" prop="categoryName">
+        <el-form-item label="申请社团">
           <el-input v-model="temp.club.clubName" readonly placeholder="无" />
         </el-form-item>
 
-        <el-form-item label="创建时间" prop="categoryName">
+        <el-form-item label="创建时间">
           <el-input v-model="temp.createTime" readonly />
         </el-form-item>
 
-        <el-form-item label="性别" prop="categoryName">
-          <el-input v-model="temp.sex" readonly />
+        <el-form-item label="性别">
+          <el-input v-model="temp.user.sex" readonly />
         </el-form-item>
 
-        <el-form-item label="电话" prop="categoryName">
-          <el-input v-model="temp.tel" readonly placeholder="无" />
+        <el-form-item label="电话">
+          <el-input v-model="temp.user.tel" readonly placeholder="无" />
         </el-form-item>
 
-        <el-form-item label="邮箱" prop="categoryName">
-          <el-input v-model="temp.email" readonly placeholder="无" />
+        <el-form-item label="邮箱">
+          <el-input v-model="temp.user.email" readonly placeholder="无" />
         </el-form-item>
 
-        <el-form-item label="申请内容" class="apply-content">
-          <el-input v-model="temp.content" type="textarea" readonly placeholder="无" />
+        <el-form-item label="申请内容">
+          <el-input v-model="temp.content" readonly placeholder="无" class="apply-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dialogFormCheckVisible = false">
-          拒绝
-        </el-button>
         <el-button type="success">
           通过
+        </el-button>
+        <el-button type="danger" @click="dialogFormCheckVisible = false">
+          拒绝
         </el-button>
       </div>
     </el-dialog>
@@ -297,8 +298,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        user:{
-          tel: undefined,
+        user: {
+          realName: undefined
         },
         club: undefined
       },
@@ -306,6 +307,7 @@ export default {
       showReviewer: false,
       tempStatus: '',
       temp: {
+        user: {},
         club: {}
       },
       dialogFormDetailVisible: false,
@@ -342,10 +344,10 @@ export default {
     },
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryApplyInfoList', 
-      {
-        params:this.listQuery
-      }).then(res => {
+      request.get(this.baseUrl + 'queryApplyInfoList',
+        {
+          params: this.listQuery
+        }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
@@ -380,7 +382,7 @@ export default {
         this.tempStatus = '已拒绝'
       }
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = '入团申请详情——' + row.realName
+      this.textMap['detail'] = '入团申请详情——' + row.user.realName
       this.dialogFormDetailVisible = true
     },
     handleCheck(row) {
@@ -413,26 +415,25 @@ export default {
   margin-left: 10px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1660px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
     margin: 0px 50px
   }
 
-  .apply-form .apply-content {
-    display: block;
-    width: 100%;
-  }
-
-  .apply-form .apply-content>>>.el-form-item__content {
-    width: 100%;
+  .apply-text {
+    width: 700px;
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1660px) {
   .apply-form {
     text-align: center;
+  }
+
+  .apply-text {
+    width: 305px;
   }
 }
 </style>

@@ -48,15 +48,15 @@
       </el-table-column>
       <el-table-column label="社团类型" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-tag :type="row.category.categoryName | statusFilter">
-            <span>{{ row.category.categoryName }}</span>
+          <el-tag :type="row.categoryName | statusFilter">
+            <span>{{ row.categoryName }}</span>
           </el-tag>
         </template>
       </el-table-column>
 
       <el-table-column label="社团团长" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.userName }}</span>
+          <span>{{ row.captainName }}</span>
         </template>
       </el-table-column>
 
@@ -120,9 +120,9 @@
           <el-select v-model="temp.captainId" class="filter-item" placeholder="请选择">
             <el-option
               v-for="item in adminList"
-              :key="item.adminId"
-              :label="item.adminName"
-              :value="item.adminId"
+              :key="item.userId"
+              :label="item.userName"
+              :value="item.userId"
             />
           </el-select>
         </el-form-item>
@@ -245,7 +245,7 @@ export default {
   },
   methods: {
     getCaptainList() {
-      request.get('admin/getIdName').then(
+      request.get('user/getAdminIdName').then(
         res => {
           if (res.code === 20000) {
             this.adminList = res.data

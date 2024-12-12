@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.CostListMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.CostList">
+        <id column="cost_list_id" property="costListId"/>
+        <result column="club_id" property="clubId"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="create_time" property="createTime"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+
+    <resultMap id="queryCostListAllMap"
+               type="com.liu.club_ms.model.CostList"
+               extends="BaseResultMap">
+        <result column="club_name" property="clubName"/>
+    </resultMap>
+
+    <select id="queryCostListAll"
+            resultMap="queryCostListAllMap">
+        SELECT cl.cost_list_id, cl.club_id, cl.name, cl.price, cl.create_time, cl.remarks, club.club_name
+        FROM cost_list as cl
+        LEFT JOIN club
+        ON cl.club_id = club.club_id
+        <where>
+            <if test="name!=null and name!=''">
+                and cl.name like CONCAT('%', #{name}, '%')
+            </if>
+            <if test="clubId!=null">
+                and cl.club_id = #{clubId}
+            </if>
+            <if test="captainId">
+                and club.captain_id = #{captainId}
+            </if>
+        </where>
+        order by cl.id DESC
+    </select>
+
+    <update id="editCostList" parameterType="com.liu.club_ms.model.CostList">
+        UPDATE cost_list
+        <set>
+            <if test="clubId != null">club_id = #{clubId},</if>
+            <if test="name!=null and name!=''">name = #{name},</if>
+            <if test="price!=null">price = #{price},</if>
+            <if test="createTime!=null and createTime!=''">create_time = #{createTime},</if>
+            <if test="remarks!=null and remarks!=''">remarks = #{remarks},</if>
+        </set>
+        WHERE cost_list.cost_list_id = #{costListId}
+    </update>
+
+    <insert id="addCostList"
+            parameterType="com.liu.club_ms.model.CostList">
+        INSERT INTO cost_list(club_id,
+                              name,
+                              price,
+                              create_time,
+                              remarks)
+        VALUES(#{clubId},
+               #{name},
+               #{price},
+               #{createTime},
+               #{remarks})
+    </insert>
+
+    <!--  通过ID删除社团费用记录  -->
+    <delete id="deleteById">
+        DELETE FROM cost_list
+        WHERE cost_list_id = #{costListId}
+    </delete>
+</mapper>

@@ -2,10 +2,7 @@ package com.liu.club_ms.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.jwt.JWUtil;
-import com.liu.club_ms.model.ApplyInfo;
-import com.liu.club_ms.model.ApplyList;
-import com.liu.club_ms.model.Club;
-import com.liu.club_ms.model.User;
+import com.liu.club_ms.model.*;
 import com.liu.club_ms.service.ApplyService;
 import com.liu.club_ms.util.Response;
 import jakarta.annotation.Resource;
@@ -23,7 +20,7 @@ public class ApplyController {
     ApplyService applyService;
 
     @GetMapping("/queryApplyInfoList")
-    public Response queryApplyInfoListByPage(
+    public Response queryApplyInfoList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
             String realName,
@@ -32,7 +29,7 @@ public class ApplyController {
 
         applyInfo.setUser(new User(realName));
 
-        //通过token获取管理员类型和id
+        //通过token获取用户类型和id
         String token = request.getHeader("token");
         Integer type = JWUtil.getType(token);
         if(type == 1){
@@ -57,11 +54,43 @@ public class ApplyController {
     }
 
     @GetMapping("/queryApplyListByApplyInfoId")
-    public Map queryApplyListById(Integer applyInfoId){
-        Map map = new HashMap();
+    public Map<String, Object> queryApplyListById(Integer applyInfoId){
+        Map<String, Object> response = new HashMap<>();
         List<ApplyList> applyLists = applyService.queryApplyListByApplyInfoId(applyInfoId);
-        map.put("data", applyLists);
-        map.put("code", 20000);
-        return map;
+        response.put("data", applyLists);
+        response.put("code", 20000);
+        return response;
     }
+
+    @GetMapping("/judge")
+    public Response judge(@RequestBody ApplyList applyList) {
+        if (applyService.addApplyList(applyList) &&
+                applyService.editApplyInfoStatusById(
+                        applyList.getStatus(),
+                        applyList.getApplyInfoId())){
+            return Response.ok();
+        }else {
+            return Response.fail("审核入团申请失败");
+        }
+    }
+
+    @PostMapping("/addApplyInfo")
+    public Response addActivity(@RequestBody ApplyInfo applyInfo){
+        if(applyService.addApplyInfo(applyInfo)){
+            return Response.ok();
+        }else {
+            return Response.fail("添加入团申请失败");
+        }
+    }
+
+    @DeleteMapping("/deleteById")
+    public Response deleteById(Integer applyInfoId){
+        if(applyService.deleteApplyListByApplyInfoId(applyInfoId) &&
+                applyService.deleteApplyInfoById(applyInfoId)){
+            return Response.ok();
+        }else {
+            return Response.fail("删除入团申请失败");
+        }
+    }
+
 }

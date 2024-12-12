@@ -8,13 +8,13 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("category")
+@RequestMapping("/category")
 public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
 //  添加社团类型
-    @PostMapping("addCategory")
+    @PostMapping("/addCategory")
     public Response addCategory(@RequestBody Category category) {
         if (categoryService.add(category) > 0){
             return Response.ok();
@@ -23,7 +23,7 @@ public class CategoryController {
     }
 
 //  编辑社团类型
-    @PostMapping("editCategory")
+    @PostMapping("/editCategory")
     public Response editCategory(@RequestBody Category category) {
         if (categoryService.updateById(category)){
             return Response.ok();
@@ -32,7 +32,7 @@ public class CategoryController {
     }
 
 //  删除社团类型
-    @DeleteMapping("deleteById")
+    @DeleteMapping("/deleteById")
     public Response deleteById(Integer categoryId) {
         if (categoryService.removeById(new Category(categoryId, null, null,null))){
             return Response.ok();

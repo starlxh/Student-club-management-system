@@ -96,6 +96,8 @@ CREATE TABLE `apply_info` (
   `club_id` int DEFAULT NULL COMMENT '社团id',
   PRIMARY KEY (`apply_info_id`),
   KEY `apply_info_user_fk` (`user_id`),
+  KEY `apply_info_club_FK` (`club_id`),
+  CONSTRAINT `apply_info_club_FK` FOREIGN KEY (`club_id`) REFERENCES `club` (`club_id`),
   CONSTRAINT `apply_info_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='社团入团申请记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -106,7 +108,7 @@ CREATE TABLE `apply_info` (
 
 LOCK TABLES `apply_info` WRITE;
 /*!40000 ALTER TABLE `apply_info` DISABLE KEYS */;
-INSERT INTO `apply_info` VALUES (1,1,'我想入团','2024-08-01 20:33:32',1,1);
+INSERT INTO `apply_info` VALUES (1,1,'我想入团','2024-08-01 20:33:32',0,1);
 /*!40000 ALTER TABLE `apply_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,15 +123,13 @@ CREATE TABLE `apply_list` (
   `apply_list_id` int NOT NULL AUTO_INCREMENT COMMENT '申请审核ID',
   `apply_info_id` int DEFAULT NULL COMMENT '申请id',
   `content` varchar(300) DEFAULT NULL COMMENT '审核内容',
-  `status` int DEFAULT NULL COMMENT '状态',
-  `create_time` datetime DEFAULT NULL COMMENT '申请时间',
   `author_id` int DEFAULT NULL COMMENT '审核人',
   PRIMARY KEY (`apply_list_id`),
-  KEY `apply_list_apply_info_fk` (`apply_info_id`),
-  KEY `apply_list_user_fk` (`author_id`),
-  CONSTRAINT `apply_list_apply_info_fk` FOREIGN KEY (`apply_info_id`) REFERENCES `apply_info` (`apply_info_id`),
-  CONSTRAINT `apply_list_user_fk` FOREIGN KEY (`author_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='申请审核记录表';
+  KEY `apply_list_user_FK` (`author_id`),
+  KEY `apply_list_apply_info_FK` (`apply_info_id`),
+  CONSTRAINT `apply_list_apply_info_FK` FOREIGN KEY (`apply_info_id`) REFERENCES `apply_info` (`apply_info_id`),
+  CONSTRAINT `apply_list_user_FK` FOREIGN KEY (`author_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='申请审核记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,6 @@ CREATE TABLE `apply_list` (
 
 LOCK TABLES `apply_list` WRITE;
 /*!40000 ALTER TABLE `apply_list` DISABLE KEYS */;
-INSERT INTO `apply_list` VALUES (1,1,'不同意啊，你没有技能',2,'2022-07-13 10:55:13',1);
 /*!40000 ALTER TABLE `apply_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +176,7 @@ DROP TABLE IF EXISTS `club`;
 CREATE TABLE `club` (
   `club_id` int NOT NULL AUTO_INCREMENT COMMENT '社团ID',
   `club_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '名称',
-  `create_by` varchar(20) DEFAULT NULL COMMENT '创建人',
+  `create_by` int DEFAULT NULL COMMENT '创建人',
   `category_id` int DEFAULT NULL COMMENT '社团类型',
   `captain_id` int DEFAULT NULL COMMENT '团长',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -186,7 +185,9 @@ CREATE TABLE `club` (
   PRIMARY KEY (`club_id`),
   KEY `club_category_fk` (`category_id`),
   KEY `club_user_fk` (`captain_id`),
+  KEY `club_user_create_FK` (`create_by`),
   CONSTRAINT `club_category_fk` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
+  CONSTRAINT `club_user_create_FK` FOREIGN KEY (`create_by`) REFERENCES `user` (`user_id`),
   CONSTRAINT `club_user_fk` FOREIGN KEY (`captain_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='社团信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -197,7 +198,7 @@ CREATE TABLE `club` (
 
 LOCK TABLES `club` WRITE;
 /*!40000 ALTER TABLE `club` DISABLE KEYS */;
-INSERT INTO `club` VALUES (1,'汕头文学社','1',2,7,'2024-07-11 15:28:03',1,'http://localhost:9999//images/wenxue.png'),(2,'汕头汉服社','1',1,4,'2024-07-12 21:34:58',1,'http://localhost:9999//images/hanfu.png'),(4,'汕头工作室','1',2,8,'2024-07-12 22:41:14',1,'http://localhost:9999//images/wenxue.png'),(5,'汕头摄影社','1',7,9,'2024-07-12 22:46:21',1,'http://localhost:9999//images/sheying.png'),(6,'汕头滑轮社','1',10,10,'2024-07-22 08:00:00',1,'http://localhost:9999//images/lunhua.png'),(7,'汕头武术社','1',9,10,'2024-07-13 22:46:52',0,'http://localhost:9999//images/wushu.png'),(11,'汕头动漫社','1',8,6,'2024-07-28 20:56:57',1,'http://localhost:9999//images/dongman.png'),(12,'汕头美好时光','1',7,9,'2024-08-31 08:00:00',0,'http://localhost:9999//images/5cdf0d1b-4ac7-46a3-9e8e-68226e32a235.png');
+INSERT INTO `club` VALUES (1,'汕头文学社',1,2,7,'2024-07-11 15:28:03',1,'http://localhost:9999//images/wenxue.png'),(2,'汕头汉服社',1,1,4,'2024-07-12 21:34:58',1,'http://localhost:9999//images/hanfu.png'),(4,'汕头工作室',1,2,8,'2024-07-12 22:41:14',1,'http://localhost:9999//images/wenxue.png'),(5,'汕头摄影社',1,7,9,'2024-07-12 22:46:21',1,'http://localhost:9999//images/sheying.png'),(6,'汕头滑轮社',1,10,10,'2024-07-22 08:00:00',1,'http://localhost:9999//images/lunhua.png'),(7,'汕头武术社',1,9,10,'2024-07-13 22:46:52',0,'http://localhost:9999//images/wushu.png'),(11,'汕头动漫社',1,8,6,'2024-07-28 20:56:57',1,'http://localhost:9999//images/dongman.png'),(12,'汕头美好时光',1,7,9,'2024-08-31 08:00:00',0,'http://localhost:9999//images/5cdf0d1b-4ac7-46a3-9e8e-68226e32a235.png');
 /*!40000 ALTER TABLE `club` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,7 +243,7 @@ CREATE TABLE `cost_list` (
   `cost_list_id` int NOT NULL AUTO_INCREMENT COMMENT '社团费用ID',
   `club_id` int DEFAULT NULL COMMENT '所属社团',
   `name` varchar(20) DEFAULT NULL COMMENT '费用名称',
-  `price` varchar(20) DEFAULT NULL COMMENT '金额',
+  `price` int DEFAULT NULL COMMENT '金额',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `remarks` varchar(200) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`cost_list_id`),
@@ -257,7 +258,7 @@ CREATE TABLE `cost_list` (
 
 LOCK TABLES `cost_list` WRITE;
 /*!40000 ALTER TABLE `cost_list` DISABLE KEYS */;
-INSERT INTO `cost_list` VALUES (1,11,'买礼物','200','2022-08-09 21:00:18','给参加猜谜语活动的学生准备礼物'),(2,11,'测试费用1','100','2022-08-09 21:55:53','测试成功了么1'),(3,11,'2121','212121','2022-08-09 21:59:49','212121'),(4,2,'种子书友会','1000','2022-08-21 11:28:19','买书分发'),(5,2,'阅读启蒙送爱心','300','2022-08-21 11:28:44','发送小奖品');
+INSERT INTO `cost_list` VALUES (1,11,'买礼物',200,'2022-08-09 21:00:18','给参加猜谜语活动的学生准备礼物'),(2,11,'测试费用1',100,'2022-08-09 21:55:53','测试成功了么1'),(3,11,'2121',212121,'2022-08-09 21:59:49','212121'),(4,2,'种子书友会',1000,'2022-08-21 11:28:19','买书分发'),(5,2,'阅读启蒙送爱心',300,'2022-08-21 11:28:44','发送小奖品');
 /*!40000 ALTER TABLE `cost_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,12 +272,15 @@ DROP TABLE IF EXISTS `leave_info`;
 CREATE TABLE `leave_info` (
   `leave_info_id` int NOT NULL AUTO_INCREMENT COMMENT '在线留言ID',
   `user_id` int DEFAULT NULL COMMENT '用户ID',
+  `club_id` int DEFAULT NULL COMMENT '社团ID',
   `content` varchar(120) DEFAULT NULL COMMENT '留言内容',
   `create_time` datetime DEFAULT NULL COMMENT '留言时间',
   PRIMARY KEY (`leave_info_id`),
-  KEY `leave_info_user_fk` (`user_id`),
-  CONSTRAINT `leave_info_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='在线留言表';
+  KEY `leave_info_user_FK` (`user_id`),
+  KEY `leave_info_club_FK` (`club_id`),
+  CONSTRAINT `leave_info_club_FK` FOREIGN KEY (`club_id`) REFERENCES `club` (`club_id`),
+  CONSTRAINT `leave_info_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='在线留言表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,7 +289,6 @@ CREATE TABLE `leave_info` (
 
 LOCK TABLES `leave_info` WRITE;
 /*!40000 ALTER TABLE `leave_info` DISABLE KEYS */;
-INSERT INTO `leave_info` VALUES (13,1,'一老一幼”系民心，一枝一叶总关情。习近平总书记说“要让老百姓体会到我们党是全心全意为人民服务的','2022-08-21 09:32:39'),(14,1,'毕业时节，相逢又告别，归帆又离岸，既是往日欢乐的终结，又是未来幸福的开端','2022-08-21 10:46:54'),(15,1,'别忘了，受伤时给我电话，成功时给我短信，寂寞时找我聊天，难忘社友情','2022-08-21 10:47:36');
 /*!40000 ALTER TABLE `leave_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -298,12 +301,13 @@ DROP TABLE IF EXISTS `notice`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notice` (
   `notice_id` int NOT NULL AUTO_INCREMENT COMMENT '公告信息ID',
-  `content` int DEFAULT NULL COMMENT '内容',
+  `content` varchar(255) DEFAULT NULL COMMENT '内容',
+  `title` varchar(200) DEFAULT NULL COMMENT '公告标题',
   `user_id` int DEFAULT NULL COMMENT '发布人',
   `create_time` datetime DEFAULT NULL COMMENT '发布时间',
   PRIMARY KEY (`notice_id`),
-  KEY `notice_user_fk` (`user_id`),
-  CONSTRAINT `notice_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+  KEY `notice_user_FK` (`user_id`),
+  CONSTRAINT `notice_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='公告信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -363,4 +367,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-07 14:29:31
+-- Dump completed on 2024-12-11 22:50:16

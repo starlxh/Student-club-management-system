@@ -1,6 +1,8 @@
 package com.liu.club_ms.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Club {
+    @TableId(type = IdType.AUTO)
     private Integer clubId;
 
     private String clubName;
@@ -26,8 +29,11 @@ public class Club {
     private String images;
 
     @TableField(exist = false)
-    private User user;
+    private String creatorName;
 
     @TableField(exist = false)
-    private Category category;
+    private String categoryName;
+
+    @TableField(exist = false)
+    private String captainName;
 }

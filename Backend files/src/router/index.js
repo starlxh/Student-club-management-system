@@ -70,19 +70,47 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
+  // 前台前端页面的路由配置
   {
     path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-      }
-    ]
+    component: () => import('@/views/main/index'),
+    hidden: true
   },
+  {
+    path: '/teamlist',
+    component: () => import('@/views/pages/teamlist/index'),
+    hidden: true
+  },
+
+  {
+    path: '/teaminfo',
+    component: () => import('@/views/pages/pageinfo/index'),
+    hidden: true
+  },
+  {
+    path: '/myteam',
+    component: () => import('@/views/pages/myteam/index'),
+    hidden: true
+  },
+
+  {
+    path: '/leave',
+    component: () => import('@/views/pages/leave/index'),
+    hidden: true
+  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -134,8 +162,7 @@ export const constantRoutes = [
         meta: {
           title: '用户信息管理',
           icon: 'people',
-          noCache: true,
-          role: ['super']
+          noCache: true
         }
       }
     ]
@@ -161,7 +188,7 @@ export const asyncRoutes = [
           title: '社团类型管理',
           icon: 'list',
           noCache: true,
-          roles: ['Super']
+          roles: ['Super', 'Admin']
         }
       }
     ]

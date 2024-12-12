@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.liu.club_ms.mapper.ClubMemberMapper">
+    <insert id="insert">
+        insert into club_member(club_id,user_id,join_time) values(#{clubId},#{userId},#{joinTime})
+    </insert>
+
+    <update id="editClubMember">
+        UPDATE club_member
+        <set>
+            <if test="clubId != null">club_id = #{clubId},</if>
+            <if test="joinTime != null">join_time = #{joinTime},</if>
+        </set>
+        WHERE club_member_id = #{clubMemberId}
+    </update>
+
+    <select id="queryClubMemberListByPage" resultType="com.liu.club_ms.model.ClubMember">
+        select cm.club_member_id, cm.user_id, cm.join_time,
+            u.user_name, u.real_name, u.sex, u.tel, u.email, u.qq, u.wx,
+                from club_member as cm left join club as c
+                    on cm.club_id = c.club_id
+                        left join user as u
+                            on cm.user_id = u.user_id
+                                <where>
+                                    <if test="user.realName != null and user.realName!=''">
+                                        and user.real_name like CONCAT('%', #{user.realName}, '%')
+                                    </if>
+                                    <if test="clubId != null">
+                                        and cm.club_id = #{clubId}
+                                    </if>
+                                    <if test="club != null">
+                                        <if test="club.captainId != null">
+                                            and club.captain_id = #{club.captainId}
+                                        </if>
+                                    </if>
+                                </where>
+    </select>
+</mapper>

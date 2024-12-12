@@ -3,7 +3,19 @@
 <mapper namespace="com.liu.club_ms.mapper.UserMapper">
     <select id="queryUserList"
             resultType="com.liu.club_ms.model.User">
-        SELECT user_id, user_name, password, real_name, sex, tel, email, qq, wx, image, type, create_time from user
+        SELECT user_id,
+               user_name,
+               password,
+               real_name,
+               sex,
+               tel,
+               email,
+               qq,
+               wx,
+               image,
+               type,
+               create_time
+        FROM user
     </select>
 
 <!--  社团页面查询数据  -->
