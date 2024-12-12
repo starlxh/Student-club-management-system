@@ -21,7 +21,8 @@
 
     <select id="queryNoticeList"
             resultMap="queryNoticeListMap">
-        SELECT n.content,
+        SELECT n.notice_id,
+        n.content,
         n.title,
         n.user_id,
         n.create_time,

@@ -16,9 +16,16 @@ public class ActivityServiceImpl implements ActivityService {
     ActivityMapper activityMapper;
 
     @Override
-    public PageInfo<Activity> queryActivityList(int page, int limit, String name, String tel, Integer captainId) {
+    public PageInfo<Activity> queryActivityList(int page, int limit,
+                                                String name,
+                                                String creatorName,
+                                                Integer clubId,
+                                                Integer captainId) {
         PageHelper.startPage(page, limit);
-        List<Activity> activityList = activityMapper.queryActivityInfoList(name, tel, captainId);
+        List<Activity> activityList = activityMapper.queryActivityInfoList(name,
+                creatorName,
+                clubId,
+                captainId);
         return new PageInfo<>(activityList);
     }
 

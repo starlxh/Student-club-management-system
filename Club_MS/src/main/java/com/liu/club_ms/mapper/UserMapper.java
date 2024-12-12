@@ -17,4 +17,6 @@ public interface UserMapper extends BaseMapper<User> {
 
 //  根据用户名,密码,类型
     User queryUserByNamePwdType(User admin);
+
+    int emailIsExist(String email);
 }

@@ -14,4 +14,6 @@ public interface UserService extends IService<User> {
 
     /*用于分页查询或者高级查询社团信息*/
     PageInfo<User> queryUserList(Integer page, Integer limit, User user);
+    //查询邮箱是否存在
+    boolean emailIsExist(String email);
 }

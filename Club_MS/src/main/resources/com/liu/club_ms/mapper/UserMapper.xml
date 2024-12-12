@@ -32,4 +32,11 @@
           and user_name = #{userName}
           and password = #{password}
     </select>
+<!-- 检查邮箱是否存在 -->
+    <select id="emailIsExist"
+            resultType="int">
+        SELECT user_id
+        FROM user
+        WHERE user.email = #{email}
+    </select>
 </mapper>
