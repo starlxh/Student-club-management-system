@@ -70,19 +70,47 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
+  // 前台前端页面的路由配置
   {
     path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-      }
-    ]
+    component: () => import('@/views/main/index'),
+    hidden: true
   },
+  {
+    path: '/teamlist',
+    component: () => import('@/views/pages/teamlist/index'),
+    hidden: true
+  },
+
+  {
+    path: '/teaminfo',
+    component: () => import('@/views/pages/pageinfo/index'),
+    hidden: true
+  },
+  {
+    path: '/myteam',
+    component: () => import('@/views/pages/myteam/index'),
+    hidden: true
+  },
+
+  {
+    path: '/leave',
+    component: () => import('@/views/pages/leave/index'),
+    hidden: true
+  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -128,14 +156,13 @@ export const constantRoutes = [
     redirect: '/users/index',
     children: [
       {
-        path: 'index',
+        path: 'users/index',
         component: () => import('@/views/users/index'),
         name: 'Users',
         meta: {
           title: '用户信息管理',
           icon: 'people',
-          noCache: true,
-          role: ['super']
+          noCache: true
         }
       }
     ]
@@ -154,14 +181,14 @@ export const asyncRoutes = [
     redirect: '/category/index',
     children: [
       {
-        path: 'index',
+        path: 'category/index',
         component: () => import('@/views/category/index'),
         name: 'Category',
         meta: {
           title: '社团类型管理',
           icon: 'list',
           noCache: true,
-          roles: ['Super']
+          roles: ['Super', 'Admin']
         }
       }
     ]
@@ -172,7 +199,7 @@ export const asyncRoutes = [
     redirect: '/club/index',
     children: [
       {
-        path: 'index',
+        path: 'club/index',
         component: () => import('@/views/club/index'),
         name: 'Club',
         meta: {
@@ -190,47 +217,11 @@ export const asyncRoutes = [
     redirect: '/apply/index',
     children: [
       {
-        path: 'index',
+        path: 'apply/index',
         component: () => import('@/views/apply/index'),
         name: 'Apply',
         meta: {
           title: '社团申请管理',
-          icon: 'form',
-          noCache: true,
-          roles: ['Super', 'Admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/membership',
-    component: Layout,
-    redirect: '/membership/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/membership/index'),
-        name: 'Membership',
-        meta: {
-          title: '社团成员管理',
-          icon: 'form',
-          noCache: true,
-          roles: ['Super', 'Admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/activity',
-    component: Layout,
-    redirect: '/activity/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/activity/index'),
-        name: 'Activity',
-        meta: {
-          title: '社团活动管理',
           icon: 'form',
           noCache: true,
           roles: ['Super', 'Admin']

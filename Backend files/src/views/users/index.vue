@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>社团在线会议Demo</h1>
-    <div id="meet" style="height: 500px;"></div>
+    <div id="meet" style="height: 500px;" />
   </div>
 </template>
 
