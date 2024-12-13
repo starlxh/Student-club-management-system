@@ -454,11 +454,15 @@ export default {
   margin-left: 10px;
 }
 
+.apply-form {
+  max-width: 800px;
+  margin: auto
+}
+
 @media (min-width: 1660px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
-    margin: 0px 50px
   }
 
   .apply-text {

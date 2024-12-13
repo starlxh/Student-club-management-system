@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="活动名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.creatorName" placeholder="活动创建者名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
       </el-select>
@@ -9,7 +10,7 @@
         查询
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加社团成员
+        添加社团活动
       </el-button>
     </div>
 
@@ -23,44 +24,49 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="clubMemberId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="activityId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.clubMemberId }}</span>
+          <span>{{ row.activityId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="真实姓名" width="150px" align="center">
+      <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.realName }}</span>
+          <span>{{ row.images }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别" width="50px" align="center">
+      <el-table-column label="活动名称" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.sex }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="电话" min-width="150px" align="center">
+      <el-table-column label="活动地址" width="50px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.tel }}</span>
+          <span>{{ row.acAddress }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" min-width="250px" align="center">
+      <el-table-column label="创建者" min-width="250px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.email }}</span>
+          <span>{{ row.creatorName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="社团Id" width="120px" align="center">
+      <el-table-column label="主持人" width="120px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.clubId }}</span>
+          <span>{{ row.hostName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="社团名称" min-width="150px" align="center">
+      <el-table-column label="活动时间" min-width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.clubName }}</span>
+          <span>{{ row.acTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="入团时间" min-width="200px" align="center">
+      <el-table-column label="详情" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.joinTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.acInfo }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.status }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
@@ -169,7 +175,7 @@ export default {
   directives: { waves },
   data() {
     return {
-      baseUrl: 'clubMember/',
+      baseUrl: 'activity/',
       tableKey: 0,
       list: null,
       clubList: null,
@@ -178,7 +184,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        realName: undefined,
+        name: undefined,
+        creatorName: undefined,
         clubId: undefined
       },
       importanceOptions: [1, 2, 3],
@@ -221,7 +228,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryClubMemberList', { params: this.listQuery }).then(res => {
+      request.get(this.baseUrl + 'queryActivityList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
@@ -391,36 +398,40 @@ export default {
 }
 </script>
 
-<style scoped>
-.filter-container .filter-item {
-  margin-left: 10px;
-}
-
-.form-select {
-  max-width: 305px;
-}
-
-.form-timestamp {
-  width: inherit;
-  max-width: 305px;
-}
-
-@media (min-width: 1660px) {
-  .membership-form {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0px 50px
+  <style scoped>
+  .filter-container .filter-item {
+    margin-left: 10px;
   }
-}
 
-@media (max-width: 1660px) {
-  .membership-form {
-    text-align: center;
+  .form-select {
+    max-width: 305px;
+  }
+
+  .form-timestamp {
+    width: inherit;
+    max-width: 305px;
   }
 
   .membership-form {
-    text-align: center;
+    width: inherit;
+    max-width: 305px;
   }
-}
 
-</style>
+  @media (min-width: 1660px) {
+    .membership-form {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 1660px) {
+    .membership-form {
+      text-align: center;
+    }
+
+    .membership-form {
+      text-align: center;
+    }
+  }
+
+  </style>

@@ -6,7 +6,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         新建社团类型
       </el-button>
 
