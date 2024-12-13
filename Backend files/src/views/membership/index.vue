@@ -55,7 +55,7 @@
       </el-table-column>
       <el-table-column label="社团名称" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.clubName }}</span>
+          <span>{{ row.club.clubName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="入团时间" min-width="200px" align="center">
@@ -78,7 +78,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
-      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
+      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="membership-form">
         <el-form-item label="真实姓名">
           <el-input v-model="temp.user.realName" readonly :disabled="formDisabled" />
         </el-form-item>
@@ -88,11 +88,9 @@
         <el-form-item label="性别">
           <el-input v-model="temp.user.sex" readonly :disabled="formDisabled" />
         </el-form-item>
-        <el-form-item v-if="dialogStatus==='detail'" label="所属社团">
-          <el-input v-model="temp.clubName" readonly />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='update'" label="所属社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+        <el-form-item label="所属社团" prop="clubId">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.club.clubName" readonly />
+          <el-select v-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
@@ -117,7 +115,7 @@
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
@@ -159,7 +157,6 @@
 <script>
 import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
 
@@ -261,7 +258,7 @@ export default {
       this.dialogCreateFormVisible = true
       this.placeholder = ''
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+        this.$refs['createForm'].clearValidate()
       })
     },
     createData() {
@@ -360,29 +357,6 @@ export default {
         this.dialogPvVisible = true
       })
     },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
@@ -405,11 +379,15 @@ export default {
   max-width: 305px;
 }
 
+.membership-form {
+  max-width: 800px;
+  margin: auto;
+}
+
 @media (min-width: 1660px) {
   .membership-form {
     display: flex;
     flex-wrap: wrap;
-    margin: 0px 50px
   }
 }
 

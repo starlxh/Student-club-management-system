@@ -201,8 +201,8 @@
         <el-button @click="dialogFormDetailVisible = false">
           关闭
         </el-button>
-        <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
-          进行审核
+        <el-button v-if="temp.status === 0" type="primary" @click="handleCheck(temp)">
+          审核
         </el-button>
       </div>
     </el-dialog>
