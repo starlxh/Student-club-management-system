@@ -266,6 +266,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/leave',
+    component: Layout,
+    redirect: '/leave/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/leave/index'),
+        name: 'Leave',
+        meta: {
+          title: '在线留言管理',
+          icon: 'message',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

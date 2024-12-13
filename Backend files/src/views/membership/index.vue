@@ -395,10 +395,6 @@ export default {
   .membership-form {
     text-align: center;
   }
-
-  .membership-form {
-    text-align: center;
-  }
 }
 
 </style>
