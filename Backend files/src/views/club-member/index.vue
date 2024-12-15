@@ -393,10 +393,7 @@ export default {
 
 @media (max-width: 1660px) {
   .membership-form {
-<<<<<<< HEAD
     text-align: inherit;
-=======
->>>>>>> origin/main
   }
 }
 
