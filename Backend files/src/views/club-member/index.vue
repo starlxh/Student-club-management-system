@@ -396,7 +396,6 @@ export default {
 <<<<<<< HEAD
     text-align: inherit;
 =======
-    text-align: center;
 >>>>>>> origin/main
   }
 }
