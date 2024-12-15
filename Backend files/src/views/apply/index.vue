@@ -201,13 +201,8 @@
         <el-button @click="dialogFormDetailVisible = false">
           关闭
         </el-button>
-<<<<<<< HEAD
         <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
           进行审核
-=======
-        <el-button v-if="temp.status === 0" type="primary" @click="handleCheck(temp)">
-          审核
->>>>>>> origin/main
         </el-button>
       </div>
     </el-dialog>
@@ -222,7 +217,6 @@
         label-width="80px"
         class="apply-form"
       >
-<<<<<<< HEAD
         <el-form-item label="真实姓名" prop="categoryName">
           <el-input v-model="temp.user.realName" readonly />
         </el-form-item>
@@ -256,45 +250,6 @@
           拒绝
         </el-button>
         <el-button type="success">
-=======
-        <el-form-item label="真实姓名">
-          <el-input v-model="temp.user.realName" readonly disabled />
-        </el-form-item>
-
-        <el-form-item label="申请社团">
-          <el-input v-model="temp.club.clubName" readonly disabled placeholder="无" />
-        </el-form-item>
-
-        <el-form-item label="创建时间">
-          <el-input v-model="temp.createTime" readonly disabled />
-        </el-form-item>
-
-        <el-form-item label="性别">
-          <el-input v-model="temp.user.sex" readonly disabled />
-        </el-form-item>
-
-        <el-form-item label="电话">
-          <el-input v-model="temp.user.tel" readonly placeholder="无" disabled />
-        </el-form-item>
-
-        <el-form-item label="邮箱">
-          <el-input v-model="temp.user.email" readonly placeholder="无" disabled />
-        </el-form-item>
-
-        <el-form-item label="申请内容">
-          <el-input v-model="temp.text" type="textarea" :autosize="{ maxRows: 6 }" resize="none" readonly disabled placeholder="无" class="apply-text" />
-        </el-form-item>
-
-        <el-form-item label="审核意见" prop="content">
-          <el-input v-model="temp.content" type="textarea" :autosize="{ maxRows: 8 }" resize="none" placeholder="请输入审核意见" class="apply-text" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handleJudge(2)">
-          拒绝
-        </el-button>
-        <el-button type="success" @click="handleJudge(1)">
->>>>>>> origin/main
           通过
         </el-button>
       </div>
@@ -495,16 +450,7 @@ export default {
   margin-left: 10px;
 }
 
-<<<<<<< HEAD
 @media (min-width: 1200px) {
-=======
-.apply-form {
-  max-width: 800px;
-  margin: auto
-}
-
-@media (min-width: 1660px) {
->>>>>>> origin/main
   .apply-form {
     display: flex;
     flex-wrap: wrap;
