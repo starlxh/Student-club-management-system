@@ -161,7 +161,7 @@ export const constantRoutes = [
         name: 'Users',
         meta: {
           title: '用户信息管理',
-          icon: 'people',
+          icon: 'el-icon-user-solid',
           noCache: true
         }
       }
@@ -204,7 +204,7 @@ export const asyncRoutes = [
         name: 'Club',
         meta: {
           title: '社团信息管理',
-          icon: 'peoples',
+          icon: 'form',
           noCache: true,
           roles: ['Super', 'Admin']
         }
@@ -240,7 +240,43 @@ export const asyncRoutes = [
         name: 'Apply',
         meta: {
           title: '社团申请管理',
-          icon: 'form',
+          icon: 'el-icon-s-claim',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/membership',
+    component: Layout,
+    redirect: '/membership/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/membership/index'),
+        name: 'Membership',
+        meta: {
+          title: '社团成员管理',
+          icon: 'peoples',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/activity/index'),
+        name: 'Activity',
+        meta: {
+          title: '社团活动管理',
+          icon: 'nested',
           noCache: true,
           roles: ['Super', 'Admin']
         }

@@ -1,0 +1,69 @@
+/* 公告区域背景 */
+/* 保证页面整体高度 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* 主体内容填充整个视口 */
+.section.announcement-section {
+    min-height: calc(100vh - 100px); /* 减去 header 和 footer 的高度 */
+    display: flex;
+    align-items: center; /* 垂直居中内容 */
+    justify-content: center; /* 水平居中内容 */
+    flex-direction: column;
+    background-size: cover; /* 背景图片铺满 */
+    background-position: center;
+}
+
+.announcement-section {
+    padding: 60px 0;
+    background-image: url('/Backend files/src/assets/images/notice.jpg'); 
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.announcement-section h2 {
+    text-align: center;
+    color: #fff; /* 更改为白色，因为背景为图片，文本需要清晰可见 */
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.announcement-item {
+    margin-bottom: 30px;
+}
+
+.announcement-card {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.7); /* 使用透明背景，确保图片依然可见 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.announcement-card:hover {
+    transform: translateY(-10px);
+}
+
+.announcement-card h4 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.announcement-card .date {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.announcement-card .content {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+}

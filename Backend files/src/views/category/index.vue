@@ -6,7 +6,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         新建社团类型
       </el-button>
 
@@ -54,13 +54,13 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="text-align: center; width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="text-align: center; max-width: 500px; margin: auto;">
         <el-form-item label="类型" prop="categoryName">
           <el-input v-model="temp.categoryName" />
         </el-form-item>
 
         <el-form-item label="备注">
-          <el-input v-model="temp.remarks" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入备注" />
+          <el-input v-model="temp.remarks" resize="none" :autosize="{ minRows: 2, maxRows: 10}" type="textarea" placeholder="请输入备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -276,6 +276,7 @@ export default {
 </script>
 
 <style scoped>
+
 .el-form >>> .el-form-item__label {
   text-align: right;
 }

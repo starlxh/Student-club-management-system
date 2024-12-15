@@ -16,7 +16,11 @@
                 <li><a href="#/teamlist">社团列表</a></li>
                 <li class="scroll-to-section"><a href="#/myteam">我的社团</a></li>
                 <li><a href="#/leave">在线留言</a></li>
+<<<<<<< HEAD
                 <li v-if="type!=2" class="scroll-to-section"><a href="#/users">后台管理</a></li>
+=======
+                <li v-if="type!=2" class="scroll-to-section"><a href="#/users/index">后台管理</a></li>
+>>>>>>> origin/main
               </ul>
               <a class="menu-trigger">
                 <span>Menu</span>
