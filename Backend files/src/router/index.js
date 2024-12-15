@@ -230,14 +230,14 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/membership',
+    path: '/club-member',
     component: Layout,
-    redirect: '/membership/index',
+    redirect: '/club-member/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/membership/index'),
-        name: 'Membership',
+        component: () => import('@/views/club-member/index'),
+        name: 'Club-member',
         meta: {
           title: '社团成员管理',
           icon: 'peoples',
@@ -261,6 +261,42 @@ export const asyncRoutes = [
           icon: 'nested',
           noCache: true,
           roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/leave',
+    component: Layout,
+    redirect: '/leave/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/leave/index'),
+        name: 'Leave',
+        meta: {
+          title: '在线留言管理',
+          icon: 'message',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
+    path: '/notice',
+    component: Layout,
+    redirect: '/notice/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/notice/index'),
+        name: 'Notice',
+        meta: {
+          title: '公告管理',
+          icon: 'el-icon-s-order',
+          noCache: true,
+          roles: ['Super']
         }
       }
     ]

@@ -235,9 +235,7 @@ export default {
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
-      temp: {
-        user: {}
-      },
+      temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
       formDisabled: false,
@@ -345,7 +343,6 @@ export default {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
       this.textMap['detail'] = '社团活动详情——' + this.temp.name
-      this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
       this.formDisabled = false
       this.placeholder = '无'
@@ -355,7 +352,6 @@ export default {
     },
     handleCheck() {
       this.dialogStatus = 'check'
-      this.dialogFormReadonly = false
       this.formDisabled = true
       this.placeholder = ''
       this.$nextTick(() => {
@@ -465,10 +461,6 @@ export default {
 
 @media (max-width: 1660px) {
   .activity-form {
-    text-align: center;
-  }
-
-  .membership-form {
     text-align: center;
   }
 
