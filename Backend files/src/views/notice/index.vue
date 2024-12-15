@@ -1,15 +1,13 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
-      </el-select>
+      <el-input v-model="listQuery.realName" placeholder="发布者名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" placeholder="公告标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加社团成员
+        发布公告
       </el-button>
     </div>
 
@@ -23,44 +21,29 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="clubMemberId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="noticeId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.clubMemberId }}</span>
+          <span>{{ row.noticeId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="真实姓名" width="150px" align="center">
+      <el-table-column label="公告标题" width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.realName }}</span>
+          <span>{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别" width="50px" align="center">
+      <el-table-column label="公告内容" min-width="250px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.sex }}</span>
+          <span>{{ row.content }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="电话" min-width="150px" align="center">
+      <el-table-column label="创建者" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.tel }}</span>
+          <span>{{ row.realName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" min-width="250px" align="center">
+      <el-table-column label="发布时间" width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.user.email }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="社团Id" width="120px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.clubId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="社团名称" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.club.clubName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="入团时间" min-width="200px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.joinTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
@@ -78,37 +61,25 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
-      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="membership-form">
-        <el-form-item label="真实姓名">
-          <el-input v-model="temp.user.realName" readonly :disabled="formDisabled" />
+      <el-form ref="dataForm" :inline="true" :rules="rules" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="100px" class="notice-form">
+        <el-form-item v-if="dialogStatus==='detail'" label="公告ID">
+          <el-input v-model="temp.noticeId" :readonly="dialogFormReadonly" />
         </el-form-item>
-        <el-form-item label="成员昵称">
-          <el-input v-model="temp.user.userName" readonly :disabled="formDisabled" />
+        <el-form-item v-if="dialogStatus==='detail'" label="创建者昵称">
+          <el-input v-model="temp.userName" readonly />
         </el-form-item>
-        <el-form-item label="性别">
-          <el-input v-model="temp.user.sex" readonly :disabled="formDisabled" />
+        <el-form-item v-if="dialogStatus==='detail'" label="创建者姓名">
+          <el-input v-model="temp.realName" readonly />
         </el-form-item>
-        <el-form-item label="所属社团" prop="clubId">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.club.clubName" readonly />
-          <el-select v-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
-            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
-          </el-select>
+        <el-form-item label="发布时间" prop="createTime">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" :readonly="dialogFormReadonly" />
+          <el-date-picker v-else v-model="temp.createTime" type="datetime" placeholder="请选择活动时间" class="form-timestamp" />
         </el-form-item>
-        <el-form-item label="入团时间" prop="joinTime">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.joinTime" readonly />
-          <el-date-picker v-else v-model="temp.joinTime" type="datetime" placeholder="Please pick a date" class="form-timestamp" />
+        <el-form-item v-if="dialogStatus==='update'" label="公告标题" prop="title">
+          <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="temp.user.tel" readonly :placeholder="placeholder" :disabled="formDisabled" />
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="temp.user.email" readonly :placeholder="placeholder" :disabled="formDisabled" />
-        </el-form-item>
-        <el-form-item label="QQ">
-          <el-input v-model="temp.user.qq" readonly :placeholder="placeholder" :disabled="formDisabled" />
-        </el-form-item>
-        <el-form-item label="微信">
-          <el-input v-model="temp.user.wx" readonly :placeholder="placeholder" :disabled="formDisabled" />
+        <el-form-item label="公告内容" prop="content">
+          <el-input v-model="temp.content" :autosize="{ minRows: 4, maxRows: 16 }" type="textarea" resize="none" :readonly="dialogFormReadonly" class="notice-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -122,14 +93,12 @@
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
-      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
-        <el-form-item label="成员Id" prop="userId">
-          <el-input v-model.number="temp.userId" />
+      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="notice-form">
+        <el-form-item label="公告标题" prop="title">
+          <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
         </el-form-item>
-        <el-form-item label="社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
-            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
-          </el-select>
+        <el-form-item label="公告内容" prop="content">
+          <el-input v-model="temp.content" :autosize="{ minRows: 4, maxRows: 16 }" type="textarea" resize="none" class="notice-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -137,7 +106,7 @@
           关闭
         </el-button>
         <el-button type="primary" @click="createData()">
-          添加
+          发布
         </el-button>
       </div>
     </el-dialog>
@@ -164,69 +133,67 @@ export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        0: 'primary',
+        1: 'success',
+        2: 'danger'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
-      baseUrl: 'clubMember/',
+      baseUrl: 'notice/',
       tableKey: 0,
       list: null,
-      clubList: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 10,
         realName: undefined,
-        clubId: undefined
+        title: undefined
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
-      temp: {
-        user: {}
-      },
+      temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
-      formDisabled: false,
+      dialogFormReadonly: true,
       dialogStatus: '',
       textMap: {
-        detail: '社团成员详情',
-        update: '修改社团成员详情',
-        create: '添加社团成员'
+        detail: '',
+        update: '修改公告',
+        create: '发布公告'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
-        joinTime: [{ required: true, message: '入团时间不能为空', trigger: 'blur' }]
+        createTime: [{ required: true, message: '发布时间不能为空', trigger: 'blur' }],
+        title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
+        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
       },
       createRules: {
-        userId: [
-          { required: true, message: '成员Id不能为空', trigger: 'blur' },
-          { type: 'number', message: '成员Id必须为数字', trigger: 'blur' }
-        ],
-        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
+        title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
+        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false,
-      placeholder: '无'
+      downloadLoading: false
     }
   },
   created() {
-    this.getClubList()
     this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryClubMemberList', { params: this.listQuery }).then(res => {
+      request.get(this.baseUrl + 'queryNoticeList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
-      })
-    },
-    getClubList() {
-      request.get('club/queryClubList').then(res => {
-        this.clubList = res.data
       })
     },
     handleFilter() {
@@ -256,7 +223,6 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogCreateFormVisible = true
-      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['createForm'].clearValidate()
       })
@@ -264,14 +230,14 @@ export default {
     createData() {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          this.temp.joinTime = new Date().toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addClubMember', JSON.parse(JSON.stringify(this.temp, ['userId', 'joinTime', 'clubId']))).then(
+          this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'addNotice', JSON.parse(JSON.stringify(this.temp, ['title', 'content', 'createTime']))).then(
             res => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
-                  message: '添加社团成员成功！',
+                  message: '发布公告成功！',
                   type: 'success',
                   duration: 2000
                 })
@@ -279,7 +245,7 @@ export default {
               } else {
                 this.$notify({
                   title: '失败',
-                  message: '添加社团成员失败！',
+                  message: '发布公告失败！',
                   type: 'fail',
                   duration: 2000
                 })
@@ -291,11 +257,9 @@ export default {
     handleDetail(row) {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = '社团成员详情——' + this.temp.user.realName
+      this.textMap['detail'] = this.temp.title
       this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
-      this.formDisabled = false
-      this.placeholder = '无'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -303,8 +267,6 @@ export default {
     handleUpdate() {
       this.dialogStatus = 'update'
       this.dialogFormReadonly = false
-      this.formDisabled = true
-      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -312,14 +274,14 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.joinTime = new Date(this.temp.joinTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editClubMember', JSON.parse(JSON.stringify(this.temp, ['clubMemberId', 'joinTime', 'clubId']))).then(
+          this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'editNotice', JSON.parse(JSON.stringify(this.temp, ['noticeId', 'title', 'content', 'createTime']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
-                  message: '编辑社团类型成功！',
+                  message: '编辑公告成功！',
                   type: 'success',
                   duration: 2000
                 })
@@ -327,7 +289,7 @@ export default {
               } else {
                 this.$notify({
                   title: '失败',
-                  message: '编辑社团类型失败！',
+                  message: '编辑公告失败！',
                   type: 'fail',
                   duration: 2000
                 })
@@ -337,12 +299,12 @@ export default {
       })
     },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteById?clubMemberId=' + row.clubMemberId).then(
+      request.delete(this.baseUrl + 'deleteById?noticeId=' + row.noticeId).then(
         res => {
           if (res.code === 20000) {
             this.$notify({
               title: '成功',
-              message: '删除社团成员成功！',
+              message: '删除社团活动成功！',
               type: 'success',
               duration: 2000
             })
@@ -357,6 +319,21 @@ export default {
         this.dialogPvVisible = true
       })
     },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isRtype) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isRtype && isLt2M
+    },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
@@ -370,35 +347,34 @@ export default {
   margin-left: 10px;
 }
 
-.form-select {
-  max-width: 305px;
-}
-
 .form-timestamp {
   width: inherit;
   max-width: 305px;
 }
 
-.membership-form {
-  max-width: 800px;
+.notice-form {
+  max-width: 840px;
   margin: auto;
 }
 
 @media (min-width: 1660px) {
-  .membership-form {
+  .notice-form {
     display: flex;
     flex-wrap: wrap;
+  }
+
+  .notice-text {
+    width: 720px;
   }
 }
 
 @media (max-width: 1660px) {
-  .membership-form {
-<<<<<<< HEAD
-    text-align: inherit;
-=======
+  .notice-form {
     text-align: center;
->>>>>>> origin/main
+  }
+
+  .notice-text {
+    width: 305px;
   }
 }
-
 </style>
