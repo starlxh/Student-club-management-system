@@ -230,14 +230,14 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/membership',
+    path: '/club-member',
     component: Layout,
-    redirect: '/membership/index',
+    redirect: '/club-member/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/membership/index'),
-        name: 'Membership',
+        component: () => import('@/views/club-member/index'),
+        name: 'Club-member',
         meta: {
           title: '社团成员管理',
           icon: 'peoples',
