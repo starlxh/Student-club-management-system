@@ -10,8 +10,8 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <h6>获取所有详细信息</h6>
-            <h2>在线教学工具</h2>
+            <h6>或许这里就有你心仪的社团</h6>
+            <h2>社团列表</h2>
           </div>
         </div>
       </div>
@@ -27,19 +27,18 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="row grid">
-
-                  <div v-for="team in teamList" :key="team.id" class="col-lg-4 templatemo-item-col all soon">
+                  <div v-for="club in clubList" :key="club.clubId" class="col-lg-4 templatemo-item-col all soon">
                     <div class="meeting-item">
                       <div class="thumb">
                         <!-- <a href="#/teaminfo"><img :src="team.images" width="200px" height="200px" alt=""></a>-->
-                        <router-link :to="{path:'/teaminfo',query:{teamId:team.id}}"><img :src="team.images" width="200px" height="200px" alt=""></router-link>
+                        <router-link :to="{path:'/teaminfo',query:{clubId:club.clubId}}"><img :src="club.images" width="200px" height="200px" alt=""></router-link>
                       </div>
                       <div class="down-content">
                         <div class="date">
                           <h6>Nov </h6>
                         </div>
-                        <h4>{{ team.name }}</h4>
-                        <p>社长：{{ team.userInfo.username }}</p>
+                        <h4>{{ club.clubName }}</h4>
+                        <p>社长：{{ club.captainName }}</p>
                       </div>
                     </div>
                   </div>
@@ -73,7 +72,7 @@ export default {
   // 初始数据
   data() {
     return {
-      teamList: []
+      clubList: []
     }
   },
 
@@ -91,7 +90,7 @@ export default {
         method: 'get',
         params: ''
       }).then(res => {
-        this.teamList = res.data
+        this.clubList = res.data
       })
     }
   }

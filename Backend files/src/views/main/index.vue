@@ -9,7 +9,7 @@
     <!-- ***** Main Banner Area Start ***** -->
     <section id="top" class="section main-banner" data-section="section1">
       <video id="bg-video" autoplay muted loop>
-        <source src="@/assets/images/course-video.mp4" type="video/mp4">
+        <source src="@/assets/images/club-video.mp4" type="video/mp4">
       </video>
 
       <div class="video-overlay header-text">

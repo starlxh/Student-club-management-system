@@ -16,6 +16,7 @@ router.beforeEach(async(to, from, next) => {
   // set page title
   document.title = getPageTitle(to.meta.title)
 
+
   // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {
@@ -39,7 +40,7 @@ router.beforeEach(async(to, from, next) => {
 
           // 动态添加可访问的路由图
           router.addRoutes(accessRoutes)
-
+           
           // hack method 确保在调用 addRoutes 后完成动态路由添加
           // 通过设置 replace: true，跳转到同一路由，但不会在历史记录中留下痕迹
           next({ ...to, replace: true })

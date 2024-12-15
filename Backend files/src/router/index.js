@@ -212,6 +212,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/clubmember',
+    component: Layout,
+    redirect: '/clubmember/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/clubmember/index'),
+        name: 'Clubmember',
+        meta: {
+          title: '社团成员管理',
+          icon: 'peoples',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/apply',
     component: Layout,
     redirect: '/apply/index',

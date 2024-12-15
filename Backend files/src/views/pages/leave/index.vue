@@ -152,7 +152,7 @@ export default {
           debugger
           // 向后端发送请求，实现添加功能
           request.post('leaveinfo/addInfo', this.temp).then(res => {
-            if (res.code === 20000) {
+            if (res.code == 20000) {
               // 关闭弹出框
               this.temp.content = ''
               this.$refs.dataForm.resetFields()// 清空所有的表单信息
