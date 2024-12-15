@@ -37,4 +37,9 @@ public class UserServiceImpl
         List<User> list = userMapper.queryUserList();
         return new PageInfo<>(list);
     }
+
+    @Override
+    public boolean emailIsExist(String email) {
+        return userMapper.emailIsExist(email) > 0;
+    }
 }

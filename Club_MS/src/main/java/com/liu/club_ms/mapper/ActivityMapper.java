@@ -8,7 +8,10 @@ import java.util.List;
 @Mapper
 public interface ActivityMapper {
     // 高级查询
-    List<Activity> queryActivityInfoList(String name, String tel, Integer captainId);
+    List<Activity> queryActivityInfoList(String name,
+                                         String creatorName,
+                                         Integer clubId,
+                                         Integer captainId);
 
     //编辑活动状态
     Integer editStatusById(Integer status, Integer activityId);

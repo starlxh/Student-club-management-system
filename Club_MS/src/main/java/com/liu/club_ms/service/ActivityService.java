@@ -7,7 +7,8 @@ public interface ActivityService {
     // 高级查询
     PageInfo<Activity> queryActivityList(int page, int limit,
                                          String name,
-                                         String tel,
+                                         String creatorName,
+                                         Integer clubId,
                                          Integer captainId);
 
     //编辑活动状态

@@ -31,13 +31,15 @@ public class ActivityController {
             activityPageInfo = activityService.queryActivityList(page,
                     limit,
                     activity.getName(),
-                    activity.getTel(),
+                    activity.getCreatorName(),
+                    activity.getClubId(),
                     userId);
         } else {
             activityPageInfo = activityService.queryActivityList(page,
                     limit,
                     activity.getName(),
-                    activity.getTel(),
+                    activity.getCreatorName(),
+                    activity.getClubId(),
                     null);
         }
 
@@ -63,8 +65,11 @@ public class ActivityController {
     }
 
     @PostMapping("/addActivity")
-    public Response addActivity(@RequestBody Activity activity){
-
+    public Response addActivity(@RequestBody Activity activity,
+                                HttpServletRequest request){
+        String token = request.getHeader("token");
+        Integer userId = JWUtil.getUserId(token);
+        activity.setUserId(userId);
 
         if(activityService.addActivity(activity)){
             return Response.ok();

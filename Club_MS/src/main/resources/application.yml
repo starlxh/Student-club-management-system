@@ -9,8 +9,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 465
-    username: 859249463@qq.com
-    password: nchxwowzbpvubbeh
+    username: studentclubmanager@qq.com
+    password: tqwhqiedhgfocjca
     protocol: smtp
     properties:
       mail:
@@ -24,7 +24,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/club_ms?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/club_ms?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
     password: LiuWanJia
   data:

@@ -27,7 +27,7 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendCaptcha(String to, String subject, String captcha) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("859249463@qq.com"); // 发件人
+        message.setFrom("studentclubmanager@qq.com"); // 发件人
         message.setTo(to);                   // 收件人
         message.setSubject(subject);         // 邮件标题
         message.setText("您的验证码是：" + captcha + "，请在5分钟内完成验证。"); // 邮件内容

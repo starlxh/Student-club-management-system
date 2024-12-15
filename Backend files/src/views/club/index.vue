@@ -19,7 +19,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
         新建社团
       </el-button>
     </div>
@@ -100,8 +100,8 @@
         :rules="rules"
         :model="temp"
         label-position="left"
-        label-width="80px"
-        style="width: 400px; margin-left:50px;"
+        label-width="100px"
+        style="width: 400px; margin: auto;"
       >
         <el-form-item label="社团名称" prop="clubName">
           <el-input v-model="temp.clubName" />
@@ -131,6 +131,7 @@
             v-model="temp.createTime"
             type="datetime"
             placeholder="请填写"
+            class="form-timestamp"
           />
         </el-form-item>
 
@@ -208,7 +209,8 @@ export default {
         page: 1,
         limit: 10,
         clubName: undefined,
-        categoryId: undefined
+        categoryId: undefined,
+        order: 'ASC'
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: [{ id: 0, value: '禁用' },
@@ -282,15 +284,15 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'id') {
+      if (prop === 'clubId') {
         this.sortByID(order)
       }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.order = 'DESC'
       }
       this.handleFilter()
     },
@@ -416,6 +418,15 @@ export default {
 
 .filter-container .filter-item {
   margin-left: 10px;
+}
+
+.form-select {
+  width: 400px;
+}
+
+.form-timestamp {
+  width: inherit;
+  max-width: 305px;
 }
 
   .avatar-uploader >>> .el-upload {

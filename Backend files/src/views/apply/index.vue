@@ -150,8 +150,8 @@
           <el-input v-model="tempStatus" readonly />
         </el-form-item>
 
-        <el-form-item label="申请内容" class="apply-content">
-          <el-input v-model="temp.content" type="textarea" readonly placeholder="无" />
+        <el-form-item label="申请内容">
+          <el-input v-model="temp.text" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
         </el-form-item>
       </el-form>
 
@@ -198,11 +198,11 @@
         >暂无审核记录</span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
-          进行审核
-        </el-button>
         <el-button @click="dialogFormDetailVisible = false">
           关闭
+        </el-button>
+        <el-button v-if="temp.status === 0" type="primary" @click="handleCheck(temp)">
+          审核
         </el-button>
       </div>
     </el-dialog>
@@ -218,39 +218,43 @@
         class="apply-form"
       >
         <el-form-item label="真实姓名">
-          <el-input v-model="temp.user.realName" readonly />
+          <el-input v-model="temp.user.realName" readonly disabled />
         </el-form-item>
 
         <el-form-item label="申请社团">
-          <el-input v-model="temp.club.clubName" readonly placeholder="无" />
+          <el-input v-model="temp.club.clubName" readonly disabled placeholder="无" />
         </el-form-item>
 
         <el-form-item label="创建时间">
-          <el-input v-model="temp.createTime" readonly />
+          <el-input v-model="temp.createTime" readonly disabled />
         </el-form-item>
 
         <el-form-item label="性别">
-          <el-input v-model="temp.user.sex" readonly />
+          <el-input v-model="temp.user.sex" readonly disabled />
         </el-form-item>
 
         <el-form-item label="电话">
-          <el-input v-model="temp.user.tel" readonly placeholder="无" />
+          <el-input v-model="temp.user.tel" readonly placeholder="无" disabled />
         </el-form-item>
 
         <el-form-item label="邮箱">
-          <el-input v-model="temp.user.email" readonly placeholder="无" />
+          <el-input v-model="temp.user.email" readonly placeholder="无" disabled />
         </el-form-item>
 
         <el-form-item label="申请内容">
-          <el-input v-model="temp.content" readonly placeholder="无" class="apply-text" />
+          <el-input v-model="temp.text" type="textarea" :autosize="{ maxRows: 6 }" resize="none" readonly disabled placeholder="无" class="apply-text" />
+        </el-form-item>
+
+        <el-form-item label="审核意见" prop="content">
+          <el-input v-model="temp.content" type="textarea" :autosize="{ maxRows: 8 }" resize="none" placeholder="请输入审核意见" class="apply-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="success">
-          通过
-        </el-button>
-        <el-button type="danger" @click="dialogFormCheckVisible = false">
+        <el-button type="danger" @click="handleJudge(2)">
           拒绝
+        </el-button>
+        <el-button type="success" @click="handleJudge(1)">
+          通过
         </el-button>
       </div>
     </el-dialog>
@@ -320,7 +324,9 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-
+        content: [
+          { required: true, message: '请输入审核意见', trigger: 'blur' }
+        ]
       },
       downloadLoading: false
     }
@@ -349,6 +355,10 @@ export default {
           params: this.listQuery
         }).then(res => {
         this.list = res.data
+        this.list.forEach(item => {
+          item.text = item.content
+          item.content = ''
+        })
         this.total = res.total
         this.listLoading = false
       })
@@ -391,13 +401,42 @@ export default {
       this.dialogFormDetailVisible = false
       this.dialogFormCheckVisible = true
     },
+    handleJudge(status) {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.temp.status = status
+          this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'judge', JSON.parse(JSON.stringify(this.temp, ['applyInfoId', 'content', 'status', 'createTime']))).then(
+            res => {
+              this.dialogDetailFormVisible = false
+              if (res.code === 20000) {
+                this.$notify({
+                  title: '成功',
+                  message: '社团申请审核成功！',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+                this.dialogFormCheckVisible = false
+              } else {
+                this.$notify({
+                  title: '失败',
+                  message: '社团申请审核失败！',
+                  type: 'fail',
+                  duration: 2000
+                })
+              }
+            })
+        }
+      })
+    },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteById?categoryId=' + row.categoryId).then(
+      request.delete(this.baseUrl + 'deleteById?categoryId=' + row.applyInfoId).then(
         res => {
           if (res.code === 20000) {
             this.$notify({
               title: '成功',
-              message: '删除社团类型成功！',
+              message: '删除社团申请成功！',
               type: 'success',
               duration: 2000
             })
@@ -415,11 +454,15 @@ export default {
   margin-left: 10px;
 }
 
+.apply-form {
+  max-width: 800px;
+  margin: auto
+}
+
 @media (min-width: 1660px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
-    margin: 0px 50px
   }
 
   .apply-text {

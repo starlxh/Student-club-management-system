@@ -2,7 +2,6 @@ package com.liu.club_ms.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.jwt.JWUtil;
-import com.liu.club_ms.model.LeaveInfo;
 import com.liu.club_ms.model.Notice;
 import com.liu.club_ms.service.NoticeService;
 import com.liu.club_ms.util.Response;

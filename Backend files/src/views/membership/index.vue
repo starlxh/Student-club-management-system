@@ -55,7 +55,7 @@
       </el-table-column>
       <el-table-column label="社团名称" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.clubName }}</span>
+          <span>{{ row.club.clubName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="入团时间" min-width="200px" align="center">
@@ -78,7 +78,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
-      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" label-position="right" label-width="80px" class="membership-form">
+      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="membership-form">
         <el-form-item label="真实姓名">
           <el-input v-model="temp.user.realName" readonly :disabled="formDisabled" />
         </el-form-item>
@@ -88,11 +88,9 @@
         <el-form-item label="性别">
           <el-input v-model="temp.user.sex" readonly :disabled="formDisabled" />
         </el-form-item>
-        <el-form-item v-if="dialogStatus==='detail'" label="所属社团">
-          <el-input v-model="temp.clubName" readonly />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='update'" label="所属社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+        <el-form-item label="所属社团" prop="clubId">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.club.clubName" readonly />
+          <el-select v-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
@@ -114,11 +112,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogStatus==='detail'?handleUpdate():updateData()">
-          {{ dialogStatus==='detail'?'修改':'提交' }}
-        </el-button>
         <el-button @click="dialogDetailFormVisible = false">
           关闭
+        </el-button>
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+          {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
     </el-dialog>
@@ -135,11 +133,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="createData()">
-          添加
-        </el-button>
         <el-button @click="dialogCreateFormVisible = false">
           关闭
+        </el-button>
+        <el-button type="primary" @click="createData()">
+          添加
         </el-button>
       </div>
     </el-dialog>
@@ -159,102 +157,28 @@
 <script>
 import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
-
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
   data() {
     return {
       baseUrl: 'clubMember/',
       tableKey: 0,
-      //   list: null,
-      list: [{
-        clubMemberId: 1,
-        userId: 1,
-        joinTime: '2019-01-01 12:00:00',
-        clubId: 1,
-        clubName: '传统派',
-        user: {
-          userName: '芙蓉王',
-          realName: '王源',
-          sex: '男',
-          tel: '13800138000',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }, {
-        clubMemberId: 2,
-        userId: 2,
-        joinTime: '2019-01-02 12:00:00',
-        clubId: 2,
-        clubName: '维新派',
-        user: {
-          userName: '礼堂王',
-          realName: '丁真',
-          sex: '男',
-          tel: '13800138001',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }, {
-        clubMemberId: 3,
-        userId: 3,
-        joinTime: '2019-01-03 12:00:00',
-        clubId: 2,
-        clubName: '维新派',
-        user: {
-          userName: '说的道莉',
-          realName: '道莉',
-          sex: '女',
-          tel: '13800138002',
-          email: '123456@qq.com',
-          qq: '123456',
-          wx: '123456'
-        }
-      }],
+      list: null,
       clubList: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         realName: undefined,
         clubId: undefined
       },
       importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
@@ -289,6 +213,7 @@ export default {
   },
   created() {
     this.getClubList()
+    this.getList()
   },
   methods: {
     getList() {
@@ -333,7 +258,7 @@ export default {
       this.dialogCreateFormVisible = true
       this.placeholder = ''
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+        this.$refs['createForm'].clearValidate()
       })
     },
     createData() {
@@ -432,29 +357,6 @@ export default {
         this.dialogPvVisible = true
       })
     },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
@@ -477,21 +379,25 @@ export default {
   max-width: 305px;
 }
 
-@media (min-width: 1860px) {
+.membership-form {
+  max-width: 800px;
+  margin: auto;
+}
+
+@media (min-width: 1660px) {
   .membership-form {
     display: flex;
     flex-wrap: wrap;
-    margin: 0px 50px
   }
 }
 
-@media (max-width: 1860px) {
+@media (max-width: 1660px) {
   .membership-form {
     text-align: center;
   }
 
   .membership-form {
-    text-align: inherit;
+    text-align: center;
   }
 }
 

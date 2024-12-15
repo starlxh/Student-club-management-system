@@ -63,7 +63,11 @@ public class ApplyController {
     }
 
     @GetMapping("/judge")
-    public Response judge(@RequestBody ApplyList applyList) {
+    public Response judge(@RequestBody ApplyList applyList,
+                            HttpServletRequest request) {
+        String token = request.getHeader("token");
+        Integer userId = JWUtil.getUserId(token);
+        applyList.setAuthorId(userId);
         if (applyService.addApplyList(applyList) &&
                 applyService.editApplyInfoStatusById(
                         applyList.getStatus(),

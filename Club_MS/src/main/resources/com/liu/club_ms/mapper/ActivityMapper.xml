@@ -45,7 +45,7 @@
                 ac.host_id,
                 ac.status,
                 club.club_name as club_name
-                h.real_name as hostName,
+                h.real_name as host_name,
                 c.real_name as creator_name
             FROM activity as ac
             LEFT JOIN club ON club.club_id = activity.club_id
@@ -55,8 +55,11 @@
                 <if test="name!=null and name!=''">
                     and ac.name like CONCAT('%', #{name}, '%')
                 </if>
-                <if test="tel!=null and tel!=''">
-                    and ac.tel like CONCAT('%', #{tel}, '%')
+                <if test="creatorName!=null and creatorName!=''">
+                    and c.user_name like CONCAT('%', #{creatorName}, '%')
+                </if>
+                <if test="clubId!=null">
+                    and club.club_id = #{clubId}
                 </if>
                 <if test="userId!=null">
                     and ac.user_id =#{captainId}

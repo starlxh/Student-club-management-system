@@ -19,7 +19,13 @@
 
     <select id="queryCostListAll"
             resultMap="queryCostListAllMap">
-        SELECT cl.cost_list_id, cl.club_id, cl.name, cl.price, cl.create_time, cl.remarks, club.club_name
+        SELECT cl.cost_list_id,
+               cl.club_id,
+               cl.name,
+               cl.price,
+               cl.create_time,
+               cl.remarks,
+               club.club_name
         FROM cost_list as cl
         LEFT JOIN club
         ON cl.club_id = club.club_id
