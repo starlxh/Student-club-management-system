@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="大学社团公告">
+    <meta name="author" content="大学社团">
+    <title>大学社团公告</title>
+
+    <!-- 引用样式文件 -->
+    <link href="/Backend files/src/assets/css/notice.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Backend files/src/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/Backend files/src/assets/css/templatemo-edu-meeting.css">
+    <link rel="stylesheet" href="/Backend files/src/assets/css/owl.css">
+    <link rel="stylesheet" href="/Backend files/src/assets/css/lightbox.css">
+    <link rel="stylesheet" href="/Backend files/src/vendor/bootstrap/css/bootstrap.min.css"> 
+</head>
+
+<body>
+    <!-- Sub Header -->
+    <div class="sub-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-sm-8">
+                    <div class="left-content">
+                        <p>欢迎来到大学社团公告页面，查看最新活动和通知。</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <div class="right-icons">
+                        <ul>
+                            <li><a href="/Backend files/src/views/login/index.vue">登录</a></li>
+                            <li><a href="#">注册</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <a href="index.html" class="logo">大学社团</a>
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="/Backend files/src/views/main/index.vue" class="active">主页</a></li>
+                            <li><a href="#announcements">公告</a></li>
+                            <li><a href="#Activity">活动</a></li>
+                            <li><a href="/Backend files/src/views/pages/leave/index.vue">联系我们</a></li>
+                        </ul>
+                        <a class="menu-trigger">
+                            <span>Menu</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 公告区域 Start -->
+    <section id="announcements" class="section announcement-section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>最新公告</h2>
+            </div>
+
+            <div class="row" id="announcement-list">
+                <!-- 公告项将通过 JavaScript 动态加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>&copy; 2024 大学社团管理系统</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="Backend files/src/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="Backend files/src/assets/js/isotope.min.js"></script>
+    <script src="Backend files/src/assets/js/custom.js"></script> 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 模拟公告数据
+            const announcements = [
+                {
+                    title: "社团活动通知",
+                    date: "2024-12-10",
+                    content: "本周五将举行年终聚会，请大家准时参加，活动细节请查看社团群。"
+                },
+                {
+                    title: "招新面试安排",
+                    date: "2024-12-12",
+                    content: "社团招新面试将于下周三举行，具体时间和地点将在社团群内发布。"
+                },
+                {
+                    title: "社团发展计划",
+                    date: "2024-12-05",
+                    content: "社团的下一阶段发展计划已经制定，欢迎大家积极参与讨论。"
+                }
+            ];
+
+            const announcementList = document.getElementById('announcement-list');
+            
+            announcements.forEach(function(announcement) {
+                const div = document.createElement('div');
+                div.classList.add('col-lg-4');
+                div.classList.add('announcement-item');
+                div.innerHTML = `
+                    <div class="announcement-card">
+                        <h4>${announcement.title}</h4>
+                        <p class="date"><i class="fa fa-calendar"></i> ${announcement.date}</p>
+                        <p class="content">${announcement.content}</p>
+                    </div>
+                `;
+                announcementList.appendChild(div);
+            });
+        });
+    </script>
+    <script src="/Backend files/src/assets/js/notice.js"></script>
+</body>
+</html>
