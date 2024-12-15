@@ -86,7 +86,7 @@ export default {
     // 获取方法
     getList() {
       request({
-        url: 'team/queryTeamAll',
+        url: 'club/queryClubList',
         method: 'get',
         params: ''
       }).then(res => {
