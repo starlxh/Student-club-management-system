@@ -26,8 +26,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="row grid">
-
-                  <div v-for="team in teamList" class="col-lg-4 templatemo-item-col all soon">
+                  <div v-for="team in teamList" :key="team.id" class="col-lg-4 templatemo-item-col all soon">
                     <div class="meeting-item">
                       <div class="thumb">
                         <!-- <a href="#/teaminfo"><img :src="team.images" width="200px" height="200px" alt=""></a>-->
