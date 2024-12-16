@@ -73,7 +73,7 @@
         </el-form-item>
         <el-form-item label="发布时间" prop="createTime">
           <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" :readonly="dialogFormReadonly" />
-          <el-date-picker v-else v-model="temp.createTime" type="datetime" placeholder="请选择活动时间" class="form-timestamp" />
+          <el-date-picker v-else v-model="temp.createTime" type="datetime" placeholder="请选择发布时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item v-if="dialogStatus==='update'" label="公告标题" prop="title">
           <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
