@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-image v-if="row.images" :fit="cover" :src="row.images" />
+          <el-image v-if="row.images" fit="cover" :src="row.images" />
           <span v-else>无</span>
         </template>
       </el-table-column>
@@ -96,7 +96,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :model="temp" label-position="right" label-width="80px" :disabled="formDisabled" class="activity-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" :fit="cover" :src="temp.images" />
+          <el-image v-model="temp.images" fit="cover" :src="temp.images" />
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="temp.name" readonly />
@@ -142,7 +142,7 @@
           <el-input v-model.number="temp.name" />
         </el-form-item>
         <el-form-item label="活动社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
@@ -222,6 +222,7 @@ export default {
       tableKey: 0,
       list: null,
       clubList: null,
+      hostList: null,
       total: 0,
       listLoading: true,
       listQuery: {
@@ -257,6 +258,7 @@ export default {
         acInfo: [{ required: true, message: '活动详情不能为空', trigger: 'blur' }]
       },
       downloadLoading: false,
+      imageUrl: null,
       placeholder: '无'
     }
   },
@@ -276,6 +278,11 @@ export default {
     getClubList() {
       request.get('club/queryClubList').then(res => {
         this.clubList = res.data
+      })
+    },
+    getHostList() {
+      request.get('user/queryUserList').then(res => {
+        this.hostList = res.data
       })
     },
     handleFilter() {
@@ -300,6 +307,9 @@ export default {
       this.temp = {
         user: {}
       }
+    },
+    handleClubChange() {
+      console.log(this.temp.clubId)
     },
     handleCreate() {
       this.resetTemp()
