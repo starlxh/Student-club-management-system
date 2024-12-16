@@ -7,7 +7,7 @@
         <div class="row">
           <div class="col-lg-8 col-sm-8">
             <div class="left-content">
-              <p>东方大学社团</p>
+              <p>大学社团</p>
             </div>
           </div>
           <div class="col-lg-4 col-sm-4">
@@ -27,8 +27,6 @@
 </template>
 
 <script>
-
-import request from '@/utils/request'
 
 export default {
   name: 'Top',

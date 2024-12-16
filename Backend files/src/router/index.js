@@ -212,14 +212,14 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/club-member',
+    path: '/clubmember',
     component: Layout,
-    redirect: '/club-member/index',
+    redirect: '/clubmember/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/club-member/index'),
-        name: 'ClubMember',
+        component: () => import('@/views/clubmember/index'),
+        name: 'Clubember',
         meta: {
           title: '社团成员管理',
           icon: 'peoples',
@@ -248,24 +248,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/club-member',
-    component: Layout,
-    redirect: '/club-member/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/club-member/index'),
-        name: 'Club-member',
-        meta: {
-          title: '社团成员管理',
-          icon: 'peoples',
-          noCache: true,
-          roles: ['Super', 'Admin']
-        }
-      }
-    ]
-  },
-  {
     path: '/activity',
     component: Layout,
     redirect: '/activity/index',
@@ -279,42 +261,6 @@ export const asyncRoutes = [
           icon: 'nested',
           noCache: true,
           roles: ['Super', 'Admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/leave',
-    component: Layout,
-    redirect: '/leave/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/leave/index'),
-        name: 'Leave',
-        meta: {
-          title: '在线留言管理',
-          icon: 'message',
-          noCache: true,
-          roles: ['Super']
-        }
-      }
-    ]
-  },
-  {
-    path: '/notice',
-    component: Layout,
-    redirect: '/notice/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/notice/index'),
-        name: 'Notice',
-        meta: {
-          title: '公告管理',
-          icon: 'el-icon-s-order',
-          noCache: true,
-          roles: ['Super']
         }
       }
     ]
