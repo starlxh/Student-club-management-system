@@ -284,6 +284,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/admin/index'),
+        name: 'Admin',
+        meta: {
+          title: '管理员管理',
+          icon: 'el-icon-s-custom',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
     path: '/leave',
     component: Layout,
     redirect: '/leave/index',

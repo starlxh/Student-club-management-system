@@ -96,7 +96,7 @@
         </el-form-item>
         <el-form-item label="入团时间" prop="joinTime">
           <el-input v-if="dialogStatus==='detail'" v-model="temp.joinTime" readonly />
-          <el-date-picker v-else v-model="temp.joinTime" type="datetime" placeholder="Please pick a date" class="form-timestamp" />
+          <el-date-picker v-else v-model="temp.joinTime" type="datetime" placeholder="请选择入团时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="temp.user.tel" readonly :placeholder="placeholder" :disabled="formDisabled" />
