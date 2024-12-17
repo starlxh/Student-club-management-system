@@ -17,7 +17,8 @@
             <li><a href="#/myclub">我的社团</a></li>
             <li><a href="#/leave">在线留言</a></li>
             <li><a href="#/usercenter">个人中心</a></li>
-            <li v-if="type != 2"><a href="#/users">后台管理</a></li>
+            <li v-if="!role"><a href="#/login">登录</a></li>
+            <li v-if="role && role !== 'User'"><a href="#/users">后台管理</a></li>
             <div class="nav-box" />
             <div class="ani-is-hidden animation">
               <bgAnimation bg-animation-path="./animation/SunAnimation.json" />
@@ -37,12 +38,14 @@ export default {
   components: { bgAnimation },
   data() {
     return {
-      type: localStorage.getItem('type'),
+      type: null,
       nav: null,
-      video: null
+      video: null,
+      role: null,
     }
   },
   mounted() {
+    this.role = this.$store.getters.roles[0]
     this.nav = document.querySelector('#custom-nav')
   },
   methods: {
