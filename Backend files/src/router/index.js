@@ -271,6 +271,60 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/admin/index'),
+        name: 'Admin',
+        meta: {
+          title: '管理员管理',
+          icon: 'el-icon-s-custom',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
+    path: '/leave',
+    component: Layout,
+    redirect: '/leave/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/leave/index'),
+        name: 'Leave',
+        meta: {
+          title: '在线留言管理',
+          icon: 'message',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
+    path: '/notice',
+    component: Layout,
+    redirect: '/notice/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/notice/index'),
+        name: 'Notice',
+        meta: {
+          title: '公告管理',
+          icon: 'el-icon-s-order',
+          noCache: true,
+          roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
