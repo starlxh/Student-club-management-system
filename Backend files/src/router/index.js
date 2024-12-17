@@ -77,25 +77,30 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/teamlist',
-    component: () => import('@/views/pages/teamlist/index'),
+    path: '/clublist',
+    component: () => import('@/views/pages/clublist/index'),
     hidden: true
   },
 
   {
-    path: '/teaminfo',
-    component: () => import('@/views/pages/pageinfo/index'),
+    path: '/clubinfo',
+    component: () => import('@/views/pages/clubinfo/index'),
     hidden: true
   },
   {
-    path: '/myteam',
-    component: () => import('@/views/pages/myteam/index'),
+    path: '/myclub',
+    component: () => import('@/views/pages/myclub/index'),
     hidden: true
   },
 
   {
     path: '/leave',
     component: () => import('@/views/pages/leave/index'),
+    hidden: true
+  },
+  {
+    path: '/usercenter',
+    component: () => import('@/views/pages/usercenter/index'),
     hidden: true
   },
   // {

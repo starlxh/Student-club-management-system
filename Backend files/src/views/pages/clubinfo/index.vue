@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!--头部-->
-    <top />
     <!--导航-->
     <navs />
 
@@ -132,22 +130,22 @@
               <ul>
                 <li>
                   <h6>社团类型名称</h6>
-                  <span>{{ team.typeInfo.name }}</span>
+                  <span>{{ club.typeInfo.name }}</span>
                 </li>
                 <br>
                 <li>
                   <h6>社团名称</h6>
-                  <span>{{ team.name }}</span>
+                  <span>{{ club.clubName }}</span>
                 </li>
                 <br>
                 <li>
                   <h6>社长姓名</h6>
-                  <span>{{ team.userInfo.username }}</span>
+                  <span>{{ club.captainName }}</span>
                 </li>
                 <br>
                 <li>
                   <h6>创建时间</h6>
-                  <span>{{ team.createTime }}</span>
+                  <span>{{ club.createTime }}</span>
                 </li>
               </ul>
             </div>
@@ -165,13 +163,12 @@
 </template>
 
 <script>
-import top from '../../qdutils/top/top'
 import navs from '../../qdutils/navs/index'
 import foot from '../../qdutils/footer/index'
 import request from '@/utils/request'
 export default {
   name: 'Index',
-  components: { top, navs, foot },
+  components: { navs, foot },
 
   data() {
     return {

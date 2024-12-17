@@ -10,7 +10,7 @@
       <div class="shell">
         <div id="a-container" class="container a-container is-hidden">
           <el-form id="a-form" ref="registerForm" :rules="registerRules" :model="registerForm" autocomplete="on">
-            <h2 class="form_title title">创建账号</h2>
+            <h2 class="form_title title">注册账号</h2>
             <span class="form_span">请使用您的邮箱注册</span>
             <el-form-item prop="userName">
               <input v-model="registerForm.userName" type="text" class="form_input" name="userName" placeholder="用户名">

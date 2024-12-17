@@ -2,7 +2,18 @@
   <div>
     <!--导航-->
     <navs />
+
     <!--核心内容start-->
+    <section id="top" class="heading-page header-text">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <h6>获取所有详细信息</h6>
+            <h2>在线教学工具</h2>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="contact-us">
 
@@ -58,12 +69,36 @@
               </div>
             </div>
           </div>
+          <!-- <div class="col-lg-3">
+              <div class="right-info">
+                <ul>
+                  <li>
+                    <h6>手机号码</h6>
+                    <span>010-020-0340</span>
+                  </li>
+                  <li>
+                    <h6>邮箱地址</h6>
+                    <span>info@meeting.edu</span>
+                  </li>
+                  <li>
+                    <h6>街道地址</h6>
+                    <span>Rio de Janeiro - RJ, 22795-008, Brazil</span>
+                  </li>
+                  <li>
+                    <h6>网站 URL</h6>
+                    <span>www.meeting.edu</span>
+                  </li>
+                </ul>
+              </div>
+            </div>-->
         </div>
       </div>
 
     </section>
 
     <foot />
+
+    <!--核心内容end-->
 
   </div>
 </template>

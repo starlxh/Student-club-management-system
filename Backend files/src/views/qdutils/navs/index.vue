@@ -1,46 +1,75 @@
 <template>
-  <div>
-    <header class="header-area header-sticky">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <nav class="main-nav">
-              <!-- ***** Logo Start ***** -->
-              <a href="#/" class="logo">
-                大学社团
-              </a>
-              <!-- ***** Logo End ***** -->
-              <!-- ***** Menu Start ***** -->
-              <ul class="nav">
-                <li class="scroll-to-section"><a href="#/">主页</a></li>
-                <li><a href="#/teamlist">社团列表</a></li>
-                <li class="scroll-to-section"><a href="#/myteam">我的社团</a></li>
-                <li><a href="#/leave">在线留言</a></li>
-                <li v-if="type!=2" class="scroll-to-section"><a href="#/users">后台管理</a></li>
-              </ul>
-              <a class="menu-trigger">
-                <span>Menu</span>
-              </a>
-              <!-- ***** Menu End ***** -->
-            </nav>
-          </div>
+  <div class="nav-main">
+
+    <span class="trigger trigger-is-hidden" @click.prevent="handleClick">
+      <svg-icon icon-class="list" />
+    </span>
+    <a href="#/" class="logo">
+      大学社团
+    </a>
+
+    <div id="custom-nav" class="custom-body nav-is-hidden">
+      <div class="custom-nav custom-nav-1">
+        <div class="custom-nav-ul">
+          <ul>
+            <li><a href="#/">主页</a></li>
+            <li><a href="#/clublist">社团列表</a></li>
+            <li><a href="#/myclub">我的社团</a></li>
+            <li><a href="#/leave">在线留言</a></li>
+            <li><a href="#/usercenter">个人中心</a></li>
+            <li v-if="type != 2"><a href="#/users">后台管理</a></li>
+            <div class="nav-box" />
+            <div class="ani-is-hidden animation">
+              <bgAnimation bg-animation-path="./animation/SunAnimation.json" />
+            </div>
+          </ul>
         </div>
+        <!-- ***** Menu End ***** -->
       </div>
-    </header>
+    </div>
   </div>
 </template>
 
 <script>
+import bgAnimation from '../../qdutils/bg/bg.vue'
 export default {
   name: 'Index',
+  components: { bgAnimation },
   data() {
     return {
-      type: localStorage.getItem('type')
+      type: localStorage.getItem('type'),
+      nav: null,
+      video: null
+    }
+  },
+  mounted() {
+    this.nav = document.querySelector('#custom-nav')
+  },
+  methods: {
+    handleClick() {
+      if (this.nav.classList.contains('nav-is-hidden')) {
+        this.nav.classList.add('move-nav-left')
+        this.nav.classList.remove('nav-is-hidden')
+      } else {
+        this.nav.classList.remove('move-nav-left')
+        this.nav.classList.add('move-nav-right')
+        setTimeout(() => {
+          this.nav.classList.add('nav-is-hidden')
+          this.nav.classList.remove('move-nav-right')
+        }, 2000)
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+.animation {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 420px;
+  background-color: rgb(253, 242, 221);
+}
 
 </style>

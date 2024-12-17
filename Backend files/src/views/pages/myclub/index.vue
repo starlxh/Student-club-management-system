@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!--头部-->
-    <top />
     <!--导航-->
     <navs />
 
@@ -10,15 +8,14 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <h6>或许这里就有你心仪的社团</h6>
-            <h2>社团列表</h2>
+            <h6>获取所有详细信息</h6>
+            <h2>在线教学工具</h2>
           </div>
         </div>
       </div>
     </section>
 
     <!--核心内容start-->
-
     <section id="meetings" class="meetings-page">
       <div class="container">
         <div class="row">
@@ -27,11 +24,11 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="row grid">
-                  <div v-for="club in clubList" :key="club.clubId" class="col-lg-4 templatemo-item-col all soon">
+                  <div v-for="club in clubList" :key="club.id" class="col-lg-4 templatemo-item-col all soon">
                     <div class="meeting-item">
                       <div class="thumb">
                         <!-- <a href="#/teaminfo"><img :src="team.images" width="200px" height="200px" alt=""></a>-->
-                        <router-link :to="{path:'/teaminfo',query:{clubId:club.clubId}}"><img :src="club.images" width="200px" height="200px" alt=""></router-link>
+                        <router-link :to="{path:'/clubinfo',query:{clubId:club.id}}"><img :src="club.images" width="200px" height="200px" alt=""></router-link>
                       </div>
                       <div class="down-content">
                         <div class="date">
@@ -49,26 +46,22 @@
           </div>
         </div>
       </div>
-
+      <!--底部-->
+      <foot />
     </section>
-    <br>
-    <br>
-    <br>
-    <!--底部-->
-    <foot />
+
     <!--核心内容end-->
 
   </div>
 </template>
 
 <script>
-import top from '../../qdutils/top/top'
 import navs from '../../qdutils/navs/index'
 import foot from '../../qdutils/footer/index'
 import request from '@/utils/request'
 export default {
   name: 'Index',
-  components: { top, navs, foot },
+  components: { navs, foot },
   // 初始数据
   data() {
     return {
@@ -86,11 +79,11 @@ export default {
     // 获取方法
     getList() {
       request({
-        url: 'club/queryClubList',
+        url: 'club/queryMyClubList',
         method: 'get',
         params: ''
       }).then(res => {
-        this.clubList = res.data
+        this.teamList = res.data
       })
     }
   }
