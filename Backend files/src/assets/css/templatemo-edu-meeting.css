@@ -410,7 +410,7 @@ header-custom
     bottom: 0;
     left: 0;
     width: calc((100% / 6)*1);
-    height: 10px;
+    height: 5px;
     border-radius: 2px;
     transition: .5s;
   }
@@ -590,7 +590,7 @@ banner
 }
 
 #bg-video {
-  width: 100%;
+  width: 100vw;
   object-fit: cover;
   z-index: -1;
 }

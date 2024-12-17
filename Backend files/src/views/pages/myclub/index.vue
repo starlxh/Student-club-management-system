@@ -92,7 +92,5 @@ export default {
 </script>
 
 <style scoped>
-
-  @import "../../../vendor/bootstrap/css/bootstrap.min.css";
   @import "../../../assets/css/templatemo-edu-meeting.css";
 </style>

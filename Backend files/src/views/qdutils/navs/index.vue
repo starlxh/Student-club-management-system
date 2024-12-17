@@ -41,7 +41,7 @@ export default {
       type: null,
       nav: null,
       video: null,
-      role: null,
+      role: null
     }
   },
   mounted() {

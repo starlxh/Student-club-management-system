@@ -103,6 +103,11 @@ export const constantRoutes = [
     component: () => import('@/views/pages/usercenter/index'),
     hidden: true
   },
+  {
+    path: '/notice',
+    component: () => import('@/views/pages/notice/index'),
+    hidden: true
+  },
   // {
   //   path: '/',
   //   component: Layout,
