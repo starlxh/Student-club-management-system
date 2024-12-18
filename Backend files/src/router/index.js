@@ -330,6 +330,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/cost',
+    component: Layout,
+    redirect: '/cost/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/cost/index'),
+        name: 'Cost',
+        meta: {
+          title: '社团费用管理',
+          icon: 'money',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

@@ -156,7 +156,9 @@
           <el-input v-model.number="temp.tel" />
         </el-form-item>
         <el-form-item label="活动主持" prop="hostId">
-          <el-input v-model.number="temp.hostId" />
+          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
+            <el-option v-for="item in hostList" :key="item.clubMemberId" :label="item.realName" :value="item.clubMemberId" />
+          </el-select>
         </el-form-item>
         <el-form-item label="活动详情" prop="acInfo">
           <el-input v-model="temp.acInfo" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" placeholder="请输入活动详情" class="activity-text" />
@@ -262,8 +264,14 @@ export default {
       placeholder: '无'
     }
   },
+  computed: {
+    hostListFilter() {
+      return this.hostList.filter(item => item.clubId === this.temp.clubId)
+    }
+  },
   created() {
     this.getClubList()
+    this.getHostList()
     this.getList()
   },
   methods: {
@@ -281,7 +289,7 @@ export default {
       })
     },
     getHostList() {
-      request.get('user/queryUserList').then(res => {
+      request.get('club/queryClubMemberListByCaptainId').then(res => {
         this.hostList = res.data
       })
     },
