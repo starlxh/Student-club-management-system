@@ -120,7 +120,7 @@
           <el-input v-model="temp.hostName" readonly />
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-input v-model="temp.status" readonly />
+          <el-input :value="temp.status | judgeStatusFilter" readonly />
         </el-form-item>
         <el-form-item label="活动详情">
           <el-input v-model="temp.acInfo" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="activity-text" />
@@ -216,6 +216,14 @@ export default {
         2: 'danger'
       }
       return statusMap[status]
+    },
+    judgeStatusFilter(status) {
+      const statusMap = {
+        0: '未审核',
+        1: '审核通过',
+        2: '已拒绝'
+      }
+      return statusMap[status]
     }
   },
   data() {
@@ -285,12 +293,12 @@ export default {
       })
     },
     getClubList() {
-      request.get('club/queryClubList').then(res => {
+      request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
       })
     },
     getHostList() {
-      request.get('club/queryClubMemberListByCaptainId').then(res => {
+      request.get('clubMember/queryClubMemberListByCaptainId').then(res => {
         this.hostList = res.data
       })
     },

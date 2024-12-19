@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model.number="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
+      <el-select v-model="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
         <el-option label="系统管理员" value="2" />
         <el-option label="社团管理员" value="1" />
       </el-select>
@@ -60,6 +60,7 @@
           <el-tag :type="row.type | statusFilter">
             <span v-if="row.type==1">社团管理员</span>
             <span v-else-if="row.type==2">系统管理员</span>
+            <span v-else-if="row.type==0">用户</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -88,46 +89,41 @@
           <el-image v-model="temp.images" fit="cover" :src="temp.images" />
         </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
-          <el-input v-model="temp.realName" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.realName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="成员昵称" prop="userName">
-          <el-input v-model="temp.userName" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.userName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-input v-model="temp.sex" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.sex" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" />
-          <el-date-picker v-else v-model="temp.joinTime" type="datetime" placeholder="请选择创建时间" class="form-timestamp" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.createTime" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="电话" prop="tel">
-          <el-input v-model="temp.tel" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.tel" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="temp.email" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.email" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="QQ" prop="qq">
-          <el-input v-model="temp.qq" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.qq" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="微信" prop="wx">
-          <el-input v-model="temp.wx" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.wx" readonly :disabled="formDisabled" />
         </el-form-item>
-        <el-form-item label="权限类型" prop="type">
-          <el-input v-if="dialogStatus==='detail'" :value="temp.type==2?'系统管理员':'社团管理员'" readonly />
-          <el-select v-else v-model.number="temp.type" placeholder="选择权限类型" class="form-select">
-            <el-option label="系统管理员" value="2" />
-            <el-option label="社团管理员" value="1" />
-          </el-select>
+        <el-form-item label="状态" prop="status">
+          <el-input v-model="temp.status" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" :readonly="dialogFormReadonly" />
+          <el-input v-model="temp.password" readonly :disabled="formDisabled" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" :disabled="temp.type==0" @click="dialogStatus==='detail'?handleUpdate():updateData()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
@@ -180,6 +176,7 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
+        0: 'info',
         1: 'primary',
         2: 'success'
       }
@@ -222,16 +219,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        realName: [{ required: true, message: '真实姓名不能为空', trigger: 'blur' }],
-        userName: [{ required: true, message: '成员昵称不能为空', trigger: 'blur' }],
-        sex: [{ required: true, message: '性别不能为空', trigger: 'blur' }],
-        createTime: [{ required: true, message: '创建时间不能为空', trigger: 'blur' }],
-        tel: [{ required: true, message: '电话不能为空', trigger: 'blur' }],
-        email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
-        qq: [{ required: true, message: 'QQ不能为空', trigger: 'blur' }],
-        wx: [{ required: true, message: '微信不能为空', trigger: 'blur' }],
-        type: [{ required: true, message: '权限类型不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+        status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
       },
       createRules: {
         userId: [
@@ -246,12 +234,11 @@ export default {
   },
   created() {
     this.getClubList()
-    this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryUserList', { params: this.listQuery }).then(res => {
+      request.get(this.baseUrl + 'queryAdminList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
@@ -263,7 +250,7 @@ export default {
       })
     },
     getClubList() {
-      request.get('club/queryClubList').then(res => {
+      request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
       })
     },
@@ -302,8 +289,7 @@ export default {
     createData() {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          this.temp.joinTime = new Date().toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addClubMember', JSON.parse(JSON.stringify(this.temp, ['userId', 'joinTime', 'clubId']))).then(
+          request.post(this.baseUrl + 'addAdmin', JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))).then(
             res => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {
@@ -329,7 +315,7 @@ export default {
     handleDetail(row) {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = (this.temp.type === 2 ? '系统' : '社团') + '管理员详情——' + this.temp.realName
+      this.textMap['detail'] = ((this.temp.type === 0) ? '用户' : ((this.temp.type === 2 ? '系统' : '社团') + '管理员')) + '详情——' + this.temp.realName
       this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
       this.formDisabled = false
@@ -351,8 +337,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.temp.adminId = this.temp.userId
           this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editUser', JSON.parse(JSON.stringify(this.temp, ['userId', 'password', 'realName', 'sex', 'tel', 'email', 'qq', 'wx', 'type', 'createTime']))).then(
+          request.post(this.baseUrl + 'editAdminStatus', JSON.parse(JSON.stringify(this.temp, ['adminId', 'status']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {

@@ -39,7 +39,12 @@
           <span>{{ row.clubId }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column label="描述图" width="150px" align="center">
+        <template slot-scope="{row}">
+          <el-image v-if="row.images" fit="cover" :src="row.images" />
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
       <el-table-column label="社团名称" align="center">
         <template slot-scope="{row}">
           <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
@@ -241,22 +246,22 @@ export default {
     }
   },
   created() {
-    this.getCaptainList()
+    // this.getCaptainList()
     this.getCategoryList()
     this.getList()
   },
   methods: {
-    getCaptainList() {
-      request.get('user/getAdminIdName').then(
-        res => {
-          if (res.code === 20000) {
-            this.adminList = res.data
-          }
-        }
-      )
-    },
+    // getCaptainList() {
+    //   request.get('user/getAdminIdName').then(
+    //     res => {
+    //       if (res.code === 20000) {
+    //         this.adminList = res.data
+    //       }
+    //     }
+    //   )
+    // },
     getCategoryList() {
-      request.get('category/queryCategoryList').then(
+      request.get('category/queryAllCategoryList').then(
         res => {
           if (res.code === 20000) {
             this.categoryList = res.data

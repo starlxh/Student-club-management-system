@@ -175,7 +175,7 @@ export default {
       })
     },
     getClubList() {
-      request.get('club/queryClubList').then(res => {
+      request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
       })
     },
