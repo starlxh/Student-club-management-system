@@ -29,7 +29,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="categoryId" sortable="custom" align="center" width="120px">
+      <el-table-column label="编号" prop="applyInfoId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.applyInfoId }}</span>
         </template>
@@ -298,10 +298,11 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        club: undefined,
         user: {
           realName: undefined
         },
-        club: undefined
+        order: 'ASC'
       },
       tempApplyList: [],
       showReviewer: false,
@@ -365,7 +366,7 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'categoryId') {
+      if (prop === 'applyInfoId') {
         this.sortByID(order)
       }
     },

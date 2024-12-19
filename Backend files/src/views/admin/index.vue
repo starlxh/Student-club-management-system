@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
+      <el-select v-model.number="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
         <el-option label="系统管理员" value="2" />
         <el-option label="社团管理员" value="1" />
       </el-select>
@@ -24,7 +24,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="adminId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="adminId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.userId }}</span>
         </template>
@@ -58,9 +58,8 @@
       <el-table-column label="权限类型" width="120px" align="center">
         <template slot-scope="{row}">
           <el-tag :type="row.type | statusFilter">
-            <span>
-              {{ row.type==2?'系统管理员':'社团管理员' }}
-            </span>
+            <span v-if="row.type==1">社团管理员</span>
+            <span v-else-if="row.type==2">系统管理员</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -115,9 +114,9 @@
         </el-form-item>
         <el-form-item label="权限类型" prop="type">
           <el-input v-if="dialogStatus==='detail'" :value="temp.type==2?'系统管理员':'社团管理员'" readonly />
-          <el-select v-else v-model="temp.type" placeholder="选择权限类型" class="form-select">
-            <el-option value="系统管理员" />
-            <el-option value="社团管理员" />
+          <el-select v-else v-model.number="temp.type" placeholder="选择权限类型" class="form-select">
+            <el-option label="系统管理员" value="2" />
+            <el-option label="社团管理员" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -140,7 +139,7 @@
           <el-input v-model.number="temp.userId" />
         </el-form-item>
         <el-form-item label="权限类型" prop="type">
-          <el-select v-model="temp.type" placeholder="选择权限类型" class="form-select">
+          <el-select v-model.number="temp.type" placeholder="选择权限类型" class="form-select">
             <el-option label="系统管理员" value="2" />
             <el-option label="社团管理员" value="1" />
           </el-select>
@@ -199,8 +198,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        type: undefined,
         realName: undefined,
-        type: 1
+        order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -273,15 +273,15 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'id') {
+      if (prop === 'adminId') {
         this.sortByID(order)
       }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.order = 'DESC'
       }
       this.handleFilter()
     },
@@ -351,7 +351,6 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.type = this.temp.type === '系统管理员' ? 2 : 1
           this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'editUser', JSON.parse(JSON.stringify(this.temp, ['userId', 'password', 'realName', 'sex', 'tel', 'email', 'qq', 'wx', 'type', 'createTime']))).then(
             res => {

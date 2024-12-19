@@ -23,7 +23,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="clubMemberId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="clubMemberId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.clubMemberId }}</span>
         </template>
@@ -176,7 +176,8 @@ export default {
         page: 1,
         limit: 10,
         realName: undefined,
-        clubId: undefined
+        clubId: undefined,
+        order: 'ASC'
       },
       dialogFormReadonly: true,
       importanceOptions: [1, 2, 3],
@@ -236,15 +237,15 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'id') {
+      if (prop === 'clubMemberId') {
         this.sortByID(order)
       }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.order = 'DESC'
       }
       this.handleFilter()
     },

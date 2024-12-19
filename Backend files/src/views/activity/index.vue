@@ -24,7 +24,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="activityId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="activityId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.activityId }}</span>
         </template>
@@ -232,7 +232,8 @@ export default {
         limit: 10,
         name: undefined,
         creatorName: undefined,
-        clubId: undefined
+        clubId: undefined,
+        order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -299,15 +300,15 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'id') {
+      if (prop === 'activityId') {
         this.sortByID(order)
       }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.order = 'DESC'
       }
       this.handleFilter()
     },
