@@ -348,6 +348,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/meeting',
+    component: Layout,
+    redirect: '/meeting/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/meeting/index'),
+        name: 'Meeting',
+        meta: {
+          title: '会议记录管理',
+          icon: 'el-icon-phone',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
