@@ -118,59 +118,6 @@ export const constantRoutes = [
     component: () => import('@/views/pages/jitsimeet/index'),
     hidden: true
   }
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   children: [
-  //     {
-  //       path: 'dashboard',
-  //       component: () => import('@/views/dashboard/index'),
-  //       name: 'Dashboard',
-  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/documentation',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/documentation/index'),
-  //       name: 'Documentation',
-  //       meta: { title: 'Documentation', icon: 'documentation', affix: true }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/guide',
-  //   component: Layout,
-  //   redirect: '/guide/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/guide/index'),
-  //       name: 'Guide',
-  //       meta: { title: 'Guide', icon: 'guide', noCache: true }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/profile',
-  //   component: Layout,
-  //   redirect: '/profile/index',
-  //   hidden: true,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/profile/index'),
-  //       name: 'Profile',
-  //       meta: { title: 'Profile', icon: 'user', noCache: true }
-  //     }
-  //   ]
-  // },
-
 ]
 
 /**
@@ -287,24 +234,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/admin',
-    component: Layout,
-    redirect: '/admin/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/admin/index'),
-        name: 'Admin',
-        meta: {
-          title: '管理员管理',
-          icon: 'el-icon-s-custom',
-          noCache: true,
-          roles: ['Super']
-        }
-      }
-    ]
-  },
-  {
     path: '/leave',
     component: Layout,
     redirect: '/leave/index',
@@ -336,6 +265,42 @@ export const asyncRoutes = [
           icon: 'el-icon-s-order',
           noCache: true,
           roles: ['Super']
+        }
+      }
+    ]
+  },
+  {
+    path: '/cost',
+    component: Layout,
+    redirect: '/cost/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/cost/index'),
+        name: 'Cost',
+        meta: {
+          title: '社团费用管理',
+          icon: 'money',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/meeting',
+    component: Layout,
+    redirect: '/meeting/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/meeting/index'),
+        name: 'Meeting',
+        meta: {
+          title: '会议记录管理',
+          icon: 'el-icon-phone',
+          noCache: true,
+          roles: ['Super', 'Admin']
         }
       }
     ]

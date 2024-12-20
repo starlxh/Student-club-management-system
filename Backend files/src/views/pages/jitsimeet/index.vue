@@ -10,7 +10,7 @@ export default {
   name: 'Index',
   data() {
     return {
-      role: '',  // 假设主持人是通过某种方式来设置的，这里通过 isModerator 来区分
+      role: '' // 假设主持人是通过某种方式来设置的，这里通过 isModerator 来区分
     }
   },
   mounted() {
@@ -45,7 +45,7 @@ export default {
         parentNode: document.querySelector('#meet'), // 容器 ID
         configOverwrite: {
           disableDeepLinking: true // 禁用移动设备强制下载 App
-        },
+        }
       }
 
       try {
@@ -74,7 +74,7 @@ export default {
 
         // 监听会议结束事件
         api.addEventListener('videoConferenceLeft', () => {
-            this.$router.push({ path: '/meeting'})
+          this.$router.push({ path: '/meeting' })
         })
 
         api.addEventListener('participantJoined', (event) => {
@@ -82,11 +82,10 @@ export default {
         })
 
         api.addEventListener('participantLeft', (event) => {
-          if(this.role === 'User'){
-            this.$router.push({ path: '/meeting'})
+          if (this.role === 'User') {
+            this.$router.push({ path: '/meeting' })
           }
         })
-        
       } catch (error) {
         console.error('初始化 JitsiMeetExternalAPI 失败', error)
         alert('初始化 Jitsi Meet 失败，请检查网络连接或服务器配置')

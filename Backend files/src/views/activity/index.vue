@@ -24,7 +24,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="activityId" sortable="custom" align="center" width="120px" :class-name="getSortClass('id')">
+      <el-table-column label="编号" prop="activityId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.activityId }}</span>
         </template>
@@ -120,7 +120,7 @@
           <el-input v-model="temp.hostName" readonly />
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-input v-model="temp.status" readonly />
+          <el-input :value="temp.status | judgeStatusFilter" readonly />
         </el-form-item>
         <el-form-item label="活动详情">
           <el-input v-model="temp.acInfo" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="activity-text" />
@@ -156,7 +156,9 @@
           <el-input v-model.number="temp.tel" />
         </el-form-item>
         <el-form-item label="活动主持" prop="hostId">
-          <el-input v-model.number="temp.hostId" />
+          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
+            <el-option v-for="item in hostList" :key="item.clubMemberId" :label="item.realName" :value="item.clubMemberId" />
+          </el-select>
         </el-form-item>
         <el-form-item label="活动详情" prop="acInfo">
           <el-input v-model="temp.acInfo" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" placeholder="请输入活动详情" class="activity-text" />
@@ -214,6 +216,14 @@ export default {
         2: 'danger'
       }
       return statusMap[status]
+    },
+    judgeStatusFilter(status) {
+      const statusMap = {
+        0: '未审核',
+        1: '审核通过',
+        2: '已拒绝'
+      }
+      return statusMap[status]
     }
   },
   data() {
@@ -230,7 +240,8 @@ export default {
         limit: 10,
         name: undefined,
         creatorName: undefined,
-        clubId: undefined
+        clubId: undefined,
+        order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -262,8 +273,14 @@ export default {
       placeholder: '无'
     }
   },
+  computed: {
+    hostListFilter() {
+      return this.hostList.filter(item => item.clubId === this.temp.clubId)
+    }
+  },
   created() {
     this.getClubList()
+    this.getHostList()
     this.getList()
   },
   methods: {
@@ -276,12 +293,12 @@ export default {
       })
     },
     getClubList() {
-      request.get('club/queryClubList').then(res => {
+      request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
       })
     },
     getHostList() {
-      request.get('user/queryUserList').then(res => {
+      request.get('clubMember/queryClubMemberListByCaptainId').then(res => {
         this.hostList = res.data
       })
     },
@@ -291,15 +308,15 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'id') {
+      if (prop === 'activityId') {
         this.sortByID(order)
       }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.order = 'DESC'
       }
       this.handleFilter()
     },

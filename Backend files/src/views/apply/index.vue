@@ -29,7 +29,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="categoryId" sortable="custom" align="center" width="120px">
+      <el-table-column label="编号" prop="applyInfoId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.applyInfoId }}</span>
         </template>
@@ -220,29 +220,26 @@
         <el-form-item label="真实姓名" prop="categoryName">
           <el-input v-model="temp.user.realName" readonly />
         </el-form-item>
-
         <el-form-item label="申请社团" prop="categoryName">
           <el-input v-model="temp.club.clubName" readonly placeholder="无" />
         </el-form-item>
-
         <el-form-item label="创建时间" prop="categoryName">
           <el-input v-model="temp.createTime" readonly />
         </el-form-item>
-
         <el-form-item label="性别" prop="categoryName">
-          <el-input v-model="temp.sex" readonly />
+          <el-input v-model="temp.user.sex" readonly />
         </el-form-item>
-
         <el-form-item label="电话" prop="categoryName">
-          <el-input v-model="temp.tel" readonly placeholder="无" />
+          <el-input v-model="temp.user.tel" readonly placeholder="无" />
         </el-form-item>
-
         <el-form-item label="邮箱" prop="categoryName">
-          <el-input v-model="temp.email" readonly placeholder="无" />
+          <el-input v-model="temp.user.email" readonly placeholder="无" />
         </el-form-item>
-
-        <el-form-item label="申请内容" class="apply-content">
-          <el-input v-model="temp.content" type="textarea" readonly placeholder="无" />
+        <el-form-item label="申请内容">
+          <el-input v-model="temp.text" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
+        </el-form-item>
+        <el-form-item label="审核意见">
+          <el-input v-model="temp.content" :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -298,10 +295,11 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        club: undefined,
         user: {
           realName: undefined
         },
-        club: undefined
+        order: 'ASC'
       },
       tempApplyList: [],
       showReviewer: false,
@@ -333,7 +331,7 @@ export default {
   },
   methods: {
     getClubList() {
-      request.get('club/queryClubList').then(res => {
+      request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
       })
     },
@@ -365,7 +363,7 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'categoryId') {
+      if (prop === 'applyInfoId') {
         this.sortByID(order)
       }
     },
@@ -450,25 +448,29 @@ export default {
   margin-left: 10px;
 }
 
-@media (min-width: 1200px) {
+.apply-form {
+  max-width: 800px;
+  margin: auto;
+}
+
+@media (min-width: 166px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;
   }
 
-  .apply-form .apply-content {
-    display: block;
-    width: 100%;
-  }
-
-  .apply-form .apply-content>>>.el-form-item__content {
-    width: 100%;
+  .apply-text {
+    width: 700px;
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1660px) {
   .apply-form {
     text-align: center;
+  }
+
+  .apply-text {
+    width: 305px;
   }
 }
 </style>

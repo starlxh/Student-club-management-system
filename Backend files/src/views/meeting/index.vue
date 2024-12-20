@@ -1,13 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.realName" placeholder="发布者名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.title" placeholder="公告标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="记录名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
-        发布公告
+        添加会议
       </el-button>
     </div>
 
@@ -21,19 +23,14 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="noticeId" sortable="custom" align="center" width="120px">
+      <el-table-column label="编号" prop="miId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
-          <span>{{ row.noticeId }}</span>
+          <span>{{ row.miId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="公告标题" width="200px" align="center">
+      <el-table-column label="标题" min-width="150px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.title }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="公告内容" min-width="250px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.content }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建者" width="150px" align="center">
@@ -41,9 +38,19 @@
           <span>{{ row.realName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" width="200px" align="center">
+      <el-table-column label="社团名称" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.createTime }}</span>
+          <span>{{ row.clubName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="开始时间" width="200px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.startTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="结束时间" width="200px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.endTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
@@ -61,44 +68,56 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
-      <el-form ref="dataForm" :inline="true" :rules="rules" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="100px" class="notice-form">
-        <el-form-item v-if="dialogStatus==='detail'" label="公告ID">
-          <el-input v-model="temp.noticeId" :readonly="dialogFormReadonly" />
+      <el-form ref="dataForm" :inline="true" :rules="rules" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="100px" class="meeting-form">
+        <el-form-item v-if="!dialogFormReadonly" label="标题" prop="title">
+          <el-input v-model="temp.title" class="meeting-text" />
         </el-form-item>
-        <el-form-item v-if="dialogStatus==='detail'" label="创建者昵称">
+        <el-form-item v-if="dialogFormReadonly" label="创建者昵称" prop="userName">
           <el-input v-model="temp.userName" readonly />
         </el-form-item>
-        <el-form-item v-if="dialogStatus==='detail'" label="创建者姓名">
+        <el-form-item v-if="dialogFormReadonly" label="创建者真名">
           <el-input v-model="temp.realName" readonly />
         </el-form-item>
-        <el-form-item label="发布时间" prop="createTime">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" :readonly="dialogFormReadonly" />
-          <el-date-picker v-else v-model="temp.createTime" type="datetime" placeholder="请选择发布时间" class="form-timestamp" />
+        <el-form-item label="开始时间" prop="startTime">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.startTime" readonly />
+          <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.startTime" type="datetime" placeholder="请选择开始时间" class="form-timestamp" />
         </el-form-item>
-        <el-form-item v-if="dialogStatus==='update'" label="公告标题" prop="title">
-          <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
+        <el-form-item label="结束时间" prop="endTime">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.endTime" readonly />
+          <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.endTime" type="datetime" placeholder="请选择结束时间" class="form-timestamp" />
         </el-form-item>
-        <el-form-item label="公告内容" prop="content">
-          <el-input v-model="temp.content" :autosize="{ minRows: 4, maxRows: 16 }" type="textarea" resize="none" :readonly="dialogFormReadonly" class="notice-text" />
+        <el-form-item label="社团名称" prop="clubId">
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.clubName" :readonly="dialogFormReadonly" />
+          <el-select v-else-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():handleUpdate()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
-      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="notice-form">
-        <el-form-item label="公告标题" prop="title">
-          <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
+      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="meeting-form">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="temp.title" class="meeting-text" />
         </el-form-item>
-        <el-form-item label="公告内容" prop="content">
-          <el-input v-model="temp.content" :autosize="{ minRows: 4, maxRows: 16 }" type="textarea" resize="none" class="notice-text" />
+        <el-form-item label="开始时间" prop="startTime">
+          <el-date-picker v-model="temp.startTime" type="datetime" placeholder="请选择开始时间" class="form-timestamp" />
+        </el-form-item>
+        <el-form-item label="结束时间" prop="endTime">
+          <el-date-picker v-model="temp.endTime" type="datetime" placeholder="请选择结束时间" class="form-timestamp" />
+        </el-form-item>
+        <el-form-item label="社团名称" prop="clubId">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -106,7 +125,7 @@
           关闭
         </el-button>
         <el-button type="primary" @click="createData()">
-          发布
+          添加
         </el-button>
       </div>
     </el-dialog>
@@ -145,16 +164,19 @@ export default {
   },
   data() {
     return {
-      baseUrl: 'notice/',
+      baseUrl: 'meeting/',
       tableKey: 0,
       list: null,
+      clubList: null,
+      hostList: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 10,
-        realName: undefined,
         title: undefined,
+        realName: undefined,
+        clubName: undefined,
         order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
@@ -164,37 +186,47 @@ export default {
       temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
-      dialogFormReadonly: true,
+      formDisabled: false,
       dialogStatus: '',
       textMap: {
         detail: '',
-        update: '修改公告',
-        create: '发布公告'
+        update: '修改会议',
+        create: '添加会议'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        createTime: [{ required: true, message: '发布时间不能为空', trigger: 'blur' }],
-        title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        startTime: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
+        endTime: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
       },
       createRules: {
-        title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        startTime: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
+        endTime: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      placeholder: '无'
     }
   },
   created() {
+    this.getClubList()
     this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryNoticeList', { params: this.listQuery }).then(res => {
+      request.get(this.baseUrl + 'queryMeetingInfoList', { params: this.listQuery }).then(res => {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
+      })
+    },
+    getClubList() {
+      request.get('club/queryAllClubList').then(res => {
+        this.clubList = res.data
       })
     },
     handleFilter() {
@@ -203,7 +235,7 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      if (prop === 'noticeId') {
+      if (prop === 'miId') {
         this.sortByID(order)
       }
     },
@@ -224,6 +256,7 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogCreateFormVisible = true
+      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['createForm'].clearValidate()
       })
@@ -231,14 +264,15 @@ export default {
     createData() {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addNotice', JSON.parse(JSON.stringify(this.temp, ['title', 'content', 'createTime']))).then(
+          this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
+          this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'addMeettingInfo', JSON.parse(JSON.stringify(this.temp, ['title', 'startTime', 'endTime', 'clubId']))).then(
             res => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
-                  message: '发布公告成功！',
+                  message: '添加会议记录成功！',
                   type: 'success',
                   duration: 2000
                 })
@@ -246,7 +280,7 @@ export default {
               } else {
                 this.$notify({
                   title: '失败',
-                  message: '发布公告失败！',
+                  message: '添加会议记录失败！',
                   type: 'fail',
                   duration: 2000
                 })
@@ -259,8 +293,10 @@ export default {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
       this.textMap['detail'] = this.temp.title
-      this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
+      this.dialogFormReadonly = true
+      this.formDisabled = false
+      this.placeholder = '无'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -268,6 +304,8 @@ export default {
     handleUpdate() {
       this.dialogStatus = 'update'
       this.dialogFormReadonly = false
+      this.formDisabled = true
+      this.placeholder = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -275,14 +313,15 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editNotice', JSON.parse(JSON.stringify(this.temp, ['noticeId', 'title', 'content', 'createTime']))).then(
+          this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
+          this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
+          request.post(this.baseUrl + 'editMeettingInfo', JSON.parse(JSON.stringify(this.temp, ['miId', 'title', 'startTime', 'endTime', 'userId']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
-                  message: '编辑公告成功！',
+                  message: '编辑会议记录成功！',
                   type: 'success',
                   duration: 2000
                 })
@@ -290,7 +329,7 @@ export default {
               } else {
                 this.$notify({
                   title: '失败',
-                  message: '编辑公告失败！',
+                  message: '编辑会议记录失败！',
                   type: 'fail',
                   duration: 2000
                 })
@@ -300,12 +339,12 @@ export default {
       })
     },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteById?noticeId=' + row.noticeId).then(
+      request.delete(this.baseUrl + 'deleteById?miId=' + row.miId).then(
         res => {
           if (res.code === 20000) {
             this.$notify({
               title: '成功',
-              message: '删除社团活动成功！',
+              message: '删除会议记录成功！',
               type: 'success',
               duration: 2000
             })
@@ -320,21 +359,6 @@ export default {
         this.dialogPvVisible = true
       })
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload(file) {
-      const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isRtype) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isRtype && isLt2M
-    },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
@@ -348,34 +372,39 @@ export default {
   margin-left: 10px;
 }
 
+.form-select {
+  max-width: 305px;
+}
+
 .form-timestamp {
   width: inherit;
   max-width: 305px;
 }
 
-.notice-form {
+.meeting-form {
   max-width: 840px;
   margin: auto;
 }
 
 @media (min-width: 1660px) {
-  .notice-form {
+  .meeting-form {
     display: flex;
     flex-wrap: wrap;
   }
 
-  .notice-text {
-    width: 720px;
+  .meeting-text {
+    width: 700px;
   }
 }
 
 @media (max-width: 1660px) {
-  .notice-form {
+  .meeting-form {
     text-align: center;
   }
 
-  .notice-text {
+  .meeting-text {
     width: 305px;
   }
 }
+
 </style>

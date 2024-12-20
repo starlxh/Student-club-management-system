@@ -15,7 +15,7 @@
     <el-table
       :key="tableKey"
       v-loading="listLoading"
-      :data="list"
+      :data="listFilter"
       border
       fit
       highlight-current-row
@@ -154,6 +154,11 @@ export default {
         categoryName: [{ required: true, message: '请输入社团类型名称', trigger: 'blur' }]
       },
       downloadLoading: false
+    }
+  },
+  computed: {
+    listFilter() {
+      return this.list.filter(item => item.categoryId > 0)
     }
   },
   created() {
