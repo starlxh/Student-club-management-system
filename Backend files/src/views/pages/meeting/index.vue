@@ -13,8 +13,7 @@
         </a>
       </div>
     </div>
-    <div class="footer-blank" />
-    <foot />
+    <foot footer-class="club-meeting"/>
   </div>
 </template>
 

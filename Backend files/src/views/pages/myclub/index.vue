@@ -47,7 +47,7 @@
         </div>
       </div>
       <!--底部-->
-      <foot />
+      <foot footer-class="normal" />
     </section>
 
     <!--核心内容end-->

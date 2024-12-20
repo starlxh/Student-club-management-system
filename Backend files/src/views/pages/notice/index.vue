@@ -1,6 +1,6 @@
 <template>
   <div>
-    <foot />
+    <foot footer-class="normal" />
   </div>
 </template>
 

@@ -27,7 +27,7 @@
           </div>
         </div>
       </section>
-      <foot />
+      <foot footer-class="normal"/>
     </div>
   </div>
 </template>

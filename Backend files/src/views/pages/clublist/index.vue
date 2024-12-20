@@ -46,8 +46,7 @@
       <br>
       <br>
       <br>
-      <div class="footer-blank" />
-      <foot />
+      <foot footer-class="club-list"/>
     </div>
   </div>
 </template>
