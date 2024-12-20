@@ -22,6 +22,8 @@ export default {
       console.error('无法加载 external_api.js 脚本')
     }
 
+    console.log(ocument.body)
+
     document.body.appendChild(script)
   },
   methods: {

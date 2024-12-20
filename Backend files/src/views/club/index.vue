@@ -247,7 +247,7 @@ export default {
   },
   methods: {
     getCaptainList() {
-      request.get('user/getAdminIdName').then(
+      request.get('user/queryAllAdminList').then(
         res => {
           if (res.code === 20000) {
             this.adminList = res.data

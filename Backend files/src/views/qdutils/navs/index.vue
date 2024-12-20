@@ -14,14 +14,14 @@
           <ul>
             <li><a href="#/">主页</a></li>
             <li><a href="#/clublist">社团列表</a></li>
+            <li><a href="#/meeting">社团会议</a></li>
             <li><a href="#/myclub">我的社团</a></li>
-            <li><a href="#/leave">在线留言</a></li>
             <li><a href="#/usercenter">个人中心</a></li>
             <li v-if="!role"><a href="#/login">登录</a></li>
-            <li v-if="role && role !== 'User'"><a href="#/users">后台管理</a></li>
+            <li v-if="role"><a href="#/users">后台管理</a></li>
             <div class="nav-box" />
-            <div class="ani-is-hidden animation">
-              <bgAnimation bg-animation-path="./animation/SunAnimation.json" />
+            <div class="ani-is-hidden nav-animation">
+              <bgAnimation bg-animation-path="./animation/SunAnimation.json" :speed="3" class-bind="animation" />
             </div>
           </ul>
         </div>
@@ -67,12 +67,13 @@ export default {
 </script>
 
 <style scoped>
-.animation {
+.nav-animation {
   position: absolute;
   top: 0px;
   left: 0px;
   height: 420px;
   background-color: rgb(253, 242, 221);
+  z-index: -1;
 }
 
 </style>

@@ -306,6 +306,7 @@ header-custom
   font-weight: bold;
   height: 70px;
   line-height: 70px;
+  z-index: 1;
 }
 
 .custom-nav-1 {
@@ -326,65 +327,66 @@ header-custom
 
 .custom-nav ul li a {
   color: rgb(102, 77, 240);
-  font: 100 20px;
+  font-weight: bold;
+  font-size: 16px;
   display: block;
   width: 100%;
   height: 100%;
   line-height: 70px;
 }
 
-.custom-nav ul li:hover{
+.custom-nav ul li:hover {
   font-weight: bold !important;
   transform: scale(1.5);
 }
 
-.nav-main .trigger{
+.nav-main .trigger {
   position: absolute;
-  font-size: 40px;
+  font-size: 30px;
   color: rgb(102, 77, 240);
-  top: 0px;
-  left: calc(100vw - 60px);
+  top: 10px;
+  left: calc(100vw - 65px);
   z-index: 999;
   transition: transform 1s ease;
 }
 
-.nav-main .trigger:hover{
+.nav-main .trigger:hover {
   transform: scale(1.1);
   border-radius: 5px;
   box-sizing: border-box;
-  padding: 0px 5px;
+  padding: 5px 8px;
   border: 3px black solid;
-  background-color: #eee;
+  background-color: #d1d8f8;
 }
 
-.nav-is-hidden{
+.nav-is-hidden {
   display: none;
 }
 
 @media (min-width: 767px) {
-  .custom-body{
+  .custom-body {
     height: 70px;
   }
 
-  .custom-nav-1{
+  .custom-nav-1 {
     margin: 0 auto;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
   }
 
-  .nav-main .trigger-is-hidden{
+  .nav-main .trigger-is-hidden {
     display: none;
   }
 
-  .ani-is-hidden{
+  .ani-is-hidden {
     display: none;
   }
 
-  .nav-is-hidden{
+  .nav-is-hidden {
     display: block;
   }
 
-  .nav-main .logo{
-    left: 30px;
+  .nav-main .logo {
+    left: 50px;
   }
 
   .custom-nav ul {
@@ -423,7 +425,7 @@ header-custom
 
   .custom-nav ul li:nth-child(2):hover~.nav-box {
     left: calc(100% / 6 * 1);
-    background-color: red;
+    background-color: #f5a425;
   }
 
   .custom-nav ul li:nth-child(3):hover~.nav-box {
@@ -465,51 +467,61 @@ header-custom
     position: relative;
     left: calc(100vw - 1230px);
   }
+
+  .custom-nav logo {
+    left: 120px;
+  }
 }
 
-@keyframes moveLeft {
+@keyframes moveDown {
   0% {
-      transform: translateX(100vw); /* 初始位置 */
+    opacity: 0;
+    transform: translateY(-100%);
   }
+
   100% {
-      transform: translateX(0); /* 向左移动 300px */
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .move-nav-left {
-  animation: moveLeft 2s ease-in-out; /* 动画持续2秒，缓动效果，循环播放 */
+  animation: moveDown 2s ease-in-out;
 }
 
-@keyframes moveRight {
+@keyframes moveUp {
   0% {
-      transform: translateX(0); /* 初始位置 */
+    opacity: 1;
+    transform: translateY(0);
   }
+
   100% {
-      transform: translateX(100vw); /* 向左移动 300px */
+    opacity: 0;
+    transform: translateY(-100%);
   }
 }
 
 .move-nav-right {
-  animation: moveRight 2s ease-in-out; /* 动画持续2秒，缓动效果，循环播放 */
+  animation: moveUp 2s ease-in-out;
 }
 
-
 @media (max-width: 767px) {
-  .custom-body{
+  .custom-body {
     width: 100vw;
     height: 420px;
   }
 
-  .nav-main .trigger-is-hidden{
+  .nav-main .trigger-is-hidden {
     display: inline;
   }
 
-  .nav-main .logo{
+  .nav-main .logo {
     top: 0px;
+    font-size: 24px;
     left: calc(50vw - 60px);
   }
 
-  .custom-nav-1{
+  .custom-nav-1 {
     top: 70px;
     height: 420px;
     width: 100%;
@@ -534,7 +546,7 @@ header-custom
   }
 
 
-  .custom-nav ul li:nth-child(1):hover~.nav-box{
+  .custom-nav ul li:nth-child(1):hover~.nav-box {
     top: calc(70px - 10px);
     background-color: red;
   }
@@ -1254,117 +1266,9 @@ contact us
 --------------------------------------------- 
 */
 
-section.contact-us {
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 140px 0px 0px 0px;
-}
-
-section.contact-us #contact {
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 40px;
-}
-
-section.contact-us #contact h2 {
-  text-transform: uppercase;
-  color: #1f272b;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-section.contact-us #contact input {
-  width: 100%;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #f7f7f7;
-  outline: none;
-  border: none;
-  box-shadow: none;
-  font-size: 13px;
-  font-weight: 500;
-  color: #7a7a7a;
-  padding: 0px 15px;
-  margin-bottom: 30px;
-}
-
-section.contact-us #contact textarea {
-  width: 100%;
-  min-height: 140px;
-  max-height: 180px;
-  border-radius: 20px;
-  background-color: #f7f7f7;
-  outline: none;
-  border: none;
-  box-shadow: none;
-  font-size: 13px;
-  font-weight: 500;
-  color: #7a7a7a;
-  padding: 15px;
-  margin-bottom: 30px;
-}
-
-section.contact-us #contact button {
-  font-size: 13px;
-  color: #fff;
-  background-color: #a12c2f;
-  padding: 12px 30px;
-  display: inline-block;
-  border-radius: 22px;
-  font-weight: 500;
-  text-transform: uppercase;
-  transition: all .3s;
-  border: none;
-  outline: none;
-}
-
-section.contact-us #contact button:hover {
-  opacity: 0.9;
-}
-
-section.contact-us .right-info {
-  background-color: #a12c2f;
-  border-radius: 20px;
-  padding: 40px;
-}
-
-section.contact-us .right-info ul li {
-  display: inline-block;
-  border-bottom: 1px solid rgba(250, 250, 250, 0.15);
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-}
-
-section.contact-us .right-info ul li:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-section.contact-us .right-info ul li h6 {
-  color: rgb(111, 69, 239);
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-section.contact-us .right-info ul li span {
-  display: block;
-  font-size: 18px;
-  color: rgb(111, 69, 239);
-  font-weight: 700;
-}
-
 .footer {
   text-align: center;
-  margin-top: 140px;
-  border-top: 1px solid rgba(250, 250, 250, 0.15);
-  padding: 50px 0px;
+  position: relative;
 }
 
 .footer p {
@@ -1373,241 +1277,95 @@ section.contact-us .right-info ul li span {
   color: rgb(111, 69, 239);
 }
 
-.footer p a {
-  color: #f5a425;
-}
-
 
 /*
 ---------------------------------------------
-heading pagetop
+custom-heading pagetop
 ---------------------------------------------
 */
 
-section.heading-page {
-  background-image: url(../images/heading-bg.jpg);
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding-top: 230px;
-  padding-bottom: 110px;
-  text-align: center;
-}
-
-section.heading-page h6 {
-  margin-top: 0px;
-  font-size: 15px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-section.heading-page h2 {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: 36px;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-
-/*
----------------------------------------------
-upcoming meetings page
----------------------------------------------
-*/
-
-section.meetings-page {
-  background-image: url(../images/meetings-page-bg.jpg);
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding-top: 140px;
-  padding-bottom: 0px;
-}
-
-section.meetings-page .filters {
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-section.meetings-page .filters li {
-  font-size: 13px;
-  color: #a12c2f;
-  background-color: #fff;
-  padding: 11px 30px;
-  display: inline-block;
-  border-radius: 22px;
-  font-weight: 600;
-  text-transform: uppercase;
-  transition: all .3s;
-  cursor: pointer;
-  margin: 0px 3px;
-}
-
-section.meetings-page .filters ul li.active,
-section.meetings-page .filters ul li:hover {
-  background-color: #a12c2f;
-  color: #fff;
-}
-
-section.meetings-page .pagination {
-  text-align: center;
-  width: 100%;
-  margin-top: 30px;
-  display: inline-block;
-}
-
-section.meetings-page .pagination ul li {
-  display: inline-block;
-}
-
-section.meetings-page .pagination ul li a {
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  border-radius: 10px;
-  color: #1f272b;
-  display: inline-block;
-  text-align: center;
-  line-height: 40px;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all .3s;
-}
-
-section.meetings-page .main-button-red {
-  text-align: center;
-}
-
-section.meetings-page .main-button-red a {
-  padding: 12px 60px;
-  text-align: center;
-  margin-top: 30px;
-}
-
-section.meetings-page .pagination ul li.active a,
-section.meetings-page .pagination ul li a:hover {
-  background-color: #a12c2f;
-  color: #fff;
-}
-
-.meeting-single-item .thumb {
+.club-list-page {
+  top: -50px;
+  margin: 0;
+  padding: 0;
+  font-family: 'Microsoft YaHei', Arial, sans-serif;
+  background-color: transparent;
   position: relative;
 }
 
-.meeting-single-item .thumb img {
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-}
-
-.meeting-single-item .thumb .price {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-}
-
-.meeting-single-item .thumb .price span {
-  font-size: 16px;
-  color: #1f272b;
-  font-weight: 600;
-  background-color: rgba(250, 250, 250, 0.9);
-  padding: 7px 12px;
-  border-radius: 10px;
-}
-
-.meeting-single-item .down-content {
-  background-color: #fff;
-  padding: 40px;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-}
-
-.meeting-single-item .thumb .date {
-  position: absolute;
-  background-color: rgba(250, 250, 250, 0.9);
-  width: 80px;
-  height: 80px;
+.head-page-top {
+  position: relative;
+  top: 100px;
+  background: linear-gradient(to bottom, rgba(79, 172, 254, 0.9), rgba(0, 242, 254, 0.7));
+  padding: 60px 20px;
   text-align: center;
-  padding: 15px 0px;
+  color: #fff;
   border-radius: 10px;
-  right: 20px;
-  top: 20px;
+  margin: 50px auto;
+  max-width: 800px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 1.5s ease-out;
 }
 
-.meeting-single-item .thumb .date h6 {
-  font-size: 13px;
+@media (max-width: 767px) {
+  .head-page-top  {
+    top: 80px;
+  }
+
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h6 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  font-weight: 600;
-  color: #a12c2f;
+  opacity: 0.9;
 }
 
-.meeting-single-item .thumb .date span {
+h2 {
+  margin: 10px 0;
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+h6::after {
+  content: '';
   display: block;
-  color: #1f272b;
-  font-size: 22px;
-  margin-top: 7px;
+  width: 50px;
+  height: 2px;
+  background-color: transparent;
+  margin: 10px auto;
 }
 
-.meeting-single-item .down-content h4 {
-  font-size: 22px;
-  color: #1f272b;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 15px;
+@media (max-width: 768px) {
+  h2 {
+    font-size: 28px;
+  }
+
+  section {
+    padding: 40px 10px;
+  }
 }
 
-.meeting-single-item .down-content h5 {
-  font-size: 18px;
-  color: #1f272b;
-  font-weight: 700;
-  display: inline-block;
-  margin-bottom: 15px;
-}
-
-.meeting-single-item .down-content p {
-  color: #1f272b;
-  font-size: 14px;
-}
-
-.meeting-single-item .down-content p.description {
-  margin-top: 40px;
-  padding-top: 40px;
-  border-top: 1px solid #eee;
-  margin-bottom: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid #eee;
-}
-
-.meeting-single-item .down-content .share {
-  margin-top: 40px;
-  padding-top: 40px;
-  border-top: 1px solid #eee;
-}
-
-.meeting-single-item .down-content .share h5 {
-  float: left;
-  margin-right: 10px;
-  margin-bottom: 0px;
-}
-
-.meeting-single-item .down-content .share ul li {
-  display: inline;
-}
-
-.meeting-single-item .down-content .share ul li a {
-  font-size: 14px;
-  color: #1f272b;
-  transition: all .3s;
-}
-
-.meeting-single-item .down-content .share ul li a:hover {
-  color: #f5a425;
-}
+/*
+---------------------------------------------
+custom-club page
+---------------------------------------------
+*/
 
 /* Meeting item column */
 .templatemo-item-col {

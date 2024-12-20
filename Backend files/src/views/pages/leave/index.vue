@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!--导航-->
-    <navs />
-    <!--核心内容start-->
-
     <section class="contact-us">
 
       <div class="container">
@@ -63,18 +59,13 @@
 
     </section>
 
-    <foot />
-
   </div>
 </template>
 
 <script>
-import navs from '../../qdutils/navs/index'
-import foot from '../../qdutils/footer/index'
 import request from '@/utils/request'
 export default {
   name: 'Index',
-  components: { navs, foot },
   data() {
     return {
       acitity: {},
