@@ -108,7 +108,23 @@ export const constantRoutes = [
     component: () => import('@/views/pages/notice/index'),
     hidden: true
   },
+  {
+    path: '/meeting',
+    component: () => import('@/views/pages/meeting/index'),
+    hidden: true
+  },
+  {
+    path: '/test',
+    component: () => import('@/views/pages/jitsimeet/index'),
+    hidden: true
+  }
+]
 
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
   {
     path: '/users',
     component: Layout,
@@ -121,33 +137,8 @@ export const constantRoutes = [
         meta: {
           title: '用户信息管理',
           icon: 'el-icon-user-solid',
-          noCache: true
-        }
-      }
-    ]
-  }
-
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes = [
-  {
-    path: '/admin',
-    component: Layout,
-    redirect: '/admin/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/admin/index'),
-        name: 'Admin',
-        meta: {
-          title: '管理员管理',
-          icon: 'el-icon-s-custom',
           noCache: true,
-          roles: ['Super']
+          roles: ['Super', 'Admin']
         }
       }
     ]

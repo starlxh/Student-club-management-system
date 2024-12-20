@@ -1,7 +1,7 @@
 <template>
   <div class="main-view">
-    <div class="animation">
-      <bgAnimation bg-animation-path="./animation/BgAnimation.json" />
+    <div class="main-animation">
+      <bgAnimation bg-animation-path="./animation/BgAnimation.json" :speed="3" class-bind="animation" />
     </div>
     <div class="main-box">
       <navs />
@@ -50,7 +50,7 @@ export default {
   position: relative;
 }
 
-.animation{
+.main-animation{
   position: absolute;
   z-index: 0;
   margin-top: -40px;

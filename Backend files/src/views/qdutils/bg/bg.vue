@@ -1,5 +1,5 @@
 <template>
-  <div ref="bgContainer" class="animation" />
+  <div ref="bgContainer" :class="classBind" />
 </template>
 
 <script>
@@ -11,6 +11,14 @@ export default {
     bgAnimationPath: {
       type: String,
       required: true
+    },
+    speed: {
+      type: Number,
+      required: true
+    },
+    classBind: {
+      type: String,
+      required: false
     }
   },
   mounted() {
@@ -22,7 +30,7 @@ export default {
       autoplay: true, // 是否自动播放
       path: this.bgAnimationPath // 动画文件的路径
     })
-    animation.setSpeed(2)
+    animation.setSpeed(this.speed)
   }
 }
 </script>
@@ -32,5 +40,11 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: -1;
+}
+
+.clubList{
+  width: 100%;
+  height: 100%;
+  z-index: -10;
 }
 </style>

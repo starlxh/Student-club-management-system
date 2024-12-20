@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <bgAnimation bg-animation-path="./animation/BgAnimation.json" />
+    <bgAnimation bg-animation-path="./animation/BgAnimation.json" :speed="3" class-bind="animation" />
     <backBtnAnimation
       back-btn-animation-path="./animation/BackBtnAnimation.json"
       back-url="/"
@@ -271,6 +271,16 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = false
+          request.post('login/register?captcha=' + this.registerForm.captcha, this.registerForm).then(
+            res => {
+              this.$notify({
+                title: '成功',
+                message: '注册成功！',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          )
         } else {
           console('fail')
         }

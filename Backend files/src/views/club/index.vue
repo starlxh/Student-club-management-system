@@ -251,15 +251,6 @@ export default {
     this.getList()
   },
   methods: {
-    // getCaptainList() {
-    //   request.get('user/getAdminIdName').then(
-    //     res => {
-    //       if (res.code === 20000) {
-    //         this.adminList = res.data
-    //       }
-    //     }
-    //   )
-    // },
     getCategoryList() {
       request.get('category/queryAllCategoryList').then(
         res => {

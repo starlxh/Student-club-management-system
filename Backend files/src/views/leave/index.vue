@@ -132,7 +132,7 @@ export default {
   directives: { waves },
   data() {
     return {
-      baseUrl: 'leave/',
+      baseUrl: 'leaveInfo/',
       tableKey: 0,
       list: null,
       clubList: null,
