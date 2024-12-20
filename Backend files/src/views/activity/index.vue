@@ -31,8 +31,7 @@
       </el-table-column>
       <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
-          <span v-else>无</span>
+          <el-image fit="cover" :src="row.images | imgSrc" />
         </template>
       </el-table-column>
       <el-table-column label="活动名称" width="150px" align="center">
@@ -96,7 +95,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :model="temp" label-position="right" label-width="80px" :disabled="formDisabled" class="activity-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images" />
+          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" />
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="temp.name" readonly />
@@ -142,7 +141,7 @@
           <el-input v-model.number="temp.name" />
         </el-form-item>
         <el-form-item label="活动社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
@@ -156,8 +155,8 @@
           <el-input v-model.number="temp.tel" />
         </el-form-item>
         <el-form-item label="活动主持" prop="hostId">
-          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
-            <el-option v-for="item in hostList" :key="item.clubMemberId" :label="item.realName" :value="item.clubMemberId" />
+          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in hostList" :key="item.userId" :label="item.realName" :value="item.userId" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动详情" prop="acInfo">
@@ -203,6 +202,7 @@ import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
@@ -224,6 +224,9 @@ export default {
         2: '已拒绝'
       }
       return statusMap[status]
+    },
+    imgSrc(url) {
+      return getImgUrlHeader() + url
     }
   },
   data() {
@@ -324,9 +327,6 @@ export default {
       this.temp = {
         user: {}
       }
-    },
-    handleClubChange() {
-      console.log(this.temp.clubId)
     },
     handleCreate() {
       this.resetTemp()

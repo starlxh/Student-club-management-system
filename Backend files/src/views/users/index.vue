@@ -25,12 +25,6 @@
           <span>{{ row.userId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="头像" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
-          <span v-else>无</span>
-        </template>
-      </el-table-column>
       <el-table-column label="真实姓名" width="150px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.realName }}</span>
@@ -82,7 +76,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="admin-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images" />
+          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" />
         </el-form-item>
         <el-form-item label="成员昵称" prop="userName">
           <el-input v-model="temp.userName" readonly />
@@ -140,6 +134,7 @@ import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
@@ -153,6 +148,9 @@ export default {
         2: 'success'
       }
       return statusMap[status]
+    },
+    imgSrc(url) {
+      return getImgUrlHeader() + url
     }
   },
   data() {

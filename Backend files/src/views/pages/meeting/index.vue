@@ -21,7 +21,6 @@
 <script>
 import navs from '../../qdutils/navs/index'
 import foot from '../../qdutils/footer/index'
-import 'font-awesome/css/font-awesome.min.css'
 
 export default {
   name: 'Index',

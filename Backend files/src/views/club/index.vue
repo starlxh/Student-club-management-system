@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
+          <el-image v-if="row.images" fit="cover" :src="row.images | imgSrc" />
           <span v-else>无</span>
         </template>
       </el-table-column>
@@ -186,6 +186,7 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import request from '@/utils/request'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
@@ -198,6 +199,9 @@ export default {
         1: 'success'
       }
       return statusMap[status]
+    },
+    imgSrc(url) {
+      return getImgUrlHeader() + url
     }
   },
   data() {
@@ -246,7 +250,6 @@ export default {
     }
   },
   created() {
-    // this.getCaptainList()
     this.getCategoryList()
     this.getList()
   },
