@@ -3,8 +3,7 @@
     <div class="filter-container">
       <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
-        <el-option label="系统管理员" value="2" />
-        <el-option label="社团管理员" value="1" />
+        <el-option v-for="item in typeOptions" :key="item.id" :label="item.value" :value="item.id" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
@@ -27,12 +26,6 @@
       <el-table-column label="编号" prop="adminId" sortable="custom" align="center" width="120px">
         <template slot-scope="{row}">
           <span>{{ row.userId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="头像" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
-          <span v-else>无</span>
         </template>
       </el-table-column>
       <el-table-column label="真实姓名" width="150px" align="center">
@@ -85,14 +78,11 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="admin-form">
-        <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images" />
+        <el-form-item label="成员昵称" prop="userName">
+          <el-input v-model="temp.userName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
           <el-input v-model="temp.realName" readonly :disabled="formDisabled" />
-        </el-form-item>
-        <el-form-item label="成员昵称" prop="userName">
-          <el-input v-model="temp.userName" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-input v-model="temp.sex" readonly :disabled="formDisabled" />
@@ -113,10 +103,13 @@
           <el-input v-model="temp.wx" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-input v-model="temp.status" :readonly="dialogFormReadonly" />
+          <el-input v-if="dialogStatus==='detail'" v-model="temp.status" :readonly="dialogFormReadonly" />
+          <el-select v-else-if="dialogStatus==='update'" v-model="temp.status" placeholder="修改状态" class="form-select">
+            <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" readonly :disabled="formDisabled" />
+          <el-input v-model.number="temp.password" readonly :disabled="formDisabled" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -189,7 +182,6 @@ export default {
       tableKey: 0,
       list: null,
       clubList: null,
-      userList: null,
       total: 0,
       listLoading: true,
       listQuery: {
@@ -201,7 +193,12 @@ export default {
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
+      statusOptions: [
+        { id: 0, value: '禁用' },
+        { id: 1, value: '正常' }],
+      typeOptions: [
+        { id: 1, value: '社团管理员' },
+        { id: 2, value: '系统管理员' }],
       showReviewer: false,
       temp: {
         user: {}
@@ -234,6 +231,7 @@ export default {
   },
   created() {
     this.getClubList()
+    this.getList()
   },
   methods: {
     getList() {
@@ -242,11 +240,6 @@ export default {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
-      })
-    },
-    getUserList() {
-      request.get(this.baseUrl + 'queryUserList', { params: this.listQuery }).then(res => {
-        this.clubList = res.data
       })
     },
     getClubList() {
@@ -329,7 +322,6 @@ export default {
       this.dialogFormReadonly = false
       this.formDisabled = true
       this.placeholder = ''
-      this.temp.type = this.temp.type === 2 ? '系统管理员' : '社团管理员'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -363,7 +355,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteById?clubMemberId=' + row.clubMemberId).then(
+      request.delete(this.baseUrl + 'deleteAdminById?adminId=' + row.adminId).then(
         res => {
           if (res.code === 20000) {
             this.$notify({
