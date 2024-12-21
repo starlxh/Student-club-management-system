@@ -155,7 +155,7 @@
 
     </section>
 
-    <foot footer-class="normal"/>
+    <foot footer-class="normal" />
 
     <!--核心内容end-->
 

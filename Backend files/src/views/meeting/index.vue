@@ -266,7 +266,7 @@ export default {
         if (valid) {
           this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
           this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addMeettingInfo', JSON.parse(JSON.stringify(this.temp, ['title', 'startTime', 'endTime', 'clubId']))).then(
+          request.post(this.baseUrl + 'addMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['title', 'startTime', 'endTime', 'clubId']))).then(
             res => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {

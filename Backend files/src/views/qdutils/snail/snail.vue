@@ -1,14 +1,14 @@
 <template>
-  <div ref="sunContainer" />
+  <div ref="snailContainer" class="animation" />
 </template>
 
 <script>
 import lottie from 'lottie-web'
 
 export default {
-  name: 'SunAnimation',
+  name: 'SnailAnimation',
   props: {
-    sunAnimationPath: {
+    snailAnimationPath: {
       type: String,
       required: true
     }
@@ -16,15 +16,19 @@ export default {
   mounted() {
     // 初始化 Lottie 动画
     lottie.loadAnimation({
-      container: this.$refs.sunContainer, // DOM 节点
+      container: this.$refs.snailContainer, // DOM 节点
       renderer: 'svg', // 渲染类型
       loop: true, // 是否循环
       autoplay: true, // 是否自动播放
-      path: this.sunAnimationPath // 动画文件的路径
+      path: this.snailAnimationPath // 动画文件的路径
     })
   }
 }
 </script>
 
-  <style scoped>
-  </style>
+<style scoped>
+    .animation{
+        width: 100%;
+        height: auto;
+    }
+</style>

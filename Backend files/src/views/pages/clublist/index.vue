@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="club-animation">
-      <bgAnimation bg-animation-path="./animation/BgAnimation1.json" class-bind="clubList" :speed="0.3" />
+      <bgAnimation bg-animation-path="./animation/BgAnimation1.json" class-bind="clubList" :speed="0.2" />
     </div>
     <div class="club-list-page">
       <navs />
@@ -21,8 +21,10 @@
           <div v-for="club in clubList" :key="club.clubId" class="single-card-container">
             <div class="card">
               <img :src="getImgUrlHeader() + club.images" alt="社团图片">
-              <h4>{{ club.clubName }}</h4>
-              <p>社长：{{ club.captainName }}</p>
+              <div class="card-text">
+                <h4>{{ club.clubName }}</h4>
+                <p>社长：{{ club.captainName }}</p>
+              </div>
             </div>
             <div class="card-back">
               <h2>{{ club.clubName }}</h2>
@@ -46,7 +48,7 @@
       <br>
       <br>
       <br>
-      <foot footer-class="club-list"/>
+      <foot footer-class="club-list" />
     </div>
   </div>
 </template>
@@ -122,6 +124,7 @@ export default {
 .club-list-container {
   position: relative;
   top: 70px;
+  padding: 0;
 }
 
 .card-container {
@@ -130,20 +133,75 @@ export default {
   margin: 0 auto;
 }
 
-@media (min-width: 767px) {
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
 
+.single-card-container {
+  position: relative;
+  perspective: 1000px;
+}
+
+.card {
+  background-color: rgba(164, 196, 231, 0.3);
+}
+
+.card,
+.card-back {
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 15px;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
+
+.card-text {
+  width: 100%;
+  height: 50px;
+}
+
+.card-container {
+  gap: 30px;
+  width: calc(70vw);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card img {
+  height: calc((70vw - 60px) / 3);
+}
+
+.card,
+.card-back {
+  height: calc((70vw - 60px) / 3 + 100px);
+}
+
+@media (min-width: 767px) {
   .club-animation {
     width: 108vw;
     top: 0px;
   }
 
-  .card-container {
-    gap: 30px;
-    padding: 30px;
-    width: calc(70vw);
-    grid-template-columns: repeat(3, 1fr);
-  }
+  /* .card img {
+    height: calc();
+  } */
 
+}
+
+@media(max-width: 1700px) {
+  .club-animation {
+    width: 200vw;
+    top: 0px;
+  }
+}
+
+@media(max-width: 1200px) {
+  .club-animation {
+    width: 220vw;
+    top: 0px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -154,44 +212,42 @@ export default {
 
   .card-container {
     gap: 20px;
-    padding: 15px;
-    width: calc(90vw);
+    width: calc(70vw);
     grid-template-columns: repeat(1, 1fr);
   }
 
-}
+  .card img {
+    height: calc(70vw - 30px);
+  }
 
-.single-card-container {
-  position: relative;
-  perspective: 1000px;
-}
-
-.card,
-.card-back {
-  position: relative;
-  height: 350px;
-  background-color: rgba(100, 180, 252, 0.8);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  padding: 15px;
-  transform-style: preserve-3d;
-  transition: transform 1s ease;
+  .card,
+  .card-back {
+    height: calc((70vw - 30px) + 100px);
+  }
 }
 
 @media (min-width: 2000px) {
 
-.club-animation {
-  width: 108vw;
-  top: 0px;
-}
+  .club-animation {
+    width: 108vw;
+    top: 0px;
+  }
 
-.card-container {
-  gap: 80px;
-  padding: 30px;
-  width: calc(70vw);
-  grid-template-columns: repeat(3, 1fr);
-}
+  .card-container {
+    gap: 40px;
+    width: 60vw;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card img {
+    height: calc((60vw - 110px) / 3);
+  }
+
+  .card,
+  .card-back {
+    height: calc((60vw - 110px) / 3 + 100px);
+  }
+
 }
 
 .card-back {
@@ -256,13 +312,6 @@ export default {
   transform: scale(1.05);
 }
 
-.card img {
-  width: 100%;
-  height: 250px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
 .single-card-container:hover .card {
   transform: translateY(-10px) rotateY(-180deg);
   z-index: -1;
@@ -287,7 +336,7 @@ export default {
 }
 
 .pagination-container {
-  margin: 10px calc(15vw + 20px);
+  margin: 30px calc(15vw + 20px);
   padding: 0;
   background-color: rgba(100, 180, 252, 0.8);
   border-radius: 8px;

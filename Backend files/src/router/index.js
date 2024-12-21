@@ -94,7 +94,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/leave',
+    path: '/leave_front',
     component: () => import('@/views/pages/leave/index'),
     hidden: true
   },
@@ -104,12 +104,12 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/notice',
+    path: '/notice_front',
     component: () => import('@/views/pages/notice/index'),
     hidden: true
   },
   {
-    path: '/meeting',
+    path: '/meet',
     component: () => import('@/views/pages/meeting/index'),
     hidden: true
   },

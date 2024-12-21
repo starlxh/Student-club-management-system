@@ -14,7 +14,7 @@
           <ul>
             <li><a href="#/">主页</a></li>
             <li><a href="#/clublist">社团列表</a></li>
-            <li><a href="#/meeting">社团会议</a></li>
+            <li><a href="#/meet">社团会议</a></li>
             <li><a href="#/myclub">我的社团</a></li>
             <li><a href="#/usercenter">个人中心</a></li>
             <li v-if="!role"><a href="#/login">登录</a></li>

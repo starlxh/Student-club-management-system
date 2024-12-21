@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>社团在线会议Demo</h1>
-    <div id="meet" style="height: 500px;" />
+    <div id="meet" class="meet-container" />
   </div>
 </template>
 
@@ -41,7 +40,7 @@ export default {
       const options = {
         roomName: 'MyFreeMeetingRoom', // 自定义会议室名称
         width: '100%',
-        height: 500,
+        height: '100%',
         parentNode: document.querySelector('#meet'), // 容器 ID
         configOverwrite: {
           disableDeepLinking: true // 禁用移动设备强制下载 App
@@ -96,7 +95,8 @@ export default {
 </script>
 
 <style scoped>
-#meet {
-  border: 1px solid #ddd;
+.meet-container{
+  width: 100%;
+  height: 100vh;
 }
 </style>
