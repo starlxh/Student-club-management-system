@@ -50,21 +50,40 @@
                   <div class="tag">用户昵称</div>
                   <div class="content">
                     <span class="label">{{ userInfo.userName }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="
+                        handleEdit(userInfo.userName, '用户昵称', 'userName')
+                      "
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">真实名称</div>
                   <div class="content">
                     <span class="label">{{ userInfo.realName }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="
+                        handleEdit(userInfo.realName, '真实姓名', 'realName')
+                      "
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">用户性别</div>
                   <div class="content">
                     <span class="label">{{ userInfo.sex }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit(userInfo.sex, '用户性别', 'sex')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
@@ -73,14 +92,14 @@
                     <span v-if="userInfo.type === 0" class="label">普通用户</span>
                     <span v-else-if="userInfo.type === 1" class="label">社团管理员</span>
                     <span v-else-if="userInfo.type === 2" class="label">系统管理员</span>
-                    <button class="jelly-btn">修改</button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">创建时间</div>
                   <div class="content">
-                    <span class="label">{{ userInfo.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <span class="label">{{
+                      userInfo.createTime | parseTime("{y}-{m}-{d} {h}:{i}")
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -92,28 +111,48 @@
                   <div class="tag">QQ号</div>
                   <div class="content">
                     <span class="label">{{ userInfo.qq }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit(userInfo.qq, 'QQ号', 'qq')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">微信号</div>
                   <div class="content">
                     <span class="label">{{ userInfo.wx }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit(userInfo.wx, '微信号', 'wx')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">电话号码</div>
                   <div class="content">
                     <span class="label">{{ userInfo.tel }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit(userInfo.tel, '电话号码', 'tel')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
                   <div class="tag">邮箱</div>
                   <div class="content">
                     <span class="label">{{ userInfo.email }}</span>
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit('', '邮箱', 'email')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
               </div>
@@ -140,9 +179,14 @@
                     <tr v-for="item in tempList" :key="item.leaveInfoId">
                       <td>{{ item.clubName }}</td>
                       <td class="table-content">{{ item.content }}</td>
-                      <td>{{ item.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</td>
+                      <td>{{ item.createTime | parseTime("{y}-{m}-{d} {h}:{i}") }}</td>
                       <td>
-                        <button class="button" @click.prevent="deleteLeaveInfo(item.leaveInfoId)">删除</button>
+                        <button
+                          class="button"
+                          @click.prevent="deleteLeaveInfo(item.leaveInfoId)"
+                        >
+                          删除
+                        </button>
                       </td>
                     </tr>
                     <div v-if="leaveInfoList == 0" class="empty-words" />
@@ -156,7 +200,23 @@
                 <div class="item">
                   <div class="tag">个人头像管理</div>
                   <div class="content">
-                    <button class="jelly-btn">修改</button>
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit('', '个人头像', 'image')"
+                    >
+                      修改
+                    </button>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="tag">修改密码</div>
+                  <div class="content">
+                    <button
+                      class="jelly-btn"
+                      @click.prevent="handleEdit('', '密码', 'password')"
+                    >
+                      修改
+                    </button>
                   </div>
                 </div>
                 <div class="item">
@@ -170,8 +230,71 @@
           </section>
         </main>
       </div>
-
     </div>
+
+    <el-dialog :visible.sync="dialogFormVisible" class="custom-dialog">
+      <el-form ref="editForm" :model="editForm" :rules="editRlues" class="custom-form">
+        <el-form-item prop="value">
+          <span class="form-label">{{ editForm.label }}</span>
+
+          <div
+            v-if="editForm.label == '密码' || editForm.label == '邮箱'"
+            class="input-pwd-container"
+          >
+            <el-input
+              v-model="editForm.value"
+              autocomplete="off"
+              class="custom-input pwd-input"
+              :show-password="passwordType"
+              :placeholder="editForm.label == '密码' ? '请输入新密码' : '请输入新邮箱'"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType ? 'eye' : 'eye-open'" />
+            </span>
+          </div>
+          <el-upload
+            v-else-if="editForm.label == '个人头像'"
+            class="avatar-uploader"
+            :action="getImgUrlHeader() + '/public/uploadImg?type=0'"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="getImgUrlHeader() + imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
+          <el-input
+            v-else
+            v-model="editForm.value"
+            autocomplete="off"
+            class="custom-input"
+          />
+        </el-form-item>
+
+        <el-form-item
+          v-if="editForm.label == '密码' || editForm.label == '邮箱'"
+          prop="captcha"
+        >
+          <el-input
+            v-model="editForm.captcha"
+            name="captcha"
+            autocomplete="off"
+            class="custom-input captcha-input"
+            :show-password="passwordType"
+            placeholder="请获取验证码"
+          />
+          <button class="captcha-button" @click.prevent="handleCaptcha">
+            获取验证码
+          </button>
+        </el-form-item>
+      </el-form>
+      <div class="dialog-footer">
+        <button class="cancel-button" @click.prevent="dialogFormVisible = false">
+          取 消
+        </button>
+        <button class="confirm-button" @click.prevent="checkEditData">确 定</button>
+      </div>
+    </el-dialog>
 
     <foot footer-class="user-center" />
   </div>
@@ -184,6 +307,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import request from '@/utils/request'
 import { getImgUrlHeader } from '@/utils/imagespath'
 import { parseTime } from '@/utils'
+import store from '@/store'
 export default {
   name: 'Index',
   components: { navs, foot },
@@ -195,7 +319,21 @@ export default {
       },
       leaveInfoList: false,
       tempList: null,
-      searchContent: ''
+      searchContent: '',
+      dialogFormVisible: false,
+      editForm: {
+        label: '',
+        value: ''
+      },
+      passwordType: false,
+      fileList: [],
+      imageUrl: '',
+      isImgUpload: false,
+      lastName: '',
+      editRlues: {
+        value: [{ required: true, message: '值不能为空哦', trigger: 'blur' }],
+        captcha: [{ required: true, message: '需要验证码', trigger: 'blur' }]
+      }
     }
   },
   mounted() {
@@ -219,7 +357,7 @@ export default {
           }
           this.curIndex = index
         } else {
-          if (!(contentBoxs[i].classList.contains('hidden'))) {
+          if (!contentBoxs[i].classList.contains('hidden')) {
             if (i < index) {
               contentBoxs[i].classList.add('content-move-up')
               setTimeout(() => {
@@ -255,54 +393,143 @@ export default {
     parseTime,
     getImgUrlHeader,
     getUserInfo() {
-      request.get('user/getUserInfoById').then(
-        res => {
-          if (res.code === 20000) {
-            this.userInfo = res.data
-          }
+      request.get('user/getUserInfoById').then((res) => {
+        if (res.code === 20000) {
+          this.userInfo = res.data
         }
-      )
+      })
     },
     getLeaveInfoList() {
-      request.get('leaveInfo/queryLeaveInfoListByUserId').then(
-        res => {
-          if (res.code === 20000) {
-            this.leaveInfoList = res.data
-            this.tempList = this.leaveInfoList
-          }
+      request.get('leaveInfo/queryLeaveInfoListByUserId').then((res) => {
+        if (res.code === 20000) {
+          this.leaveInfoList = res.data
+          this.tempList = this.leaveInfoList
         }
-      )
+      })
     },
     filteredItems() {
       this.tempList = this.leaveInfoList
-      this.tempList = this.tempList.filter(item =>
-        item.clubName.toLowerCase().includes(this.searchContent.toLowerCase()) // 根据 name 筛选
+      this.tempList = this.tempList.filter(
+        (item) => item.clubName.toLowerCase().includes(this.searchContent.toLowerCase()) // 根据 name 筛选
       )
     },
     deleteLeaveInfo(id) {
-      alert(id)
-      request.delete('leaveInfo/deleteById', {
-        params: {
-          leaveInfoId: id
-        }
-      }).then(
-        res => {
+      request
+        .delete('leaveInfo/deleteById', {
+          params: {
+            leaveInfoId: id
+          }
+        })
+        .then((res) => {
           if (res.code === 20000) {
-            this.leaveInfoList = this.leaveInfoList.filter(item => item.leaveInfoId !== id)
-            this.tempList = this.leaveInfoList
+            this.getLeaveInfoList()
             this.filteredItems()
             this.$message({
               message: `删除成功`,
               type: 'success'
             })
           }
-        }
-      )
+        })
     },
     loginOut() {
       request.post('login/loginOut').then(() => {
+        store.commit('user/SET_ROLES', '')
         this.$router.push({ path: '/' })
       })
+    },
+    checkEditData() {
+      this.$confirm(`此操作将修改${this.editForm.label}, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.editData()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消修改'
+          })
+        })
+    },
+    handleEdit(value, label, name) {
+      this.editForm.value = value
+      this.editForm.label = label
+      this.editForm.name = name
+
+      this.dialogFormVisible = true
+      this.$refs.editForm.clearValidate()
+    },
+    editData() {
+      const temp = {}
+      if (this.editForm.name === 'image') {
+        if (this.isImgUpload) {
+          this.isImgUpload = false
+          temp['image'] = this.imageUrl
+          request.post('user/editUser', temp).then(() => {
+            this.getUserInfo()
+            this.$message({
+              message: `修改${this.editForm.label}成功!`,
+              type: 'success'
+            })
+          })
+          this.dialogFormVisible = false
+        } else {
+          this.$message.error(`修改${this.editForm.label}失败!`)
+        }
+      } else {
+        temp[`${this.editForm.name}`] = this.editForm.value
+        if (this.editForm.name === 'password' || this.editForm.name === 'email') {
+          temp['captcha'] = this.editForm.captcha
+        }
+        this.$refs.editForm.validate((valid) => {
+          if (valid) {
+            request
+              .post('user/editUser', temp)
+              .then(() => {
+                this.getUserInfo()
+                this.$message({
+                  message: `修改${this.editForm.label}成功!`,
+                  type: 'success'
+                })
+                this.dialogFormVisible = false
+              })
+              .catch(() => {
+                this.$message.error(`修改${this.editForm.label}失败!`)
+              })
+          }
+        })
+      }
+    },
+    showPwd() {
+      this.passwordType = !this.passwordType
+    },
+    handleAvatarSuccess(res) {
+      this.imageUrl = res.data
+      this.isImgUpload = true
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 或 png 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    handleCaptcha() {
+      request
+        .post('login/sendCaptcha?type=2&token=' + this.$store.getters.token)
+        .then((res) => {
+          this.$message({
+            message: '已发送验证码到您的邮箱！',
+            type: 'success'
+          })
+        })
     }
   }
 }
@@ -315,9 +542,11 @@ export default {
 /* -------背景圆点------ */
 .sec1_circle1 {
   background: white;
-  background: linear-gradient(to right bottom,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0.3));
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
   height: 20rem;
   width: 20rem;
   position: absolute;
@@ -328,9 +557,11 @@ export default {
 
 .sec1_circle2 {
   background: white;
-  background: linear-gradient(to right bottom,
-      rgba(255, 255, 255, 0.8),
-      rgba(247, 255, 174, 0.3));
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(247, 255, 174, 0.3)
+  );
   height: 20rem;
   width: 20rem;
   position: absolute;
@@ -341,9 +572,11 @@ export default {
 
 .sec1_circle3 {
   background: white;
-  background: linear-gradient(to right bottom,
-      rgba(248, 202, 202, 0.8),
-      rgba(255, 255, 255, 0.3));
+  background: linear-gradient(
+    to right bottom,
+    rgba(248, 202, 202, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
   height: 20rem;
   width: 20rem;
   position: absolute;
@@ -357,7 +590,11 @@ export default {
 /* 内容区域 */
 .body {
   height: 100vh;
-  background-image: linear-gradient(45deg, rgba(163, 255, 231, 0.6), rgba(255, 193, 179, 0.6));
+  background-image: linear-gradient(
+    45deg,
+    rgba(163, 255, 231, 0.6),
+    rgba(255, 193, 179, 0.6)
+  );
 }
 
 main {
@@ -439,12 +676,12 @@ main {
   font-weight: bold;
 }
 
-.main_left>div:hover {
+.main_left > div:hover {
   background-color: rgba(215, 245, 233, 1);
 }
 
 .main_left:hover {
-  transition: .5s;
+  transition: 0.5s;
   transform: scale(1.01);
 }
 
@@ -729,7 +966,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .header .input-group input {
@@ -825,7 +1062,7 @@ main {
 }
 
 .empty-words::before {
-  content: '好像没有在线留言过!';
+  content: "好像没有在线留言过!";
   position: absolute;
   display: block;
   font-size: 20px;
@@ -866,6 +1103,215 @@ main {
   max-width: 250px;
 }
 
+/* 编辑表单 */
+.custom-dialog {
+  border-radius: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(3px) saturate(180%);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 182, 193, 0.4);
+  z-index: 1;
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.custom-dialog >>> .el-dialog__header {
+  padding: 10;
+}
+
+.custom-dialog >>> .el-dialog__body {
+  padding: 20px 15px;
+}
+
+.form-label {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #6c7ae0;
+  height: 30px;
+}
+
+.custom-dialog >>> .el-dialog__close:hover {
+  color: #6c7ae0;
+  transition: 0.5s;
+  transform: rotate(180deg) scale(1.2);
+}
+
+.custom-input >>> .el-input__inner {
+  position: relative;
+  top: 30px;
+  left: 25%;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  border: 2px solid #6c7ae0;
+  width: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, width 0.5s,
+    left 0.5s;
+}
+
+.custom-input >>> .el-input__inner:hover {
+  width: 80%;
+  left: 10%;
+  background-color: rgba(91, 44, 188, 0.1);
+}
+
+.custom-input >>> .el-input__inner:focus {
+  border-color: #6c7ae0;
+  box-shadow: 0 0 10px rgba(124, 110, 152, 0.6);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.custom-dialog .pwd-input >>> .el-input__inner {
+  width: 80%;
+  left: 10%;
+}
+
+.custom-dialog .captcha-input >>> .el-input__inner {
+  width: 40%;
+  left: 10%;
+}
+
+.custom-dialog .show-pwd {
+  position: absolute;
+  top: 30px;
+  margin-top: 10px;
+  left: 85%;
+}
+
+.custom-dialog >>> .el-input__icon {
+  display: none;
+}
+
+.dialog-footer {
+  justify-content: flex-end;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.cancel-button,
+.confirm-button,
+.captcha-button {
+  padding: 12px 25px;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+  font-weight: bold;
+}
+
+.captcha-button {
+  background-color: #6cb7f5;
+  color: white;
+  margin-right: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding: 0;
+  height: 36px;
+  line-height: 36px;
+  width: 30%;
+  left: calc(55%);
+  top: -35px;
+  letter-spacing: 10px;
+}
+
+.captcha-button:hover {
+  background-color: #47a5f1;
+  transform: scale(1.1);
+}
+
+.cancel-button {
+  background-color: #f56c6c;
+  color: white;
+  margin-right: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-button:hover {
+  background-color: #f78989;
+  transform: scale(1.1);
+}
+
+.confirm-button {
+  background-color: #67c23a;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-button:hover {
+  background-color: #85e58c;
+  transform: scale(1.1);
+}
+
+.avatar-uploader >>> .el-upload {
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  top: 30px;
+  left: calc(50% - 89px);
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.avatar-uploader >>> .el-upload:hover {
+  border-color: #6c7ae0;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.el-form >>> .el-form-item__error {
+  color: #e74c3c;
+  font-weight: bold;
+  background: rgba(231, 76, 60, 0.1);
+  padding: 3px 6px;
+  border-radius: 4px;
+  left: 25%;
+  top: 80px;
+  line-height: 1.5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: 0.5s;
+}
+
+.el-form >>> .el-form-item__error:hover {
+  background: rgba(231, 76, 60, 0.2);
+  transform: scale(1.05);
+}
+
+.el-form-item:hover >>> .el-form-item__error {
+  left: 10%;
+}
+
+/* 不同分辨率适配 */
+
 @media (min-width: 1800px) {
   .table-shell::-webkit-scrollbar {
     width: 20px;
@@ -887,7 +1333,6 @@ main {
 }
 
 @media (max-width: 1800px) {
-
   .styled-table th,
   .styled-table td {
     padding: 12px 15px;
@@ -948,18 +1393,16 @@ main {
     font-size: 10px;
     padding: 5px 5px;
   }
-
 }
 
-@media(min-width: 767px) {
+@media (min-width: 767px) {
   .main_left {
     flex-direction: column;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   }
 }
 
-@media(max-width: 767px) {
-
+@media (max-width: 767px) {
   main {
     width: 100%;
     overflow: visible;
@@ -989,7 +1432,7 @@ main {
     overflow: hidden;
   }
 
-  .main_left>div:nth-child(1):hover {
+  .main_left > div:nth-child(1):hover {
     background-color: transparent;
   }
 
@@ -1048,25 +1491,63 @@ main {
 
   .label {
     position: absolute;
-    width: calc(90vw * 0.9);
+    width: calc(90vw * 0.9 + 10px);
     height: 50%;
     line-height: calc(((70vh - 30px * 4 - 20px) / 5 - 40px) * 0.5);
     top: 25%;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
     color: #555;
   }
 
   .jelly-btn {
-    border-radius: 25px;
+    border-radius: 10px;
     padding: 4px 6px;
-    font-size: 14px;
+    font-size: 10px;
   }
 
   .table-content {
     overflow: hidden;
     max-width: 80px;
+  }
+
+  .custom-dialog >>> .el-dialog {
+    width: 90vw;
+  }
+
+  .custom-input >>> .el-input__inner {
+    left: 15%;
+    width: 70%;
+  }
+
+  .custom-dialog .pwd-input >>> .el-input__inner {
+    width: 90%;
+    left: 5%;
+  }
+
+  .custom-input >>> .el-input__inner:hover {
+    left: 5%;
+    width: 90%;
+  }
+
+  .custom-dialog .captcha-input >>> .el-input__inner {
+    width: 45%;
+    left: 5%;
+  }
+
+  .captcha-button {
+    width: 35%;
+    left: calc(57.5%);
+    letter-spacing: 2px;
+  }
+
+  .el-form >>> .el-form-item__error {
+    left: 15%;
+  }
+
+  .el-form-item:hover >>> .el-form-item__error {
+    left: 5%;
   }
 }
 </style>

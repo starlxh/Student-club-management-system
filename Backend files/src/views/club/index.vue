@@ -148,7 +148,7 @@
         <el-form-item label="社团图片">
           <el-upload
             class="avatar-uploader"
-            :action="baseUrl + 'uploadImg'"
+            :action="getImgUrlHeader() + '/public/uploadImg?type=1'"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"

@@ -361,12 +361,12 @@ header-custom
   }
 
   .custom-nav ul {
-    width: 1200px;
+    width: 1400px;
     height: 100%;
     display: flex;
     align-items: center;
     position: relative;
-    left: calc(100vw - 1230px);
+    left: calc(100vw - 1430px);
   }
 
   .custom-nav ul .nav-box {
@@ -382,7 +382,7 @@ header-custom
     position: absolute;
     bottom: 0;
     left: 0;
-    width: calc((100% / 6)*1);
+    width: calc((100% / 7)*1);
     height: 5px;
     border-radius: 2px;
     transition: .5s;
@@ -390,32 +390,37 @@ header-custom
 
 
   .custom-nav ul li:nth-child(1):hover~.nav-box {
-    left: calc(100% / 6 * 0);
+    left: calc(100% / 7 * 0);
     background-color: red;
   }
 
   .custom-nav ul li:nth-child(2):hover~.nav-box {
-    left: calc(100% / 6 * 1);
+    left: calc(100% / 7 * 1);
     background-color: #f5a425;
   }
 
   .custom-nav ul li:nth-child(3):hover~.nav-box {
-    left: calc(100% / 6 * 2);
+    left: calc(100% / 7 * 2);
     background-color: #d1d8f8;
   }
 
   .custom-nav ul li:nth-child(4):hover~.nav-box {
-    left: calc(100% / 6 * 3);
+    left: calc(100% / 7 * 3);
     background-color: #ffb1b1;
   }
 
   .custom-nav ul li:nth-child(5):hover~.nav-box {
-    left: calc(100% / 6 * 4);
+    left: calc(100% / 7 * 4);
     background-color: #8da1f8;
   }
 
   .custom-nav ul li:nth-child(6):hover~.nav-box {
-    left: calc(100% / 6 * 5);
+    left: calc(100% / 7 * 5);
+    background-color: #7df8dd;
+  }
+
+  .custom-nav ul li:nth-child(7):hover~.nav-box {
+    left: calc(100% / 7 * 6);
     background-color: #7df88e;
   }
 

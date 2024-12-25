@@ -1,15 +1,15 @@
 <template>
-  <div style="background-color: #ff7575;">
+  <div style="background-color: rgba(223, 115, 115, 0.3)">
     <div class="nav-box">
       <navs />
     </div>
     <div class="search-container">
       <div class="shell">
-        <input v-model="meetingUrl" type="text" placeholder="输入会议名加入会议">
-        <a :href="'#/' + meetingUrl">
+        <input v-model="meetingName" type="text" placeholder="输入会议名加入会议">
+        <button @click.prevent="toMeeting">
           <i class="fa fa-hand-o-right" />
           <i class="fa fa-search" />
-        </a>
+        </button>
       </div>
       <main class="table-main">
         <section class="header">
@@ -32,11 +32,16 @@
             <tbody>
               <tr v-for="item in tempList" :key="item.miId">
                 <td>{{ item.clubName }}</td>
-                <td>{{ item.title }}</td>
+                <td>{{ item.name }}</td>
                 <td>{{ item.startTime }}</td>
                 <td>{{ item.endTime }}</td>
                 <td>
-                  <button class="button" @click.prevent="copyMeetingName(item.title)">复制会议名</button>
+                  <button
+                    class="button"
+                    @click.prevent="copyMeetingPassword(item.password, item.miId)"
+                  >
+                    复制密码并前往
+                  </button>
                 </td>
               </tr>
               <div v-if="tempList == 0" class="empty-words" />
@@ -64,7 +69,7 @@ export default {
     return {
       meetInfoList: null,
       tempList: null,
-      meetingUrl: ''
+      meetingName: ''
     }
   },
   created() {
@@ -80,29 +85,53 @@ export default {
   methods: {
     parseTime,
     getMeetInfoList() {
-      request.get('meeting/getMeetInfoListByUserId').then(
-        res => {
-          if (res.code === 20000) {
-            this.meetInfoList = res.data
-            this.tempList = this.meetInfoList
-          }
+      request.get('meeting/getMeetInfoListByUserId').then((res) => {
+        if (res.code === 20000) {
+          this.meetInfoList = res.data
+          this.tempList = this.meetInfoList
         }
-      )
+      })
     },
-    copyMeetingName(title) {
-      navigator.clipboard.writeText(title).then(
-        () => {
-          this.$message({
-            message: `粘贴成功，会议名：${title}`,
-            type: 'success'
+    toMeeting() {
+      request
+        .get('meeting/getMeetingInfoByName', {
+          params: {
+            name: this.meetingName
+          }
+        })
+        .then((res) => {
+          if (res.data) {
+            this.$router.push({
+              path: '/clubmeeting',
+              query: {
+                name: this.meetingName
+              }
+            })
+          } else {
+            this.$message.error(`会议名为 \"${this.meetingName}\" 的会议不存在！`)
+          }
+        })
+    },
+    copyMeetingPassword(title, id) {
+      navigator.clipboard.writeText(title).then(() => {
+        this.$message({
+          message: `成功复制会议密码！两秒后跳转会议界面`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          this.$router.push({
+            path: '/clubmeeting',
+            query: {
+              miId: id
+            }
           })
-        }
-      )
+        }, 2000)
+      })
     },
     filteredItems(searchText) {
       this.tempList = this.meetInfoList
-      this.tempList = this.tempList.filter(item =>
-        item.clubName.toLowerCase().includes(searchText.toLowerCase()) // 根据 name 筛选
+      this.tempList = this.tempList.filter(
+        (item) => item.clubName.toLowerCase().includes(searchText.toLowerCase()) // 根据 name 筛选
       )
     }
   }
@@ -134,14 +163,14 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #ffdcdc;
+  background-color: rgba(215, 245, 241, 0.1);
 }
 
 .shell {
   position: absolute;
-  background-color: #ff7575;
+  background-color: rgba(115, 119, 223, 1);
   border-radius: 20px;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .shell input {
@@ -150,56 +179,58 @@ export default {
 }
 
 .shell input::placeholder {
-  color: #8f36367e;
+  color: rgb(241, 242, 251);
 }
 
-.shell a {
+.shell button {
   display: flex;
   position: absolute;
+  background-color: transparent;
+  border: none;
   color: #fff;
 }
 
-.shell a .fa {
+.shell button .fa {
   margin: 10px 28px;
-  transition: .3s;
+  transition: 0.3s;
 }
 
-.shell a .fa-search {
+.shell button .fa-search {
   transform: translateX(-80px);
   opacity: 1;
 }
 
-.shell a .fa-hand-o-right {
+.shell button .fa-hand-o-right {
   transform: translateX(-100px);
   opacity: 0;
 }
 
-.shell a:hover .fa-search {
+.shell button:hover .fa-search {
   transform: translateX(0);
   opacity: 0;
 }
 
-.shell a:hover .fa-hand-o-right {
+.shell button:hover .fa-hand-o-right {
   transform: translateX(60px);
   opacity: 1;
 }
 
-.shell a::before {
-  content: 'GO !';
+.shell button::before {
+  content: "GO !";
   position: absolute;
   display: block;
   font-size: 30px;
-  background-color: #ff7575;
+  background-color: rgba(115, 119, 223, 1);
   padding: 5px 30px;
   top: 50px;
   right: 40px;
   border-radius: 10px;
-  transition: .3s;
+  transition: 0.3s;
   opacity: 0;
   animation: box 1s infinite ease;
 }
 
-.shell a:hover::before {
+.shell button:hover::before {
   top: -90px;
   opacity: 1;
 }
@@ -254,7 +285,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .header .input-group input {
@@ -380,7 +411,7 @@ export default {
 }
 
 .empty-words::before {
-  content: '好像没有要加入的会议!';
+  content: "好像没有要加入的会议!";
   position: absolute;
   display: block;
   font-size: 20px;
@@ -394,176 +425,96 @@ export default {
   animation: box-scale 10s infinite ease;
 }
 
-@media (min-width: 1800px) {
-  .shell {
-    top: 18vh;
-    width: 65%;
-    padding: 15px 35px;
-    box-shadow: 0 10px 50px #ff7575, 0 0 0 15px #fff;
-  }
+.shell {
+  top: 18vh;
+  width: 65%;
+  padding: 15px 35px;
+  box-shadow: 0 10px 50px rgba(115, 119, 223, 1), 0 0 0 15px #fff;
+}
 
-  .shell input {
-    height: 3vh;
-    line-height: 3vh;
-  }
+.shell input {
+  height: 3vh;
+  line-height: 3vh;
+}
 
-  .shell a {
-    font-size: 38px;
-    right: -50px;
-    top: 0px;
-    width: 10vw;
-    height: 150px;
-  }
+.shell button {
+  font-size: 38px;
+  right: -50px;
+  top: 0px;
+  width: 10vw;
+  height: 150px;
+}
 
-  .shell input {
-    width: 80%;
-    color: #fff;
-    font: 300 25px '优设标题黑';
-  }
+.shell input {
+  width: 80%;
+  color: #fff;
+  font: 300 25px "优设标题黑";
+}
 
-  .shell:hover {
-    transform: scale(1.05);
-  }
+.shell:hover {
+  transform: scale(1.05);
+}
 
-  .table-main {
-    width: 65%;
-    height: 50vh;
-    top: 60px;
-    border-radius: 16px;
-  }
+.table-main {
+  width: 65%;
+  height: 50vh;
+  top: 60px;
+  border-radius: 16px;
+}
 
-  .header {
-    width: 100%;
-    height: 18%;
-    padding: 0 40px;
-  }
+.header {
+  width: 100%;
+  height: 18%;
+  padding: 0 40px;
+}
 
-  .header .input-group {
-    width: 35%;
-    height: 50%;
-    padding: 0 20px;
-    border-radius: 10px;
-  }
+.header .input-group {
+  width: 35%;
+  height: 50%;
+  padding: 0 20px;
+  border-radius: 10px;
+}
 
-  .header .input-group:hover {
-    width: 45%;
-    background-color: #fff8;
-    box-shadow: 0 5px 40px #0002;
-  }
+.header .input-group:hover {
+  width: 45%;
+  background-color: #fff8;
+  box-shadow: 0 5px 40px #0002;
+}
 
-  .table-shell {
-    height: 71%;
-  }
+.table-shell {
+  height: 71%;
+}
 
-  .table-shell::-webkit-scrollbar {
-    width: 20px;
-    height: 20px;
-  }
+.table-shell::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+}
 
-  .styled-table th,
-  .styled-table td {
-    padding: 12px 15px;
-  }
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+}
 
-  .styled-table {
-    font-size: 16px;
-  }
+.styled-table {
+  font-size: 16px;
+}
 
-  .button {
-    padding: 6px 12px;
-  }
+.button {
+  padding: 6px 12px;
 }
 
 @media (max-width: 1800px) {
-  .shell {
-    top: 18vh;
-    width: 65%;
-    padding: 15px 35px;
-    box-shadow: 0 10px 50px #ff7575, 0 0 0 15px #fff;
-  }
-
-  .shell input {
-    height: 3vh;
-    line-height: 3vh;
-  }
-
-  .shell a {
-    font-size: 38px;
-    right: -10px;
-    top: 0px;
-    width: 10vw;
-    height: 150px;
-  }
-
-  .shell input {
-    width: 80%;
-    color: #fff;
-    font: 300 25px '优设标题黑';
-  }
-
-  .shell:hover {
-    transform: scale(1.05);
-  }
-
   .shell a::before {
-    content: 'GO !';
+    content: "GO !";
     font-size: 30px;
-    background-color: #ff7575;
+    background-color: rgba(115, 119, 223, 1);
     padding: 5px 30px;
     top: 50px;
     right: 20px;
     border-radius: 10px;
-    transition: .3s;
+    transition: 0.3s;
     opacity: 0;
     animation: box 1s infinite ease;
-  }
-
-  .table-main {
-    width: 65%;
-    height: 50vh;
-    top: 60px;
-    border-radius: 16px;
-  }
-
-  .header {
-    width: 100%;
-    height: 18%;
-    padding: 0 40px;
-  }
-
-  .header .input-group {
-    width: 35%;
-    height: 50%;
-    padding: 0 20px;
-    border-radius: 10px;
-  }
-
-  .header .input-group:hover {
-    width: 45%;
-    background-color: #fff8;
-    box-shadow: 0 5px 40px #0002;
-  }
-
-  .table-shell {
-    height: 71%;
-  }
-
-  .table-shell::-webkit-scrollbar {
-    width: 20px;
-    height: 20px;
-  }
-
-  .styled-table th,
-  .styled-table td {
-    padding: 12px 15px;
-  }
-
-  .styled-table {
-    font-size: 16px;
-  }
-
-  .button {
-    padding: 6px 12px;
   }
 }
 
@@ -572,7 +523,7 @@ export default {
     top: 12vh;
     width: 90%;
     padding: 10px 15px;
-    box-shadow: 0 10px 50px #ff7575, 0 0 0 8px #fff;
+    box-shadow: 0 10px 50px rgba(115, 119, 223, 1), 0 0 0 8px #fff;
   }
 
   .shell input {
@@ -580,7 +531,7 @@ export default {
     line-height: 2vh;
   }
 
-  .shell a {
+  .shell button {
     font-size: 20px;
     right: 20px;
     top: 0px;
@@ -588,20 +539,20 @@ export default {
     height: 44px;
   }
 
-  .shell a::before {
-    content: 'GO!';
+  .shell button::before {
+    content: "GO!";
     font-size: 10px;
-    background-color: #ff7575;
+    background-color: rgba(115, 119, 223, 1);
     padding: 5px 10px;
     top: 20px;
     right: -15px;
     border-radius: 10px;
-    transition: .3s;
+    transition: 0.3s;
     opacity: 0;
     animation: box 1s infinite ease;
   }
 
-  .shell a:hover::before {
+  .shell button:hover::before {
     top: -40px;
     opacity: 1;
   }
@@ -609,7 +560,7 @@ export default {
   .shell input {
     width: 80%;
     color: #fff;
-    font: 300 15px '优设标题黑';
+    font: 300 15px "优设标题黑";
   }
 
   .table-main {
@@ -636,6 +587,11 @@ export default {
     border-radius: 10px;
   }
 
+  .header .input-group:hover {
+    width: 55%;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  }
+
   .table-shell {
     height: 80%;
   }
@@ -658,6 +614,5 @@ export default {
     font-size: 10px;
     padding: 5px 5px;
   }
-
 }
 </style>

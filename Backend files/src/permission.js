@@ -13,9 +13,10 @@ const whiteList = ['/',
   '/auth-redirect',
   '/indexs',
   '/clublist',
-  '/leave_front',
   '/clubinfo',
-  '/notice_front'] // no redirect whitelist
+  '/noticeinfo',
+  '/notice_front',
+  '/frontactivity'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
