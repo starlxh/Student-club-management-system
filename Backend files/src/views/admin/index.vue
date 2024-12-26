@@ -234,7 +234,6 @@ export default {
     this.getClubList()
     this.getManagedClubList()
     this.getList()
-    console.log(this.managedClubList)
   },
   methods: {
     getList() {

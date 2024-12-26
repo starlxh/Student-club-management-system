@@ -124,6 +124,24 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/welcome',
+    component: Layout,
+    redirect: '/welcome/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/welcome/index'),
+        name: 'Welcome',
+        meta: {
+          title: '欢迎',
+          icon: 'dashboard',
+          noCache: true,
+          roles: ['Super', 'Admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/users',
     component: Layout,
     redirect: '/users/index',
@@ -136,7 +154,7 @@ export const asyncRoutes = [
           title: '用户信息管理',
           icon: 'el-icon-user-solid',
           noCache: true,
-          roles: ['Super', 'Admin']
+          roles: ['Super']
         }
       }
     ]

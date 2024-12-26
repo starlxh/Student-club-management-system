@@ -20,7 +20,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="userImg" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -53,6 +53,8 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
+import request from '@/utils/request'
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   components: {
@@ -63,12 +65,20 @@ export default {
     SizeSelect,
     Search
   },
+  data() {
+    return {
+      userImg: undefined
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
       'device'
     ])
+  },
+  mounted() {
+    this.getUserImg()
   },
   methods: {
     toggleSideBar() {
@@ -77,6 +87,13 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    getUserImg() {
+      request.get('user/getUserInfoById').then((res) => {
+        if (res.code === 20000) {
+          this.userImg = getImgUrlHeader() + res.data.image
+        }
+      })
     }
   }
 }
