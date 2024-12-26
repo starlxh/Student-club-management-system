@@ -19,7 +19,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+      <el-button v-if="$store.getters.roles.includes('Super')" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
         新建社团
       </el-button>
     </div>
@@ -88,7 +88,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="$store.getters.roles.includes('Super')" size="mini" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>

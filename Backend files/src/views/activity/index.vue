@@ -9,7 +9,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-document-add" @click="handleCreate">
+      <el-button v-if="$store.getters.roles.includes('Admin')" class="filter-item" type="primary" icon="el-icon-document-add" @click="handleCreate">
         申请社团活动
       </el-button>
     </div>
@@ -129,7 +129,7 @@
         <el-button :type="dialogStatus==='detail'?'':'danger'" @click="dialogStatus==='detail'?dialogDetailFormVisible = false:handleJudge(2)">
           {{ dialogStatus==='detail'?'关闭':'拒绝' }}
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
+        <el-button v-if="$store.getters.roles.includes('Super')" :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
           {{ dialogStatus==='detail'?'审核':'通过' }}
         </el-button>
       </div>

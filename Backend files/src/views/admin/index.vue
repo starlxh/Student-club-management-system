@@ -67,7 +67,7 @@
           <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="openDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -182,6 +182,7 @@ export default {
       tableKey: 0,
       list: null,
       clubList: null,
+      managedClubList: null,
       total: 0,
       listLoading: true,
       listQuery: {
@@ -231,7 +232,9 @@ export default {
   },
   created() {
     this.getClubList()
+    this.getManagedClubList()
     this.getList()
+    console.log(this.managedClubList)
   },
   methods: {
     getList() {
@@ -245,6 +248,11 @@ export default {
     getClubList() {
       request.get('club/queryAllClubList').then(res => {
         this.clubList = res.data
+      })
+    },
+    getManagedClubList() {
+      request.get('club/queryManagedClubListByUserId').then(res => {
+        this.managedClubList = res.data
       })
     },
     handleFilter() {
@@ -352,6 +360,20 @@ export default {
               }
             })
         }
+      })
+    },
+    openDelete(row, index) {
+      this.$confirm('此操作将同时解散该管理员所管理的社团, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row, index)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     handleDelete(row, index) {

@@ -172,7 +172,7 @@ export const asyncRoutes = [
           title: '社团类型管理',
           icon: 'list',
           noCache: true,
-          roles: ['Super', 'Admin']
+          roles: ['Super']
         }
       }
     ]
@@ -244,7 +244,7 @@ export const asyncRoutes = [
           title: '社团费用管理',
           icon: 'money',
           noCache: true,
-          roles: ['Super', 'Admin']
+          roles: ['Admin']
         }
       }
     ]
