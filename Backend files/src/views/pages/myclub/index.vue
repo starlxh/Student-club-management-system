@@ -133,11 +133,19 @@
                         </button>
                       </td>
                     </tr>
-                    <button v-if="userInfo.type == 0" class="empty-words-club">
+                    <button
+                      v-if="userInfo.type == 0"
+                      class="empty-words-club"
+                      @click.prevent="becomeAdmin"
+                    >
                       <span>+</span>
                       请求成为社团管理员
                     </button>
-                    <button v-if="managedClubList" class="empty-words-club">
+                    <button
+                      v-if="managedClubList"
+                      class="empty-words-club"
+                      @click.prevent="this.$router.push({ path: '/club' })"
+                    >
                       <span>+</span>
                       去创建一个社团
                     </button>
@@ -434,6 +442,12 @@ export default {
         query: {
           clubId: id
         }
+      })
+    },
+    becomeAdmin() {
+      this.$message({
+        message: '请通过邮箱联系系统管理员申请社团管理员权限!',
+        type: 'warning'
       })
     },
     deleteApplyInfo(item) {
