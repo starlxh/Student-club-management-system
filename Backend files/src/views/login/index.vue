@@ -1,6 +1,10 @@
 <template>
   <div class="main">
-    <bgAnimation bg-animation-path="./animation/BgAnimation.json" :speed="3" class-bind="animation" />
+    <bgAnimation
+      bg-animation-path="./animation/BgAnimation.json"
+      :speed="3"
+      class-bind="animation"
+    />
     <backBtnAnimation
       back-btn-animation-path="./animation/BackBtnAnimation.json"
       back-url="/"
@@ -9,14 +13,32 @@
     <div id="body">
       <div class="shell">
         <div id="a-container" class="container a-container is-hidden">
-          <el-form id="a-form" ref="registerForm" :rules="registerRules" :model="registerForm" autocomplete="on">
+          <el-form
+            id="a-form"
+            ref="registerForm"
+            :rules="registerRules"
+            :model="registerForm"
+            autocomplete="on"
+          >
             <h2 class="form_title title">注册账号</h2>
             <span class="form_span">请使用您的邮箱注册</span>
             <el-form-item prop="userName">
-              <input v-model="registerForm.userName" type="text" class="form_input" name="userName" placeholder="用户名">
+              <input
+                v-model="registerForm.userName"
+                type="text"
+                class="form_input"
+                name="userName"
+                placeholder="用户名"
+              >
             </el-form-item>
             <el-form-item prop="email">
-              <input v-model="registerForm.email" type="text" class="form_input" name="eamil" placeholder="邮箱">
+              <input
+                v-model="registerForm.email"
+                type="text"
+                class="form_input"
+                name="eamil"
+                placeholder="邮箱"
+              >
             </el-form-item>
             <el-form-item prop="password">
               <input
@@ -27,7 +49,9 @@
                 placeholder="密码"
               >
               <span class="show-pwd" @click="showPwd">
-                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+                <svg-icon
+                  :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+                />
               </span>
             </el-form-item>
             <el-form-item prop="captcha">
@@ -39,7 +63,12 @@
                   name="captcha"
                   placeholder="验证码"
                 >
-                <button class="button submit button_captcha" @click.prevent="handleCaptcha">发送验证码</button>
+                <button
+                  class="button submit button_captcha"
+                  @click.prevent="handleCaptcha"
+                >
+                  发送验证码
+                </button>
               </div>
             </el-form-item>
             <button class="button submit" @click.prevent="handleRegister">注册</button>
@@ -47,11 +76,23 @@
         </div>
 
         <div id="b-container" class="container b-container">
-          <el-form id="b-form" ref="loginForm" :rules="loginRules" :model="loginForm" autocomplete="on">
+          <el-form
+            id="b-form"
+            ref="loginForm"
+            :rules="loginRules"
+            :model="loginForm"
+            autocomplete="on"
+          >
             <h2 class="form_title title">登录账号</h2>
             <span class="form_span">请使用您的邮箱登录</span>
             <el-form-item prop="email">
-              <input v-model="loginForm.email" type="text" name="username" class="form_input" placeholder="邮箱">
+              <input
+                v-model="loginForm.email"
+                type="text"
+                name="username"
+                class="form_input"
+                placeholder="邮箱"
+              >
             </el-form-item>
             <el-form-item prop="password">
               <input
@@ -63,7 +104,9 @@
                 @keyup.enter.native="handleLogin"
               >
               <span class="show-pwd" @click="showPwd">
-                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+                <svg-icon
+                  :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+                />
               </span>
             </el-form-item>
 
@@ -73,11 +116,23 @@
         </div>
 
         <div id="c-container" class="container b-container is-hidden">
-          <el-form id="b-form" ref="lostForm" :rules="lostRules" :model="lostForm" autocomplete="on">
+          <el-form
+            id="c-form"
+            ref="lostForm"
+            :rules="lostRules"
+            :model="lostForm"
+            autocomplete="on"
+          >
             <h2 class="form_title title">重置密码</h2>
             <span class="form_span">请使用您的邮箱重置密码</span>
             <el-form-item prop="email">
-              <input v-model="lostForm.email" type="text" name="username" class="form_input" placeholder="邮箱">
+              <input
+                v-model="lostForm.email"
+                type="text"
+                name="username"
+                class="form_input"
+                placeholder="邮箱"
+              >
             </el-form-item>
             <el-form-item prop="password">
               <input
@@ -89,7 +144,9 @@
                 @keyup.enter.native="handleLost"
               >
               <span class="show-pwd" @click="showPwd">
-                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+                <svg-icon
+                  :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+                />
               </span>
             </el-form-item>
             <el-form-item prop="captcha">
@@ -101,7 +158,12 @@
                   name="captcha"
                   placeholder="验证码"
                 >
-                <button class="button submit button_captcha" @click.prevent="handleLostCaptcha">发送验证码</button>
+                <button
+                  class="button submit button_captcha"
+                  @click.prevent="handleLostCaptcha"
+                >
+                  发送验证码
+                </button>
               </div>
             </el-form-item>
             <a class="form_link" @click.prevent="chanageLost"><span>找回了密码?</span></a>
@@ -113,14 +175,18 @@
           <div class="switch_circle" />
           <div class="switch_circle switch_circle-t" />
           <div id="switch-c1" class="switch_container is-hidden">
-            <h2 class="switch_title title" style="letter-spacing: 0;">Welcome here!</h2>
-            <p class="switch_description description">已经有账号了嘛，点此按钮跳转登录吧！</p>
+            <h2 class="switch_title title" style="letter-spacing: 0">Welcome here!</h2>
+            <p class="switch_description description">
+              已经有账号了嘛，点此按钮跳转登录吧！
+            </p>
             <button class="switch_button button switch-btn">登录</button>
           </div>
 
           <div id="switch-c2" class="switch_container">
-            <h2 class="switch_title title" style="letter-spacing: 0;">Welcome here!</h2>
-            <p class="switch_description description">来创建一个账号，加入心仪的社团吧！</p>
+            <h2 class="switch_title title" style="letter-spacing: 0">Welcome here!</h2>
+            <p class="switch_description description">
+              来创建一个账号，加入心仪的社团吧！
+            </p>
             <button class="switch_button button switch-btn">注册</button>
           </div>
         </div>
@@ -211,7 +277,7 @@ export default {
     this.allButtons = document.querySelectorAll('.submit')
 
     const changeForm = () => {
-      if (!(this.switchCtn)) return
+      if (!this.switchCtn) return
 
       this.switchCtn.classList.add('is-gx')
       setTimeout(() => {
@@ -227,7 +293,7 @@ export default {
       this.aContainer.classList.toggle('is-hidden')
       this.bContainer.classList.toggle('is-hidden')
 
-      if (!(this.cContainer.classList.contains('is-hidden'))) {
+      if (!this.cContainer.classList.contains('is-hidden')) {
         this.cContainer.classList.add('is-hidden')
         this.bContainer.classList.add('is-hidden')
       }
@@ -235,11 +301,20 @@ export default {
       this.aContainer.classList.toggle('is-txl')
       this.bContainer.classList.toggle('is-txl')
       this.bContainer.classList.toggle('is-z')
+
+      this.loginForm = {
+        email: '',
+        password: ''
+      }
+      this.registerForm = {
+        userName: '',
+        email: '',
+        password: '',
+        captcha: ''
+      }
     }
 
-    this.switchBtn.forEach((btn) =>
-      btn.addEventListener('click', changeForm)
-    )
+    this.switchBtn.forEach((btn) => btn.addEventListener('click', changeForm))
   },
   methods: {
     showPwd() {
@@ -250,10 +325,11 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          this.$store
+            .dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
@@ -268,105 +344,91 @@ export default {
       })
     },
     handleRegister() {
-      this.$refs.registerForm.validate(valid => {
+      this.$refs.registerForm.validate((valid) => {
         if (valid) {
           this.loading = false
-          request.post('login/register?captcha=' + this.registerForm.captcha, this.registerForm).then(
-            res => {
+          request
+            .post(
+              'login/register?captcha=' + this.registerForm.captcha,
+              this.registerForm
+            )
+            .then((res) => {
               this.$notify({
                 title: '成功',
                 message: '注册成功！',
                 type: 'success',
                 duration: 2000
               })
-            }
-          )
+            })
         } else {
           console('fail')
         }
       })
     },
     handleCaptcha() {
-      if (!(this.registerForm.userName)) {
-        this.registerForm.userName = ' '
-      }
-      if (!(this.registerForm.password)) {
-        this.registerForm.password = ' '
-      }
-      if (!(this.registerForm.captcha)) {
-        this.registerForm.captcha = ' '
-      }
-      this.$refs.registerForm.validate(valid => {
-        if (valid) {
+      this.$refs.registerForm.validateField('email', (valid) => {
+        if (this.registerForm.email.trim()) {
           this.loading = false
-          request.post('login/sendCaptcha?email=' + this.registerForm.email + '&type=0').then(
-            res => {
+          request
+            .post('login/sendCaptcha?email=' + this.registerForm.email + '&type=0')
+            .then((res) => {
               this.$notify({
                 title: '成功',
                 message: '发送验证码成功！',
                 type: 'success',
                 duration: 2000
               })
-            }
-          )
-        } else {
-          if (this.registerForm.userName === ' ') {
-            this.registerForm.userName = ''
-          }
-          if (this.registerForm.password === ' ') {
-            this.registerForm.password = ''
-          }
-          if (this.registerForm.captcha === ' ') {
-            this.registerForm.captcha = ''
-          }
-          if (!(this.registerForm.email)) {
-            this.registerForm.email = ''
-          }
+            })
         }
       })
     },
     chanageLost() {
+      this.lostForm = {
+        email: '',
+        password: '',
+        captcha: ''
+      }
+      this.loginForm = {
+        email: '',
+        password: ''
+      }
       this.bContainer.classList.toggle('is-hidden')
       this.cContainer.classList.toggle('is-hidden')
     },
     handleLostCaptcha() {
-      if (!(this.lostForm.userName)) {
-        this.lostForm.userName = ' '
-      }
-      if (!(this.lostForm.password)) {
-        this.lostForm.password = ' '
-      }
-      if (!(this.lostForm.captcha)) {
-        this.lostForm.captcha = ' '
-      }
-      this.$refs.lostForm.validate(valid => {
-        if (valid) {
-          this.loading = false
-          request.post('login/sendCaptcha?email=' + this.lostForm.email + '&type=0').then(
-            res => {
+      this.$refs.lostForm.validateField('email', (valid) => {
+        if (this.loginForm.email.trim()) {
+          request
+            .post('login/sendCaptcha?email=' + this.lostForm.email + '&type=1')
+            .then((res) => {
               this.$notify({
                 title: '成功',
                 message: '发送验证码成功！',
                 type: 'success',
                 duration: 2000
               })
-            }
-          )
-        } else {
-          if (this.lostForm.password === ' ') {
-            this.lostForm.password = ''
-          }
-          if (this.lostForm.captcha === ' ') {
-            this.lostForm.captcha = ''
-          }
-          if (!(this.lostForm.email)) {
-            this.lostForm.email = ''
-          }
+            })
         }
       })
     },
     handleLost() {
-
+      this.$refs.lostForm.validate((valid) => {
+        if (valid) {
+          request
+            .post('login/findPassword?captcha=' + this.lostForm.captcha, this.lostForm)
+            .then((res) => {
+              if (res.code === 20000) {
+                this.$message({
+                  message: `重置密码成功!`,
+                  type: 'success'
+                })
+                this.chanageLost()
+              } else {
+                this.$message.error(`重置密码失败!`)
+              }
+            })
+        }
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
@@ -496,7 +558,7 @@ export default {
   user-select: none;
 }
 
-.el-form>>>.el-form-item__error {
+.el-form >>> .el-form-item__error {
   top: 41px;
   color: #e74c3c;
   font-weight: bold;
@@ -509,7 +571,7 @@ export default {
   transition: all 0.3s ease-in-out;
 }
 
-.el-form>>>.el-form-item__error:hover {
+.el-form >>> .el-form-item__error:hover {
   background: rgba(231, 76, 60, 0.2);
   /* 鼠标悬浮时加深背景色 */
   transform: scale(1.05);
@@ -689,7 +751,6 @@ export default {
 }
 
 @keyframes is-gx {
-
   0%,
   10%,
   100% {
@@ -702,4 +763,3 @@ export default {
   }
 }
 </style>
-

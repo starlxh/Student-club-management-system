@@ -19,6 +19,7 @@ public class ApplyController {
     @Resource
     ApplyService applyService;
 
+    //  分页查询或高级查询入团申请详情
     @GetMapping("/queryApplyInfoList")
     public Response queryApplyInfoList(
             @RequestParam(defaultValue = "1") int page,
@@ -40,19 +41,17 @@ public class ApplyController {
         }
 
         PageInfo<ApplyInfo> applyInfoPageInfo =
-                applyService.queryApplyInfoListByPage(page, limit, applyInfo);
+                applyService.queryApplyInfoList(page, limit, applyInfo);
         long total = applyInfoPageInfo.getTotal();
-        if(total > 0){
-            Response response = new Response();
-            response.setData(applyInfoPageInfo.getList());
-            response.setTotal(total);
-            response.setCode(20000);
-            return response;
-        }
+        Response response = new Response();
+        response.setData(applyInfoPageInfo.getList());
+        response.setTotal(total);
+        response.setCode(20000);
+        return response;
 
-        return Response.fail("查询申请信息失败！");
     }
 
+    // 通过入团申请详情ID查询入团审核记录
     @GetMapping("/queryApplyListByApplyInfoId")
     public Map<String, Object> queryApplyListById(Integer applyInfoId){
         Map<String, Object> response = new HashMap<>();
@@ -62,6 +61,7 @@ public class ApplyController {
         return response;
     }
 
+    // 用于审核入团申请
     @GetMapping("/judge")
     public Response judge(@RequestBody ApplyList applyList,
                             HttpServletRequest request) {
@@ -78,8 +78,19 @@ public class ApplyController {
         }
     }
 
+    // 添加入团申请详情
     @PostMapping("/addApplyInfo")
-    public Response addActivity(@RequestBody ApplyInfo applyInfo){
+    public Response addApplyInfo(@RequestBody ApplyInfo applyInfo,
+                                 HttpServletRequest request){
+        String token = request.getHeader("token");
+        applyInfo.setUserId(JWUtil.getUserId(token));
+        if(applyService.checkIsExitByUserIdAndClubId(applyInfo.getUserId(),
+                applyInfo.getClubId())){
+            return Response.ok("warning");
+        }
+
+        applyInfo.setStatus(0);
+
         if(applyService.addApplyInfo(applyInfo)){
             return Response.ok();
         }else {
@@ -87,6 +98,7 @@ public class ApplyController {
         }
     }
 
+    // 用于删除入团申请
     @DeleteMapping("/deleteById")
     public Response deleteById(Integer applyInfoId){
         if(applyService.deleteApplyListByApplyInfoId(applyInfoId) &&
@@ -97,4 +109,11 @@ public class ApplyController {
         }
     }
 
+    // 通过用户ID查询入团申请记录
+    @GetMapping("/getApplyInfoListByUserId")
+    public Response getApplyInfoListByUserId(HttpServletRequest request){
+        String token = request.getHeader("token");
+        List<ApplyInfo> list = applyService.getApplyInfoListByUserId(JWUtil.getUserId(token));
+        return Response.ok(list);
+    }
 }

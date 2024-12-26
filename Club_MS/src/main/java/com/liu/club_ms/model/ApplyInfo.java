@@ -14,7 +14,7 @@ public class ApplyInfo {
     @TableId(type = IdType.AUTO)
     private Integer applyInfoId;
 
-    private String userId;
+    private Integer userId;
 
     private String content;
 
@@ -23,6 +23,9 @@ public class ApplyInfo {
     private Integer status;
 
     private Integer clubId;
+
+    @TableField(exist = false)
+    private String order;
 
     //添加社团对象
     @TableField(exist = false)

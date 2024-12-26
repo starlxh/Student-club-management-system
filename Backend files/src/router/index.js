@@ -86,29 +86,33 @@ export const constantRoutes = [
     component: () => import('@/views/pages/myclub/index'),
     hidden: true
   },
-
-  {
-    path: '/leave',
-    component: () => import('@/views/pages/leave/index'),
-    hidden: true
-  },
   {
     path: '/usercenter',
     component: () => import('@/views/pages/usercenter/index'),
     hidden: true
   },
   {
-    path: '/notice',
-    component: () => import('@/views/pages/notice/index'),
+    path: '/frontactivity',
+    component: () => import('@/views/pages/activity/index'),
     hidden: true
   },
   {
-    path: '/meeting',
+    path: '/clubnotice',
+    component: () => import('@/views/pages/clubnotice/index'),
+    hidden: true
+  },
+  {
+    path: '/noticeinfo',
+    component: () => import('@/views/pages/noticeinfo/index'),
+    hidden: true
+  },
+  {
+    path: '/meet',
     component: () => import('@/views/pages/meeting/index'),
     hidden: true
   },
   {
-    path: '/test',
+    path: '/clubmeeting',
     component: () => import('@/views/pages/jitsimeet/index'),
     hidden: true
   }

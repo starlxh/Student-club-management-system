@@ -15,32 +15,34 @@ public class CostListServiceImpl implements CostListService {
     @Autowired
     CostListMapper costListMapper;
 
+    // 分页查询或者高级查询社团费用记录
     @Override
     public PageInfo<CostList> queryCostListAll(int page, int limit,
                                                String name,
                                                Integer clubId,
-                                               Integer captainId) {
+                                               Integer captainId,
+                                               String order) {
         PageHelper.startPage(page, limit);
-        List<CostList> list = costListMapper.queryCostListAll(name, clubId, captainId);
+        List<CostList> list = costListMapper.queryCostListAll(name, clubId, captainId, order);
         return new PageInfo<>(list);
     }
 
+    // 编辑社团费用记录
     @Override
     public boolean editCostList(CostList costList) {
-        int num = costListMapper.editCostList(costList);
-        return num > 0;
+        return costListMapper.editCostList(costList) > 0;
     }
 
+    // 添加社团费用记录
     @Override
     public boolean addCostList(CostList costList) {
-        int num = costListMapper.addCostList(costList);
-        return num > 0;
+        return costListMapper.addCostList(costList) > 0;
     }
 
+    // 通过ID删除社团费用记录
     @Override
     public boolean deleteById(Integer costListId) {
-        int num = costListMapper.deleteById(costListId);
-        return num > 0;
+        return costListMapper.deleteById(costListId) > 0;
     }
 
 }

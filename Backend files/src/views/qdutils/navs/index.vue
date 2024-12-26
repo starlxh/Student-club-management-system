@@ -1,27 +1,29 @@
 <template>
   <div class="nav-main">
-
     <span class="trigger trigger-is-hidden" @click.prevent="handleClick">
       <svg-icon icon-class="list" />
     </span>
-    <a href="#/" class="logo">
-      大学社团
-    </a>
+    <a href="#/" class="logo"> 大学社团 </a>
 
     <div id="custom-nav" class="custom-body nav-is-hidden">
       <div class="custom-nav custom-nav-1">
         <div class="custom-nav-ul">
           <ul>
             <li><a href="#/">主页</a></li>
+            <li><a href="#/clubnotice">社团公告</a></li>
             <li><a href="#/clublist">社团列表</a></li>
-            <li><a href="#/meeting">社团会议</a></li>
+            <li><a href="#/meet">社团会议</a></li>
             <li><a href="#/myclub">我的社团</a></li>
             <li><a href="#/usercenter">个人中心</a></li>
             <li v-if="!role"><a href="#/login">登录</a></li>
             <li v-if="role"><a href="#/users">后台管理</a></li>
             <div class="nav-box" />
             <div class="ani-is-hidden nav-animation">
-              <bgAnimation bg-animation-path="./animation/SunAnimation.json" :speed="3" class-bind="animation" />
+              <bgAnimation
+                bg-animation-path="./animation/SunAnimation.json"
+                :speed="3"
+                class-bind="animation"
+              />
             </div>
           </ul>
         </div>
@@ -75,5 +77,4 @@ export default {
   background-color: rgb(253, 242, 221);
   z-index: -1;
 }
-
 </style>

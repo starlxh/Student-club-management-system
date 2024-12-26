@@ -15,6 +15,7 @@ public class NoticeController {
     @Resource
     private NoticeService noticeService;
 
+    // 分页查询或者高级查询公告
     @GetMapping("/queryNoticeList")
     public Response queryNoticeList(
             @RequestParam(defaultValue = "1") int page,
@@ -31,29 +32,30 @@ public class NoticeController {
                     limit,
                     notice.getRealName(),
                     notice.getTitle(),
-                    userId);
+                    userId,
+                    notice.getClubName(),
+                    notice.getOrder());
         } else {
             noticePageInfo = noticeService.queryNoticeList(page,
                     limit,
                     notice.getRealName(),
                     notice.getTitle(),
-                    null);
+                    null,
+                    notice.getClubName(),
+                    notice.getOrder());
         }
 
         long total = noticePageInfo.getTotal();
-        if (total > 0) {
-            Response response = new Response();
-            response.setData(noticePageInfo.getList());
-            response.setTotal(total);
-            response.setCode(20000);
-            return response;
-        }
-
-        return Response.fail("查询留言信息失败！");
+        Response response = new Response();
+        response.setData(noticePageInfo.getList());
+        response.setTotal(total);
+        response.setCode(20000);
+        return response;
     }
 
+    // 编辑公告
     @PostMapping("/editNotice")
-    public Response editCostList(@RequestBody Notice notice) {
+    public Response editNotice(@RequestBody Notice notice) {
         if (noticeService.editNotice(notice)){
             return Response.ok();
         }else {
@@ -61,9 +63,12 @@ public class NoticeController {
         }
     }
 
+    // 添加公告
     @PostMapping("/addNotice")
-    public Response addLeaveInfo(@RequestBody Notice notice){
-
+    public Response addNotice(@RequestBody Notice notice,
+                                 HttpServletRequest request){
+        String token = request.getHeader("token");
+        notice.setUserId(JWUtil.getUserId(token));
         if(noticeService.addNotice(notice)){
             return Response.ok();
         }else {
@@ -71,6 +76,7 @@ public class NoticeController {
         }
     }
 
+    // 通过ID删除公告
     @DeleteMapping("/deleteById")
     public Response deleteById(Integer noticeId){
         if(noticeService.deleteById(noticeId)){
@@ -80,5 +86,10 @@ public class NoticeController {
         }
     }
 
+    // 通过ID查询公告
+    @GetMapping("queryNoticeById")
+    public Response queryNoticeById(Integer noticeId){
+        return Response.ok(noticeService.queryNoticeById(noticeId));
+    }
 
 }

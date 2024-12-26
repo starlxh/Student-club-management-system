@@ -5,7 +5,7 @@ import router, { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
+  id: '',
   introduction: '',
   roles: []
 }
@@ -20,8 +20,8 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_ID: (state, id) => {
+    state.id = id
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -54,17 +54,14 @@ const actions = {
           reject('验证失败，请重新登录!')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { roles, id } = data
 
-        // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: 角色必须是非空数组！')
         }
 
         commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_ID', id)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -78,6 +75,7 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        commit('SET_ID', null)
         removeToken()
         resetRouter()
 
@@ -97,6 +95,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
+      commit('SET_ID', null)
       removeToken()
       resolve()
     })

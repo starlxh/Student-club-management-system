@@ -15,35 +15,56 @@ public class ActivityServiceImpl implements ActivityService {
     @Autowired
     ActivityMapper activityMapper;
 
+    // 分页查询或高级查询活动信息
     @Override
     public PageInfo<Activity> queryActivityList(int page, int limit,
                                                 String name,
                                                 String creatorName,
                                                 Integer clubId,
-                                                Integer captainId) {
+                                                Integer captainId,
+                                                String order) {
         PageHelper.startPage(page, limit);
         List<Activity> activityList = activityMapper.queryActivityInfoList(name,
                 creatorName,
                 clubId,
-                captainId);
+                captainId,
+                order);
         return new PageInfo<>(activityList);
     }
 
+    // 编辑活动状态
     @Override
     public boolean editActivityStatusById(Integer status, Integer activityId) {
-        int num  = activityMapper.editStatusById(status, activityId);
-        return num > 0;
+        return activityMapper.editStatusById(status, activityId) > 0;
     }
 
+    // 编辑活动信息
+    @Override
+    public boolean editActivity(Activity activity) {
+        return activityMapper.editActivity(activity) > 0;
+    }
+
+    // 添加活动
     @Override
     public boolean addActivity(Activity activity) {
-        int num  = activityMapper.addActivity(activity);
-        return num > 0;
+        return activityMapper.addActivity(activity) > 0;
     }
 
+    // 通过ID删除活动
     @Override
     public boolean deleteById(Integer activityId) {
-        int num  = activityMapper.deleteById(activityId);
-        return num > 0;
+        return activityMapper.deleteById(activityId) > 0;
+    }
+
+    // 通过用户ID查询社团活动
+    @Override
+    public List<Activity> queryActivityListByUserId(Integer userId) {
+        return activityMapper.queryActivityListByUserId(userId);
+    }
+
+    // 通过活动ID查询活动信息
+    @Override
+    public Activity queryActivityListById(Integer activityId) {
+        return activityMapper.queryActivityListById(activityId);
     }
 }

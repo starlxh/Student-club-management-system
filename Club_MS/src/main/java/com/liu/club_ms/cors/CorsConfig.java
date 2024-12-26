@@ -32,6 +32,15 @@ public class CorsConfig implements WebMvcConfigurer {
         //添加拦截内容
         ir.addPathPatterns("/**");
         //添加不拦截内容
-        ir.excludePathPatterns("/login/loginIn", "/login/loginOut", "/login/sendCaptcha");
+        ir.excludePathPatterns("/login/loginIn",
+                "/login/loginOut",
+                "/login/sendCaptcha",
+                "/login/register",
+                "/login/findPassword",
+                "/club/queryClubList",
+                "/club/queryClubInfoById",
+                "/leaveInfo/queryLeaveInfoListByClubId",
+                "/public/uploadImg"
+                );
     }
 }

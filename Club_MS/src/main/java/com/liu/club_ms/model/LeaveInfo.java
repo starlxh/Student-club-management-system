@@ -27,6 +27,9 @@ public class LeaveInfo {
     private String createTime;
 
     @TableField(exist = false)
+    private String order;
+
+    @TableField(exist = false)
     private String userName;
 
     @TableField(exist = false)

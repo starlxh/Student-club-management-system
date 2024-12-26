@@ -18,8 +18,8 @@
                   <h6>你好学生</h6>
                   <h2>欢迎来到社团招新</h2>
                   <p>体验大学丰富生活，可以来社团</p>
-                  <div class="main-button-red">
-                    <div><a href="#/clublist">加入我们！</a></div>
+                  <div class="main-button-purple">
+                    <div><a href="#/clublist">加入我们</a></div>
                   </div>
                 </div>
               </div>
@@ -27,7 +27,7 @@
           </div>
         </div>
       </section>
-      <foot />
+      <foot footer-class="normal" />
     </div>
   </div>
 </template>

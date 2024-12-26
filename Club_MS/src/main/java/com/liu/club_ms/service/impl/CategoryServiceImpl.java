@@ -20,15 +20,23 @@ public class CategoryServiceImpl
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Override
-    public int add(Category category) {
-        return categoryMapper.insert(category);
-    }
-
+    // 分页查询或高级查询社团类型
     @Override
     public PageInfo<Category> queryCategoryList(int page, int pageSize, Category category) {
         PageHelper.startPage(page, pageSize);
         List<Category> list = categoryMapper.queryCategoryList(category);
         return new PageInfo<>(list);
+    }
+
+    // 添加社团类型
+    @Override
+    public boolean addCategory(Category category) {
+        return categoryMapper.insert(category) > 0;
+    }
+
+    // 查询所有社团类型
+    @Override
+    public List<Category> queryAllCategoryList() {
+        return categoryMapper.queryAllCategoryList();
     }
 }

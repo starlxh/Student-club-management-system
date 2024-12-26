@@ -15,30 +15,45 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     NoticeMapper noticeMapper;
 
+    // 分页查询或者高级查询会议记录
     @Override
-    public PageInfo<Notice> queryNoticeList(int page, int limit, String realName, String title, Integer userId) {
+    public PageInfo<Notice> queryNoticeList(int page, int limit,
+                                            String realName,
+                                            String title,
+                                            Integer captainId,
+                                            String clubName,
+                                            String order) {
         PageHelper.startPage(page, limit);
-        List<Notice> list = noticeMapper.queryNoticeList(realName, title, userId);
+        List<Notice> list = noticeMapper.queryNoticeList(
+                realName,
+                title,
+                captainId,
+                clubName,
+                order);
         return new PageInfo<>(list);
     }
 
+    // 编辑公告
     @Override
     public boolean editNotice(Notice notice) {
-        int num = noticeMapper.editNotice(notice);
-        return num > 0;
+        return noticeMapper.editNotice(notice) > 0;
     }
 
+    // 添加公告
     @Override
     public boolean addNotice(Notice notice) {
-        int num = noticeMapper.addNotice(notice);
-        return num > 0;
+        return noticeMapper.addNotice(notice) > 0;
     }
 
+    // 通过ID删除公告
     @Override
     public boolean deleteById(Integer noticeId) {
-        int num = noticeMapper.deleteById(noticeId);
-        return num > 0;
+        return noticeMapper.deleteById(noticeId) > 0;
     }
 
-
+    // 通过ID查询公告
+    @Override
+    public Notice queryNoticeById(Integer noticeId) {
+        return noticeMapper.queryNoticeById(noticeId);
+    }
 }

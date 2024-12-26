@@ -1,5 +1,5 @@
 <template>
-  <div ref="sunContainer" class="animation" />
+  <div ref="sunContainer" />
 </template>
 
 <script>

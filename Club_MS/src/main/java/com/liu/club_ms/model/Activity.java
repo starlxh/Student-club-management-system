@@ -34,6 +34,9 @@ public class Activity {
     private Integer status;
 
     @TableField(exist = false)
+    private String order;
+
+    @TableField(exist = false)
     private String creatorName;
 
     @TableField(exist = false)
@@ -41,4 +44,9 @@ public class Activity {
 
     @TableField(exist = false)
     private String clubName;
+
+    public Activity(Integer activityId, String images){
+        this.activityId = activityId;
+        this.images = images;
+    }
 }

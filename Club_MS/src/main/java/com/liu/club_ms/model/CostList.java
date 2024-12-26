@@ -25,5 +25,8 @@ public class CostList {
     private String createTime;
 
     @TableField(exist = false)
+    private String order;
+
+    @TableField(exist = false)
     private String clubName;
 }
