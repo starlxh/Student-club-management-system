@@ -346,7 +346,6 @@ export default {
     handleRegister() {
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
-          this.loading = false
           request
             .post(
               'login/register?captcha=' + this.registerForm.captcha,
@@ -359,16 +358,23 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.$router.push({ path: '/' })
+              setTimeout(() => {
+                this.$router.push({ path: '/login' })
+              })
             })
-        } else {
-          console('fail')
         }
       })
     },
     handleCaptcha() {
       this.$refs.registerForm.validateField('email', (valid) => {
         if (this.registerForm.email.trim()) {
-          this.loading = false
+          this.$notify({
+            title: '提交成功',
+            message: '请等待系统发送验证码！',
+            type: 'success',
+            duration: 2000
+          })
           request
             .post('login/sendCaptcha?email=' + this.registerForm.email + '&type=0')
             .then((res) => {

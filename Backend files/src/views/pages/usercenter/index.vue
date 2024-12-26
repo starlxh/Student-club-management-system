@@ -263,6 +263,19 @@
             <img v-if="imageUrl" :src="getImgUrlHeader() + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
+          <el-select
+            v-else-if="editForm.label == '用户性别'"
+            v-model="editForm.value"
+            placeholder="请选择"
+            class="custom-input"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
           <el-input
             v-else
             v-model="editForm.value"
@@ -325,6 +338,10 @@ export default {
         label: '',
         value: ''
       },
+      options: [
+        { value: '男', label: '男' },
+        { value: '女', label: '女' }
+      ],
       passwordType: false,
       fileList: [],
       imageUrl: '',
@@ -1146,6 +1163,10 @@ main {
   color: #6c7ae0;
   transition: 0.5s;
   transform: rotate(180deg) scale(1.2);
+}
+
+.el-select {
+  width: 100%;
 }
 
 .custom-input >>> .el-input__inner {
