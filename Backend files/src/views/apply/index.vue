@@ -3,7 +3,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.user.realName"
+        v-model="listQuery.realName"
         placeholder="真实姓名"
         style="width: 200px; margin-left: 0px;"
         class="filter-item"
@@ -89,7 +89,7 @@
           <el-button v-if="row.status == 0" type="success" size="mini" @click="handleCheck(row)">
             审核
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="$store.getters.roles.includes('Super')" size="mini" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -295,10 +295,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        club: undefined,
-        user: {
-          realName: undefined
-        },
+        clubId: undefined,
+        realName: undefined,
         order: 'ASC'
       },
       tempApplyList: [],

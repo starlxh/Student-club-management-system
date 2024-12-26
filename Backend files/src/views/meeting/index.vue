@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="记录名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="会议名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.realName" placeholder="创建者" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
       </el-select>
@@ -30,7 +31,7 @@
       </el-table-column>
       <el-table-column label="标题" min-width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.title }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建者" width="150px" align="center">
@@ -69,8 +70,8 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :rules="rules" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="100px" class="meeting-form">
-        <el-form-item v-if="!dialogFormReadonly" label="标题" prop="title">
-          <el-input v-model="temp.title" class="meeting-text" />
+        <el-form-item v-if="!dialogFormReadonly" label="标题" prop="name">
+          <el-input v-model="temp.name" class="meeting-text" />
         </el-form-item>
         <el-form-item v-if="dialogFormReadonly" label="创建者昵称" prop="userName">
           <el-input v-model="temp.userName" readonly />
@@ -92,6 +93,9 @@
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
+        <el-form-item label="会议密码" prop="password">
+          <el-input v-model="temp.password" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailFormVisible = false">
@@ -105,8 +109,8 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
       <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="meeting-form">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="temp.title" class="meeting-text" />
+        <el-form-item label="标题" prop="name">
+          <el-input v-model="temp.name" class="meeting-text" />
         </el-form-item>
         <el-form-item label="开始时间" prop="startTime">
           <el-date-picker v-model="temp.startTime" type="datetime" placeholder="请选择开始时间" class="form-timestamp" />
@@ -118,6 +122,9 @@
           <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="会议密码" prop="password">
+          <el-input v-model="temp.password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -174,7 +181,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        title: undefined,
+        name: undefined,
         realName: undefined,
         clubName: undefined,
         order: 'ASC'
@@ -186,6 +193,7 @@ export default {
       temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
+      dialogFormReadonly: true,
       formDisabled: false,
       dialogStatus: '',
       textMap: {
@@ -196,16 +204,18 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        name: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         startTime: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
         endTime: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
-        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
+        password: [{ required: true, message: '会议密码不能为空', trigger: 'blur' }]
       },
       createRules: {
-        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        name: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         startTime: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
         endTime: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
-        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }]
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
+        password: [{ required: true, message: '会议密码不能为空', trigger: 'blur' }]
       },
       downloadLoading: false,
       placeholder: '无'
@@ -266,7 +276,7 @@ export default {
         if (valid) {
           this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
           this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['title', 'startTime', 'endTime', 'clubId']))).then(
+          request.post(this.baseUrl + 'addMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['name', 'startTime', 'endTime', 'clubId']))).then(
             res => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {
@@ -292,7 +302,7 @@ export default {
     handleDetail(row) {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = this.temp.title
+      this.textMap['detail'] = this.temp.name
       this.dialogDetailFormVisible = true
       this.dialogFormReadonly = true
       this.formDisabled = false
@@ -315,7 +325,7 @@ export default {
         if (valid) {
           this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
           this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editMeettingInfo', JSON.parse(JSON.stringify(this.temp, ['miId', 'title', 'startTime', 'endTime', 'userId']))).then(
+          request.post(this.baseUrl + 'editMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['miId', 'name', 'startTime', 'endTime', 'password', 'clubId', 'userId']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {
