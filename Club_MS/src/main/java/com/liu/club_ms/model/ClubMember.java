@@ -21,9 +21,15 @@ public class ClubMember {
     private String joinTime;
 
     @TableField(exist = false)
+    private String order;
+
+    @TableField(exist = false)
+    private Integer captainId;
+
+    @TableField(exist = false)
     private User user;
 
     @TableField(exist = false)
-    private Club club;
+    private String clubName;
 
 }

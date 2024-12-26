@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liu.club_ms.mapper.CategoryMapper">
 
+    <!-- 分页查询或高级查询社团类型 -->
     <select id="queryCategoryList"
             resultType="com.liu.club_ms.model.Category"
             parameterType="com.liu.club_ms.model.Category">
-        select * from category
+        SELECT category_id, category_name, remarks
+        FROM category
         <where>
             <if test="categoryName!=null and categoryName!=''">
                 and category_name like CONCAT('%', #{categoryName}, '%')
@@ -22,6 +24,12 @@
                 </otherwise>
             </choose>
         </if>
+    </select>
+
+    <!-- 查询所有社团类型 -->
+    <select id="queryAllCategoryList" resultType="com.liu.club_ms.model.Category">
+        SELECT category_id, category_name, remarks
+        FROM category
     </select>
 
 </mapper>

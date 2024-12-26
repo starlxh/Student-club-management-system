@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liu.club_ms.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.User">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="real_name" property="realName"/>
+        <result column="sex" property="sex"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="qq" property="qq"/>
+        <result column="wx" property="wx"/>
+        <result column="image" property="image"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 用户管理相关 -->
+    <!-- 高级查询和分页查询 -->
     <select id="queryUserList"
-            resultType="com.liu.club_ms.model.User">
+            resultMap="BaseResultMap">
         SELECT user_id,
                user_name,
                password,
@@ -16,27 +35,256 @@
                type,
                create_time
         FROM user
+        <where>
+            user_id != -1
+            <if test="realName!=null and realName!=''">
+                and real_name LIKE CONCAT('%', #{realName}, '%')
+            </if>
+            <if test="type!=null">
+                and type = #{type}
+            </if>
+        </where>
+        <if test="order!=null and order!=''">
+            ORDER BY user_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
     </select>
 
-<!--  社团页面查询数据  -->
-    <select id="queryUserIdNameList"
-            resultType="com.liu.club_ms.model.User">
-        SELECT user_id, user_name FROM user
-    </select>
-<!--    -->
-    <select id="queryUserByNamePwdType"
+    <!--  查询用户通过邮箱和密码  -->
+    <select id="queryUserByEmailPwd"
             resultType="com.liu.club_ms.model.User"
             parameterType="com.liu.club_ms.model.User" >
-        SELECT user_id, user_name, type FROM user
-        WHERE type = #{type}
-          and user_name = #{userName}
-          and password = #{password}
+        SELECT user_id, user_name, type
+        FROM user
+        <where>
+            <if test="email!=null and email!=''">
+                and email = #{email}
+            </if>
+            <if test="password!=null and password!=''">
+                and password = #{password}
+            </if>
+        </where>
     </select>
-<!-- 检查邮箱是否存在 -->
+
+    <!-- 检查邮箱是否存在 -->
     <select id="emailIsExist"
-            resultType="int">
+            resultType="java.lang.Integer">
         SELECT user_id
         FROM user
         WHERE user.email = #{email}
     </select>
+
+    <!-- 通过用户ID删除用户 -->
+    <delete id="deleteUserById">
+        DELETE
+        FROM user
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 添加用户信息 -->
+    <insert id="addUser">
+        INSERT INTO user (
+        <trim suffixOverrides=",">
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="password != null and password !=''">password,</if>
+            <if test="realName != null and realName != ''">real_name,</if>
+            <if test="sex != null and sex !='' ">sex,</if>
+            <if test="tel != null and tel!='' ">tel,</if>
+            <if test="email != null and email !='' ">email,</if>
+            <if test="qq != null and qq != ''">qq,</if>
+            <if test="wx != null and wx !=''">wx,</if>
+            <if test="image != null and image != ''">image,</if>
+            <if test="type != null">type,</if>
+            <if test="createTime != null and createTime !=''">create_time,</if>
+        </trim>
+        )
+        VALUES (
+        <trim suffixOverrides=",">
+            <if test="userName != null and userName !=''">#{userName},</if>
+            <if test="password != null and password !=''">#{password},</if>
+            <if test="realName != null and realName !=''">#{realName},</if>
+            <if test="sex != null and sex !=''">#{sex},</if>
+            <if test="tel != null and tel !=''">#{tel},</if>
+            <if test="email != null and email !=''">#{email},</if>
+            <if test="qq != null and qq !=''">#{qq},</if>
+            <if test="wx != null and wx !=''">#{wx},</if>
+            <if test="image != null and image != ''">#{image},</if>
+            <if test="type != null">#{type},</if>
+            <if test="createTime != null and createTime !=''">#{createTime},</if>
+        </trim>
+        )
+    </insert>
+
+    <!-- 编辑用户信息 -->
+    <update id="editUser">
+        UPDATE user
+        <set>
+            <if test="userName != null and userName !=''">user_name = #{userName},</if>
+            <if test="password != null and password !=''">`password` = #{password},</if>
+            <if test="realName != null and realName !=''">real_name = #{realName},</if>
+            <if test="sex != null and sex !=''">sex = #{sex},</if>
+            <if test="tel != null and tel !=''">tel = #{tel},</if>
+            <if test="email != null and email !=''">email = #{email},</if>
+            <if test="qq != null and qq !=''">qq = #{qq},</if>
+            <if test="wx != null and wx !=''">wx = #{wx},</if>
+            <if test="image != null and image !=''">image = #{image},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="createTime != null and createTime !=''">create_time = #{createTime},</if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 通过用户ID获取用户信息 -->
+    <select id="getUserInfoById"
+            resultMap="BaseResultMap">
+        SELECT user_id,
+        user_name,
+        password,
+        real_name,
+        sex,
+        tel,
+        email,
+        qq,
+        wx,
+        image,
+        type,
+        create_time
+        FROM user
+        <where>
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+<!-- 管理员管理相关 -->
+    <!-- 管理员信息查询映射结果 -->
+    <resultMap id="queryAdminListMap"
+               type="com.liu.club_ms.model.User"
+               extends="BaseResultMap">
+        <result column="status" property="userName"/>
+    </resultMap>
+
+    <!-- 分页查询或高级查询管理员 -->
+    <select id="queryAdminList"
+            resultMap="queryAdminListMap">
+        SELECT user_id,
+               user_name,
+               password,
+               real_name,
+               sex,
+               tel,
+               email,
+               qq,
+               wx,
+               image,
+               type,
+               create_time,
+               admin_status.status
+        FROM user
+        LEFT JOIN admin_status
+        ON user.user_id = admin_status.admin_id
+        <where>
+            <if test="realName!=null and realName!=''">
+                and real_name LIKE CONCAT('%', #{realName}, '%')
+            </if>
+            <if test="type!=null">
+                and `type` = #{type}
+            </if>
+            <if test="type==null">
+                and `type` IN (1, 2)
+            </if>
+        </where>
+        <if test="order!=null and order!=''">
+            ORDER BY user_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <!-- 查询所有管理员 -->
+    <select id="queryAllAdminList"
+            resultMap="queryAdminListMap">
+        SELECT user_id,
+               user_name,
+               password,
+               real_name,
+               sex,
+               tel,
+               email,
+               qq,
+               wx,
+               image,
+               type,
+               create_time,
+               admin_status.status
+        FROM user
+        LEFT JOIN admin_status
+        ON user.user_id = admin_status.admin_id
+        WHERE type = 2 or type = 1
+    </select>
+
+    <!-- 通过ID获取邮箱 -->
+    <select id="getEmailByUserId"
+            resultType="java.lang.String">
+        SELECT email
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 通过邮箱查找用户ID-->
+    <select id="queryUserIdByEmail"
+            resultType="java.lang.Integer">
+        SELECT user_id
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 编辑管理员状态 -->
+    <update id="editAdminStatus">
+        UPDATE admin_status
+        <set>
+            <trim suffixOverrides=",">
+                <if test="status != null">status = #{status},</if>
+            </trim>
+        </set>
+        WHERE admin_id = #{adminId}
+    </update>
+
+    <!-- 通过管理员ID删除管理员状态 -->
+    <delete id="deleteAdminStatus">
+        DELETE
+        FROM admin_status
+        WHERE admin_id = #{adminId}
+    </delete>
+
+    <!-- 添加管理员状态 -->
+    <insert id="addAdminStatus">
+        INSERT INTO user(
+        <trim suffixOverrides=",">
+            <if test="adminId != null">admin_id,</if>
+            <if test="adminStatus != null">status,</if>
+        </trim>
+        )
+        VALUES (
+        <trim suffixOverrides=",">
+            <if test="admin_id != null">#{adminId},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+        )
+    </insert>
+
 </mapper>

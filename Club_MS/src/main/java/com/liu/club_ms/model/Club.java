@@ -28,6 +28,13 @@ public class Club {
 
     private String images;
 
+    private String introduction;
+
+    private Integer count;
+
+    @TableField(exist = false)
+    private String order;
+
     @TableField(exist = false)
     private String creatorName;
 
@@ -36,4 +43,9 @@ public class Club {
 
     @TableField(exist = false)
     private String captainName;
+
+    public Club(Integer clubId, String images) {
+        this.clubId = clubId;
+        this.images = images;
+    }
 }

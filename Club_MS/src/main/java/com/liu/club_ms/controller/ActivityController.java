@@ -9,12 +9,15 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/activity")
 public class ActivityController {
     @Resource
     private ActivityService activityService;
 
+    // 分页查询或高级查询活动信息
     @GetMapping("/queryActivityList")
     public Response queryActivityList(
             @RequestParam(defaultValue = "1") int page,
@@ -33,28 +36,36 @@ public class ActivityController {
                     activity.getName(),
                     activity.getCreatorName(),
                     activity.getClubId(),
-                    userId);
+                    userId,
+                    activity.getOrder());
         } else {
             activityPageInfo = activityService.queryActivityList(page,
                     limit,
                     activity.getName(),
                     activity.getCreatorName(),
                     activity.getClubId(),
-                    null);
+                    null,
+                    activity.getOrder());
         }
 
         long total = activityPageInfo.getTotal();
-        if (total > 0) {
-            Response response = new Response();
-            response.setData(activityPageInfo.getList());
-            response.setTotal(total);
-            response.setCode(20000);
-            return response;
-        }
-
-        return Response.fail("查询社团活动信息失败！");
+        Response response = new Response();
+        response.setData(activityPageInfo.getList());
+        response.setTotal(total);
+        response.setCode(20000);
+        return response;
     }
 
+    @GetMapping("/editActivity")
+    public Response editActivity(@RequestBody Activity activity) {
+        if(activityService.editActivity(activity))
+        {
+            return Response.ok();
+        }
+        return Response.fail("编辑活动信息失败！");
+    }
+
+    // 编辑活动状态
     @GetMapping("/editStatusById")
     public Response editStatusById(Integer status, Integer userId) {
         if (activityService.editActivityStatusById(status, userId)){
@@ -64,6 +75,7 @@ public class ActivityController {
         }
     }
 
+    // 添加活动
     @PostMapping("/addActivity")
     public Response addActivity(@RequestBody Activity activity,
                                 HttpServletRequest request){
@@ -78,6 +90,7 @@ public class ActivityController {
         }
     }
 
+    // 通过ID删除活动
     @DeleteMapping("/deleteById")
     public Response deleteById(Integer activityId){
         if(activityService.deleteById(activityId)){
@@ -87,4 +100,18 @@ public class ActivityController {
         }
     }
 
+    // 通过用户ID查询社团活动
+    @GetMapping("/queryActivityListByUserId")
+    public Response queryActivityListByUserId(HttpServletRequest request){
+        String token = request.getHeader("token");
+        List<Activity> list = activityService.queryActivityListByUserId(JWUtil.getUserId(token));
+        return Response.ok(list);
+    }
+
+    // 通过活动ID查询活动信息
+    @GetMapping("/getActivityInfoById")
+    public Response getActivityInfoById(Integer activityId){
+        Activity activity = activityService.queryActivityListById(activityId);
+        return Response.ok(activity);
+    }
 }

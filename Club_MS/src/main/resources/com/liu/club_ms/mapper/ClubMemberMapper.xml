@@ -1,41 +1,165 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liu.club_ms.mapper.ClubMemberMapper">
-    <insert id="insert">
-        insert into club_member(club_id,user_id,join_time) values(#{clubId},#{userId},#{joinTime})
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.ClubMember">
+        <id column="club_member_id" property="clubMemberId"/>
+        <result column="user_id" property="userId"/>
+        <result column="join_time" property="joinTime"/>
+        <result column="club_id" property="clubId"/>
+    </resultMap>
+
+    <!-- queryClubMemberListByPage映射结果 -->
+    <resultMap id="queryClubMemberListMap"
+               type="com.liu.club_ms.model.ClubMember"
+               extends="BaseResultMap">
+        <result column="club_name" property="clubName"/>
+        <association property="user" javaType="com.liu.club_ms.model.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_name" property="userName"/>
+            <result column="real_name" property="realName"/>
+            <result column="sex" property="sex"/>
+            <result column="tel" property="tel"/>
+            <result column="email" property="email"/>
+            <result column="qq" property="qq"/>
+            <result column="wx" property="wx"/>
+        </association>
+    </resultMap>
+
+    <!-- 分页查询或者高级查询社团成员 -->
+    <select id="queryClubMemberList"
+            resultMap="queryClubMemberListMap">
+        SELECT cm.club_member_id,
+        cm.user_id,
+        cm.join_time,
+        cm.club_id,
+        c.club_name,
+        u.user_name,
+        u.real_name,
+        u.sex,
+        u.tel,
+        u.email,
+        u.qq,
+        u.wx
+        FROM club_member AS cm
+        LEFT JOIN club AS c
+        ON cm.club_id = c.club_id
+        LEFT JOIN user as u
+        ON cm.user_id = u.user_id
+        <where>
+            <if test="user.realName != null and user.realName != ''">
+                and u.real_name like CONCAT('%', #{user.realName}, '%')
+            </if>
+            <if test="clubId != null">
+                and cm.club_id = #{clubId}
+            </if>
+            <if test="captainId != null">
+                and c.captain_id = #{captainId}
+            </if>
+        </where>
+        <if test="order!=null and order!=''">
+            ORDER BY cm.club_member_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+
+    <select id="queryClubMembersByCaptainId"
+            resultMap="queryClubMemberListMap">
+        SELECT cm.club_member_id,
+        cm.user_id,
+        cm.join_time,
+        cm.club_id,
+        c.club_name,
+        u.user_name,
+        u.real_name,
+        u.sex,
+        u.tel,
+        u.email,
+        u.qq,
+        u.wx
+        FROM club_member AS cm
+        LEFT JOIN club AS c
+        ON cm.club_id = c.club_id
+        LEFT JOIN user as u
+        ON cm.user_id = u.user_id
+        <where>
+            <if test="captainId != null">
+                and c.captain_id = #{captainId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 添加社团成员 -->
+    <insert id="addClubMember">
+        INSERT INTO
+        club_member(
+        <trim suffixOverrides=",">
+            <if test="clubId != null">club_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="joinTime != null and joinTime != ''">join_time,</if>
+        </trim>
+        )
+        values(
+        <trim suffixOverrides=",">
+            <if test="clubId != null">#{clubId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="joinTime != null and joinTime != ''">#{joinTime},</if>
+        </trim>
+        )
     </insert>
 
+    <!-- 编辑社团成员信息 -->
     <update id="editClubMember">
         UPDATE club_member
         <set>
-            <if test="clubId != null">club_id = #{clubId},</if>
-            <if test="joinTime != null">join_time = #{joinTime},</if>
+            <trim suffixOverrides=",">
+                <if test="clubId != null">club_id = #{clubId},</if>
+                <if test="joinTime != null and joinTime != ''">join_time = #{joinTime},</if>
+            </trim>
         </set>
         WHERE club_member_id = #{clubMemberId}
     </update>
 
-    <select id="queryClubMemberListByPage" resultType="com.liu.club_ms.model.ClubMember">
-        select cm.club_member_id, cm.user_id, cm.join_time,
-            u.user_name, u.real_name, u.sex, u.tel, u.email, u.qq, u.wx,
-                from club_member as cm left join club as c
-                    on cm.club_id = c.club_id
-                        left join user as u
-                            on cm.user_id = u.user_id
-                                <where>
-                                    <if test="user.realName != null and user.realName!=''">
-                                        and user.real_name like CONCAT('%', #{user.realName}, '%')
-                                    </if>
-                                    <if test="clubId != null">
-                                        and cm.club_id = #{clubId}
-                                    </if>
-                                    <if test="club != null">
-                                        <if test="club.captainId != null">
-                                            and club.captain_id = #{club.captainId}
-                                        </if>
-                                    </if>
-                                </where>
+    <!--  通过ID删除社团成员 -->
+    <delete id="deleteById">
+        Delete
+        FROM club_member
+        WHERE club_member_id = #{clubMemberId}
+    </delete>
+
+    <!-- 通过用户ID删除社团成员 -->
+    <delete id="deleteClubMemberByUserId">
+        Delete
+        FROM club_member
+        WHERE user_id = #{UserId}
+    </delete>
+
+    <!-- 通过删除的社团ID删除所有对应社团成员 -->
+    <delete id="deleteClubMemberWhenDeleteClub">
+        Delete
+        FROM club_member
+        WHERE club_id = #{clubId}
+    </delete>
+
+    <!-- 通过社团Id查询社团人数 -->
+    <select id="queryClubMemberCountByClubId"
+            resultMap="BaseResultMap">
+        SELECT club_member_id
+        FROM club_member
+        <where>
+            <if test="clubId != null">
+                and club_id = #{clubId}
+            </if>
+        </where>
     </select>
 </mapper>

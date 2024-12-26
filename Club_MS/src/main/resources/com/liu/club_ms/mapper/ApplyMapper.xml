@@ -12,7 +12,7 @@
         <result column="club_Id" property="clubId"/>
     </resultMap>
 
-    <!-- 查询申请信息映射结果 -->
+    <!-- 查询入团申请详情映射结果 -->
     <resultMap id="queryApplyInfoListMap"
                type="com.liu.club_ms.model.ApplyInfo"
                extends="BaseResultMap">
@@ -37,9 +37,8 @@
             <result column="type" property="type"/>
             <result column="create_time" property="createTime"/>
         </association>
-
     </resultMap>
-
+    <!-- 分页查询或高级查询入团申请详情 -->
     <select id="queryApplyInfoList"
             resultMap="queryApplyInfoListMap"
             parameterType="com.liu.club_ms.model.ApplyInfo">
@@ -50,34 +49,50 @@
         LEFT JOIN user
         ON ai.user_id = user.user_id
         <where>
-            <if test="user.realName!=null and user.realName!=''">
+            <if test="user.realName != null and user.realName != ''">
                 and user.real_name like CONCAT('%', #{user.realName}, '%')
             </if>
-            <if test="clubId!=null">
+            <if test="clubId != null">
                 and ai.club_id = #{clubId}
             </if>
-            <if test="club!=null">
-                <if test="club.captainId!=null">
+            <if test="club != null">
+                <if test="club.captainId != null">
                     and club.captain_id = #{club.captainId}
                 </if>
             </if>
         </where>
+        <if test="order!=null and order!=''">
+            ORDER BY ai.apply_info_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
     </select>
 
+    <!-- 通过入团申请详情ID查询入团审核记录 -->
     <select id="queryApplyListByApplyInfoId"
-            resultType="com.liu.club_ms.model.ApplyList"
-            parameterType="integer">
-        SELECT al.apply_list_id, al.content al.create_time, al.author_id, user_name as author_name
+            resultType="com.liu.club_ms.model.ApplyList">
+        SELECT al.apply_list_id,
+        al.content
+        al.create_time,
+        al.author_id,
+        user_name as author_name
         FROM apply_list as al
         LEFT JOIN user
         ON user.user_id = al.author_id
         <where>
-            <if test="applyInfoId!=null">
+            <if test=" applyInfoId != null">
                 and al.apply_info_id =  #{applyInfoId}
             </if>
         </where>
     </select>
 
+    <!-- 通过ID编辑入团申请详情状态 -->
     <update id="editApplyInfoStatusById"
             parameterType="com.liu.club_ms.model.ApplyInfo">
         UPDATE apply_info
@@ -85,46 +100,129 @@
         WHERE apply_info_id = #{applyInfoId}
     </update>
 
-<!--  添加入团申请审核  -->
+    <!--  添加入团审核记录  -->
     <insert id="addApplyList"
             parameterType="com.liu.club_ms.model.ApplyList">
-        INSERT INTO apply_list(apply_info_id,
-                               content,
-                               author_id
+        INSERT INTO apply_list(
+        <if test="applyInfoId != null">apply_info_id,</if>
+        <if test="content != null and content != ''">content,</if>
+        <if test="authorId != null">author_id,</if>
         )
         VALUES (
-                #{applyInfoId},
-                #{content},
-                #{authorId}
+        <trim suffixOverrides=",">
+            <if test="applyInfoId != null">#{applyInfoId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="authorId != null">#{authorId},</if>
+        </trim>
                )
 
     </insert>
 
+    <!-- 添加入团申请详情 -->
     <insert id="addApplyInfo"
             parameterType="com.liu.club_ms.model.ApplyInfo">
-        INSERT INTO apply_info(user_id,
-                               content,
-                               club_id,
-                               status,
-                            create_time
+        INSERT INTO apply_info(
+        <trim suffixOverrides=",">
+        <if test="userId != null">user_id,</if>
+        <if test="content != null and content != ''">content,</if>
+        <if test="clubId != null">club_id,</if>
+        <if test="status != null">status,</if>
+        <if test="createTime != null and createTime != ''">create_time,</if>
+        </trim>
         )
         VALUES (
-                   #{userId},
-                   #{content},
-                   #{clubId},
-                   #{status},
-                   #{createTime}
+        <trim suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="clubId != null">#{clubId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
                )
     </insert>
 
+    <!-- 通过入团申请详情ID删除入团审核 -->
     <delete id="deleteApplyListByApplyInfoId">
         DELETE FROM apply_list
         WHERE apply_info_id = #{applyInfoId}
     </delete>
 
+    <!-- 通过ID删除入团申请详情 -->
     <delete id="deleteApplyInfoById">
         DELETE FROM apply_info
         WHERE apply_info_id = #{applyInfoId}
     </delete>
 
+    <!-- 通过用户ID查询入团申请详情ID -->
+    <select id="queryApplyInfoIdByUserId"
+            resultMap="BaseResultMap">
+        SELECT apply_info_id
+        FROM apply_info
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 通过用户ID删除入团申请详情 -->
+    <delete id="deleteApplyInfoByUserId">
+        DELETE
+        FROM apply_info
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 通过社团ID查询入团申请详情ID -->
+    <select id="queryApplyInfoIdByClubId"
+            resultMap="BaseResultMap">
+        SELECT apply_info_id
+        FROM apply_info
+        WHERE club_id = #{clubId}
+    </select>
+
+    <!-- 通过用户ID删除入团申请详情 -->
+    <delete id="deleteApplyInfoByClubId">
+        DELETE
+        FROM apply_info
+        WHERE club_id = #{clubId}
+    </delete>
+
+    <!-- 更新入团审核当审核人被删除 -->
+    <update id="updateApplyInfoWhenDeleteAuthor">
+        UPDATE apply_list
+        SET author_id = -1
+        WHERE author_id = #{authorId}
+    </update>
+
+    <!-- 通过用户ID查询入团申请记录 -->
+    <select id="getApplyInfoListByUserId"
+            resultMap="queryApplyInfoListMap">
+        SELECT ai.apply_info_id,
+               ai.apply_info_id,
+               ai.content,
+               ai.create_time,
+               ai.status,
+               club.club_name
+        FROM apply_info AS ai
+        LEFT JOIN club
+        ON ai.club_id = club.club_id
+        <where>
+            <if test="userId != null">
+                and ai.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过用户ID和社团ID查看是否存在入团申请 -->
+    <select id="checkIsExitByUserIdAndClubId"
+            resultMap="BaseResultMap">
+        SELECT ai.apply_info_id
+        FROM apply_info AS ai
+        LEFT JOIN club
+        ON ai.club_id = club.club_id
+        <where>
+            <if test="clubId != null">
+                and ai.club_id = #{clubId}
+            </if>
+            <if test="userId != null">
+                and ai.user_id = #{userId}
+            </if>
+        </where>
+    </select>
 </mapper>

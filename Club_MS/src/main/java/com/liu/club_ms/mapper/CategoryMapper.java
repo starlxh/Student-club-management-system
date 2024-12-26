@@ -9,7 +9,9 @@ import java.util.List;
 @Mapper
 public interface CategoryMapper extends BaseMapper<Category> {
 
-//  高级查询
+    // 分页查询或高级查询社团类型
     List<Category> queryCategoryList(Category category);
 
+    // 查询所有社团类型
+    List<Category> queryAllCategoryList();
 }

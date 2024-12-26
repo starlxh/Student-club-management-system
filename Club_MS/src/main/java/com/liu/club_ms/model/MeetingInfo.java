@@ -7,30 +7,34 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class ApplyInfo {
+@AllArgsConstructor
+@NoArgsConstructor
+public class MeetingInfo {
     @TableId(type = IdType.AUTO)
-    private Integer applyInfoId;
+    private Integer miId;
+
+    private String name;
+
+    private String startTime;
+
+    private String endTime;
+
+    private Integer clubId;
 
     private Integer userId;
 
-    private String content;
-
-    private String createTime;
-
-    private Integer status;
-
-    private Integer clubId;
+    private String password;
 
     @TableField(exist = false)
     private String order;
 
-    //添加社团对象
     @TableField(exist = false)
-    private Club club;
+    private String clubName;
 
     @TableField(exist = false)
-    private User user;
+    private String userName;
+
+    @TableField(exist = false)
+    private String realName;
 }

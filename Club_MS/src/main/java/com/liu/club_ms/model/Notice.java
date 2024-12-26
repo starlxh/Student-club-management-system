@@ -22,9 +22,17 @@ public class Notice {
 
     private String createTime;
 
+    private Integer clubId;
+
+    @TableField(exist = false)
+    private String order;
+
     @TableField(exist = false)
     private String userName;
 
     @TableField(exist = false)
     private String realName;
+
+    @TableField(exist = false)
+    private String clubName;
 }
