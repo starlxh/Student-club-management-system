@@ -374,7 +374,7 @@ export default {
           if (this.imageUrl) {
             this.temp.images = this.imageUrl
           }
-          request.post(this.baseUrl + 'editClub', this.temp).then(
+          request.post(this.baseUrl + 'editClub', JSON.parse(JSON.stringify(this.temp, ['clubId', 'clubName', 'categoryId', 'captainId', 'status', 'images', 'introduction']))).then(
             res => {
               if (res.code === 20000) {
                 this.$notify({
