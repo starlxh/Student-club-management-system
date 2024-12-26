@@ -67,7 +67,7 @@
           <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="openDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="captainList.some(item => item.userId === row.userId) ? openDelete(row,$index) : handleDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -182,7 +182,7 @@ export default {
       tableKey: 0,
       list: null,
       clubList: null,
-      managedClubList: null,
+      captainList: null,
       total: 0,
       listLoading: true,
       listQuery: {
@@ -232,7 +232,7 @@ export default {
   },
   created() {
     this.getClubList()
-    this.getManagedClubList()
+    this.getCaptainList()
     this.getList()
   },
   methods: {
@@ -249,9 +249,9 @@ export default {
         this.clubList = res.data
       })
     },
-    getManagedClubList() {
-      request.get('club/queryManagedClubListByUserId').then(res => {
-        this.managedClubList = res.data
+    getCaptainList() {
+      request.get('user/queryAllCaptainInfo').then(res => {
+        this.captainList = res.data
       })
     },
     handleFilter() {
@@ -421,6 +421,16 @@ export default {
 .admin-form {
   max-width: 800px;
   margin: auto;
+}
+
+.el-form>>>.el-input {
+    width: 305px;
+}
+
+@media (max-width: 870px) {
+  .el-form>>>.el-input {
+    width: auto;
+  }
 }
 
 @media (min-width: 1660px) {

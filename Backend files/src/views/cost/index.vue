@@ -392,6 +392,16 @@ export default {
   margin: auto;
 }
 
+.el-form>>>.el-input {
+    width: 305px;
+}
+
+@media (max-width: 870px) {
+  .el-form>>>.el-input {
+    width: auto;
+  }
+}
+
 @media (min-width: 1660px) {
   .cost-form {
     display: flex;
