@@ -289,4 +289,14 @@ export default {
 .filter-container .filter-item{
   margin-left: 10px;
 }
+
+.el-form>>>.el-input {
+    width: 305px;
+}
+
+@media (max-width: 870px) {
+  .el-form>>>.el-input {
+    width: auto;
+  }
+}
 </style>
