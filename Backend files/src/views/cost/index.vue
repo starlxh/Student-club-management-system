@@ -183,6 +183,7 @@ export default {
       temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
+      dialogFormReadonly: true,
       formDisabled: false,
       dialogStatus: '',
       textMap: {

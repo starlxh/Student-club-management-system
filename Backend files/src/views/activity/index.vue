@@ -9,7 +9,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-document-add" @click="handleCreate">
+      <el-button v-if="$store.getters.roles.includes('Admin')" class="filter-item" type="primary" icon="el-icon-document-add" @click="handleCreate">
         申请社团活动
       </el-button>
     </div>
@@ -31,8 +31,7 @@
       </el-table-column>
       <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
-          <span v-else>无</span>
+          <el-image fit="cover" :src="row.images | imgSrc" />
         </template>
       </el-table-column>
       <el-table-column label="活动名称" width="150px" align="center">
@@ -96,7 +95,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :model="temp" label-position="right" label-width="80px" :disabled="formDisabled" class="activity-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images" />
+          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" />
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="temp.name" readonly />
@@ -130,7 +129,7 @@
         <el-button :type="dialogStatus==='detail'?'':'danger'" @click="dialogStatus==='detail'?dialogDetailFormVisible = false:handleJudge(2)">
           {{ dialogStatus==='detail'?'关闭':'拒绝' }}
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
+        <el-button v-if="$store.getters.roles.includes('Super')" :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
           {{ dialogStatus==='detail'?'审核':'通过' }}
         </el-button>
       </div>
@@ -142,7 +141,7 @@
           <el-input v-model.number="temp.name" />
         </el-form-item>
         <el-form-item label="活动社团" prop="clubId">
-          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
@@ -156,8 +155,8 @@
           <el-input v-model.number="temp.tel" />
         </el-form-item>
         <el-form-item label="活动主持" prop="hostId">
-          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select" :change="handleClubChange()">
-            <el-option v-for="item in hostList" :key="item.clubMemberId" :label="item.realName" :value="item.clubMemberId" />
+          <el-select v-model="temp.hostId" placeholder="选择社团成员" class="form-select">
+            <el-option v-for="item in hostListFilter" :key="item.userId" :label="item.user.realName" :value="item.userId" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动详情" prop="acInfo">
@@ -166,12 +165,13 @@
         <el-form-item label="描述图片" prop="images">
           <el-upload
             class="avatar-uploader"
-            :action="baseUrl + 'uploadImg'"
+            :action="imgBaseUrl + '/public/uploadImg'"
+            :data="{ type: 2 }"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -203,6 +203,7 @@ import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
@@ -224,11 +225,15 @@ export default {
         2: '已拒绝'
       }
       return statusMap[status]
+    },
+    imgSrc(url) {
+      return getImgUrlHeader() + url
     }
   },
   data() {
     return {
       baseUrl: 'activity/',
+      imgBaseUrl: request.defaults.baseURL.slice(0, -1),
       tableKey: 0,
       list: null,
       clubList: null,
@@ -325,9 +330,6 @@ export default {
         user: {}
       }
     },
-    handleClubChange() {
-      console.log(this.temp.clubId)
-    },
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -343,6 +345,9 @@ export default {
           this.temp.status = 0
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           this.temp.acTime = new Date(this.temp.acTime).toLocaleString().replaceAll('/', '-')
+          if (this.imageUrl) {
+            this.temp.images = this.imageUrl
+          }
           request.post(this.baseUrl + 'addActivity', JSON.parse(JSON.stringify(this.temp, ['name', 'clubId', 'tel', 'images', 'acInfo', 'acTime', 'acAddress', 'createTime', 'hostId', 'status']))).then(
             res => {
               this.dialogCreatelFormVisible = false
@@ -434,7 +439,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res.data
     },
     beforeAvatarUpload(file) {
       const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'

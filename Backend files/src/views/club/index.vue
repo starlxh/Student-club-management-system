@@ -19,7 +19,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+      <el-button v-if="$store.getters.roles.includes('Super')" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
         新建社团
       </el-button>
     </div>
@@ -41,14 +41,18 @@
       </el-table-column>
       <el-table-column label="描述图" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-image v-if="row.images" fit="cover" :src="row.images" />
+          <el-image v-if="row.images" fit="cover" :src="row.images | imgSrc" />
           <span v-else>无</span>
         </template>
       </el-table-column>
       <el-table-column label="社团名称" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
           {{ row.clubName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="社团简介" min-width="250px">
+        <template slot-scope="{row}">
+          {{ row.introduction }}
         </template>
       </el-table-column>
       <el-table-column label="社团类型" width="150px" align="center">
@@ -84,7 +88,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="$store.getters.roles.includes('Super')" size="mini" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -104,15 +108,16 @@
         ref="dataForm"
         :rules="rules"
         :model="temp"
-        label-position="left"
+        :inline="true"
+        label-position="right"
         label-width="100px"
-        style="width: 400px; margin: auto;"
+        class="club-form"
       >
         <el-form-item label="社团名称" prop="clubName">
           <el-input v-model="temp.clubName" />
         </el-form-item>
         <el-form-item label="社团类型" prop="categoryId">
-          <el-select v-model="temp.categoryId" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.categoryId" class="form-select" placeholder="请选择">
             <el-option
               v-for="item in categoryList"
               :key="item.categoryId"
@@ -122,11 +127,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="社团团长" prop="captainId">
-          <el-select v-model="temp.captainId" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.captainId" class="form-select" placeholder="请选择">
             <el-option
               v-for="item in adminList"
               :key="item.userId"
-              :label="item.userName"
+              :label="item.realName"
               :value="item.userId"
             />
           </el-select>
@@ -141,19 +146,23 @@
         </el-form-item>
 
         <el-form-item label="社团状态">
-          <el-select v-model="temp.status" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.status" class="form-select" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="社团简介">
+          <el-input v-model="temp.introduction" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" resize="none" class="club-text" />
         </el-form-item>
         <el-form-item label="社团图片">
           <el-upload
             class="avatar-uploader"
-            :action="getImgUrlHeader() + '/public/uploadImg?type=1'"
+            :action="imgBaseUrl + '/public/uploadImg'"
+            :data="{type: 1}"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -186,6 +195,7 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import request from '@/utils/request'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
@@ -198,11 +208,15 @@ export default {
         1: 'success'
       }
       return statusMap[status]
+    },
+    imgSrc(url) {
+      return getImgUrlHeader() + url
     }
   },
   data() {
     return {
       baseUrl: 'club/',
+      imgBaseUrl: request.defaults.baseURL.slice(0, -1),
       imageUrl: null,
       tableKey: 0,
       list: null,
@@ -246,8 +260,8 @@ export default {
     }
   },
   created() {
-    // this.getCaptainList()
     this.getCategoryList()
+    this.getAdminList()
     this.getList()
   },
   methods: {
@@ -256,6 +270,15 @@ export default {
         res => {
           if (res.code === 20000) {
             this.categoryList = res.data
+          }
+        }
+      )
+    },
+    getAdminList() {
+      request.get('user/queryAdminList').then(
+        res => {
+          if (res.code === 20000) {
+            this.adminList = res.data
           }
         }
       )
@@ -389,7 +412,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res.data
     },
     beforeAvatarUpload(file) {
       const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -408,16 +431,9 @@ export default {
 </script>
 
 <style scoped>
-.el-form>>>.el-form-item__label {
-  text-align: right;
-}
-
-.filter-container .filter-item {
-  margin-left: 10px;
-}
 
 .form-select {
-  width: 400px;
+  width: 305px;
 }
 
 .form-timestamp {
@@ -425,7 +441,33 @@ export default {
   max-width: 305px;
 }
 
-  .avatar-uploader >>> .el-upload {
+.club-form {
+  max-width: 840px;
+  margin: auto;
+}
+
+@media (min-width: 1660px) {
+  .club-form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .club-text {
+    width: 700px;
+  }
+}
+
+@media (max-width: 1660px) {
+  .club-form {
+    text-align: center;
+  }
+
+  .club-text {
+    width: 305px;
+  }
+}
+
+.avatar-uploader >>> .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
