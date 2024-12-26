@@ -374,7 +374,7 @@ export default {
           if (this.imageUrl) {
             this.temp.images = this.imageUrl
           }
-          request.post(this.baseUrl + 'editClub', this.temp).then(
+          request.post(this.baseUrl + 'editClub', JSON.parse(JSON.stringify(this.temp, ['clubId', 'clubName', 'categoryId', 'captainId', 'status', 'images', 'introduction']))).then(
             res => {
               if (res.code === 20000) {
                 this.$notify({
@@ -444,6 +444,16 @@ export default {
 .club-form {
   max-width: 840px;
   margin: auto;
+}
+
+.el-form>>>.el-input {
+    width: 305px;
+}
+
+@media (max-width: 870px) {
+  .el-form>>>.el-input {
+    width: auto;
+  }
 }
 
 @media (min-width: 1660px) {
