@@ -155,8 +155,8 @@
           <el-input v-model.number="temp.tel" />
         </el-form-item>
         <el-form-item label="活动主持" prop="hostId">
-          <el-select v-model="temp.hostId" placeholder="选择社团" class="form-select">
-            <el-option v-for="item in hostList" :key="item.userId" :label="item.realName" :value="item.userId" />
+          <el-select v-model="temp.hostId" placeholder="选择社团成员" class="form-select">
+            <el-option v-for="item in hostListFilter" :key="item.userId" :label="item.user.realName" :value="item.userId" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动详情" prop="acInfo">
@@ -165,12 +165,13 @@
         <el-form-item label="描述图片" prop="images">
           <el-upload
             class="avatar-uploader"
-            :action="baseUrl + 'uploadImg'"
+            :action="imgBaseUrl + '/public/uploadImg'"
+            :data="{ type: 2 }"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -232,6 +233,7 @@ export default {
   data() {
     return {
       baseUrl: 'activity/',
+      imgBaseUrl: request.defaults.baseURL.slice(0, -1),
       tableKey: 0,
       list: null,
       clubList: null,
@@ -343,6 +345,9 @@ export default {
           this.temp.status = 0
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           this.temp.acTime = new Date(this.temp.acTime).toLocaleString().replaceAll('/', '-')
+          if (this.imageUrl) {
+            this.temp.images = this.imageUrl
+          }
           request.post(this.baseUrl + 'addActivity', JSON.parse(JSON.stringify(this.temp, ['name', 'clubId', 'tel', 'images', 'acInfo', 'acTime', 'acAddress', 'createTime', 'hostId', 'status']))).then(
             res => {
               this.dialogCreatelFormVisible = false
@@ -434,7 +439,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res.data
     },
     beforeAvatarUpload(file) {
       const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'

@@ -47,8 +47,12 @@
       </el-table-column>
       <el-table-column label="社团名称" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
           {{ row.clubName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="社团简介" min-width="250px">
+        <template slot-scope="{row}">
+          {{ row.introduction }}
         </template>
       </el-table-column>
       <el-table-column label="社团类型" width="150px" align="center">
@@ -104,15 +108,16 @@
         ref="dataForm"
         :rules="rules"
         :model="temp"
-        label-position="left"
+        :inline="true"
+        label-position="right"
         label-width="100px"
-        style="width: 400px; margin: auto;"
+        class="club-form"
       >
         <el-form-item label="社团名称" prop="clubName">
           <el-input v-model="temp.clubName" />
         </el-form-item>
         <el-form-item label="社团类型" prop="categoryId">
-          <el-select v-model="temp.categoryId" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.categoryId" class="form-select" placeholder="请选择">
             <el-option
               v-for="item in categoryList"
               :key="item.categoryId"
@@ -122,11 +127,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="社团团长" prop="captainId">
-          <el-select v-model="temp.captainId" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.captainId" class="form-select" placeholder="请选择">
             <el-option
               v-for="item in adminList"
               :key="item.userId"
-              :label="item.userName"
+              :label="item.realName"
               :value="item.userId"
             />
           </el-select>
@@ -141,19 +146,23 @@
         </el-form-item>
 
         <el-form-item label="社团状态">
-          <el-select v-model="temp.status" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.status" class="form-select" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="社团简介">
+          <el-input v-model="temp.introduction" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" resize="none" class="club-text" />
         </el-form-item>
         <el-form-item label="社团图片">
           <el-upload
             class="avatar-uploader"
-            :action="baseUrl + 'uploadImg'"
+            :action="imgBaseUrl + '/public/uploadImg'"
+            :data="{type: 1}"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -207,6 +216,7 @@ export default {
   data() {
     return {
       baseUrl: 'club/',
+      imgBaseUrl: request.defaults.baseURL.slice(0, -1),
       imageUrl: null,
       tableKey: 0,
       list: null,
@@ -251,6 +261,7 @@ export default {
   },
   created() {
     this.getCategoryList()
+    this.getAdminList()
     this.getList()
   },
   methods: {
@@ -259,6 +270,15 @@ export default {
         res => {
           if (res.code === 20000) {
             this.categoryList = res.data
+          }
+        }
+      )
+    },
+    getAdminList() {
+      request.get('user/queryAdminList').then(
+        res => {
+          if (res.code === 20000) {
+            this.adminList = res.data
           }
         }
       )
@@ -392,7 +412,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res.data
     },
     beforeAvatarUpload(file) {
       const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -411,16 +431,9 @@ export default {
 </script>
 
 <style scoped>
-.el-form>>>.el-form-item__label {
-  text-align: right;
-}
-
-.filter-container .filter-item {
-  margin-left: 10px;
-}
 
 .form-select {
-  width: 400px;
+  width: 305px;
 }
 
 .form-timestamp {
@@ -428,7 +441,33 @@ export default {
   max-width: 305px;
 }
 
-  .avatar-uploader >>> .el-upload {
+.club-form {
+  max-width: 840px;
+  margin: auto;
+}
+
+@media (min-width: 1660px) {
+  .club-form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .club-text {
+    width: 700px;
+  }
+}
+
+@media (max-width: 1660px) {
+  .club-form {
+    text-align: center;
+  }
+
+  .club-text {
+    width: 305px;
+  }
+}
+
+.avatar-uploader >>> .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
