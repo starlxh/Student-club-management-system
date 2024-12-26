@@ -16,6 +16,10 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
 
+        <el-tooltip content="返回首页" effect="dark" placement="bottom">
+          <back-home id="back-home" class="right-menu-item hover-effect" />
+        </el-tooltip>
+
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -54,6 +58,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import request from '@/utils/request'
+import BackHome from '@/components/BackHome'
 import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
@@ -63,6 +68,7 @@ export default {
     ErrorLog,
     Screenfull,
     SizeSelect,
+    BackHome,
     Search
   },
   data() {
