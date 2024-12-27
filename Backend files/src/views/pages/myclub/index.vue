@@ -144,7 +144,7 @@
                     <button
                       v-if="managedClubList"
                       class="empty-words-club"
-                      @click.prevent="this.$router.push({ path: '/club' })"
+                      @click.prevent="toCreateClub"
                     >
                       <span>+</span>
                       去创建一个社团
@@ -209,7 +209,7 @@
 
             <div class="content-box hidden">
               <section class="header">
-                <h1>我参加的活动</h1>
+                <h1>社团活动记录</h1>
                 <div class="input-group">
                   <input
                     type="search"
@@ -427,6 +427,9 @@ export default {
           (item) => item.clubName.toLowerCase().includes(this.searchContent.toLowerCase()) // 根据 name 筛选
         )
       }
+    },
+    toCreateClub() {
+      this.$router.push({ path: '/club' })
     },
     toActivity(id) {
       this.$router.push({
