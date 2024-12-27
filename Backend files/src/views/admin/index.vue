@@ -1,14 +1,42 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.realName" placeholder="真实姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.type" placeholder="选择权限类型" clearable class="filter-item" style="width: 150px">
-        <el-option v-for="item in typeOptions" :key="item.id" :label="item.value" :value="item.id" />
+      <el-input
+        v-model="listQuery.realName"
+        placeholder="真实姓名"
+        style="width: 200px"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-select
+        v-model="listQuery.type"
+        placeholder="选择权限类型"
+        clearable
+        class="filter-item"
+        style="width: 150px"
+      >
+        <el-option
+          v-for="item in typeOptions"
+          :key="item.id"
+          :label="item.value"
+          :value="item.id"
+        />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="handleCreate"
+      >
         添加社团管理员
       </el-button>
     </div>
@@ -20,64 +48,99 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="adminId" sortable="custom" align="center" width="120px">
-        <template slot-scope="{row}">
+      <el-table-column
+        label="编号"
+        prop="adminId"
+        sortable="custom"
+        align="center"
+        width="120px"
+      >
+        <template slot-scope="{ row }">
           <span>{{ row.userId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="真实姓名" width="150px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.realName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="性别" width="50px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.sex }}</span>
         </template>
       </el-table-column>
       <el-table-column label="电话" min-width="150px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column label="邮箱" min-width="250px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.email }}</span>
         </template>
       </el-table-column>
       <el-table-column label="权限类型" width="120px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-tag :type="row.type | statusFilter">
-            <span v-if="row.type==1">社团管理员</span>
-            <span v-else-if="row.type==2">系统管理员</span>
-            <span v-else-if="row.type==0">用户</span>
+            <span v-if="row.type == 1">社团管理员</span>
+            <span v-else-if="row.type == 2">系统管理员</span>
+            <span v-else-if="row.type == 0">用户</span>
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" min-width="200px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        <template slot-scope="{ row }">
+          <span>{{ row.createTime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+      <el-table-column
+        label="Actions"
+        align="center"
+        width="230"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="{ row, $index }">
           <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="captainList.some(item => item.userId === row.userId) ? openDelete(row,$index) : handleDelete(row,$index)">
+          <el-button
+            v-if="row.status != 'deleted'"
+            size="mini"
+            type="danger"
+            @click="
+              captainList.some((item) => item.userId === row.userId)
+                ? openDelete(row, $index)
+                : handleDelete(row, $index)
+            "
+          >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
-      <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="admin-form">
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :inline="true"
+        :model="temp"
+        :hide-required-asterisk="dialogFormReadonly"
+        label-position="right"
+        label-width="80px"
+        class="admin-form"
+      >
         <el-form-item label="成员昵称" prop="userName">
           <el-input v-model="temp.userName" readonly :disabled="formDisabled" />
         </el-form-item>
@@ -103,9 +166,23 @@
           <el-input v-model="temp.wx" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.status" :readonly="dialogFormReadonly" />
-          <el-select v-else-if="dialogStatus==='update'" v-model="temp.status" placeholder="修改状态" class="form-select">
-            <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
+          <el-input
+            v-if="dialogStatus === 'detail'"
+            v-model="temp.status"
+            :readonly="dialogFormReadonly"
+          />
+          <el-select
+            v-else-if="dialogStatus === 'update'"
+            v-model="temp.status"
+            placeholder="修改状态"
+            class="form-select"
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -113,34 +190,43 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogDetailFormVisible = false">
-          关闭
-        </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" :disabled="temp.type==0" @click="dialogStatus==='detail'?handleUpdate():updateData()">
-          {{ dialogStatus==='detail'?'修改':'提交' }}
+        <el-button @click="dialogDetailFormVisible = false"> 关闭 </el-button>
+        <el-button
+          :type="dialogStatus === 'detail' ? 'primary' : 'success'"
+          @click="dialogStatus === 'detail' ? handleUpdate() : updateData()"
+        >
+          {{ dialogStatus === "detail" ? "修改" : "提交" }}
         </el-button>
       </div>
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
-      <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="admin-form">
+      <el-form
+        ref="createForm"
+        :rules="createRules"
+        :inline="true"
+        :model="temp"
+        label-position="right"
+        label-width="80px"
+        class="admin-form"
+      >
         <el-form-item label="成员Id" prop="userId">
           <el-input v-model.number="temp.userId" />
         </el-form-item>
         <el-form-item label="权限类型" prop="type">
-          <el-select v-model.number="temp.type" placeholder="选择权限类型" class="form-select">
+          <el-select
+            v-model.number="temp.type"
+            placeholder="选择权限类型"
+            class="form-select"
+          >
             <el-option label="系统管理员" value="2" />
             <el-option label="社团管理员" value="1" />
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCreateFormVisible = false">
-          关闭
-        </el-button>
-        <el-button type="primary" @click="createData()">
-          添加
-        </el-button>
+        <el-button @click="dialogCreateFormVisible = false"> 关闭 </el-button>
+        <el-button type="primary" @click="createData()"> 添加 </el-button>
       </div>
     </el-dialog>
 
@@ -193,13 +279,18 @@ export default {
         order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
+      sortOptions: [
+        { label: 'ID Ascending', key: '+id' },
+        { label: 'ID Descending', key: '-id' }
+      ],
       statusOptions: [
         { id: 0, value: '禁用' },
-        { id: 1, value: '正常' }],
+        { id: 1, value: '正常' }
+      ],
       typeOptions: [
         { id: 1, value: '社团管理员' },
-        { id: 2, value: '系统管理员' }],
+        { id: 2, value: '系统管理员' }
+      ],
       showReviewer: false,
       temp: {
         user: {}
@@ -238,19 +329,21 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryAdminList', { params: this.listQuery }).then(res => {
-        this.list = res.data
-        this.total = res.total
-        this.listLoading = false
-      })
+      request
+        .get(this.baseUrl + 'queryAdminList', { params: this.listQuery })
+        .then((res) => {
+          this.list = res.data
+          this.total = res.total
+          this.listLoading = false
+        })
     },
     getClubList() {
-      request.get('club/queryAllClubList').then(res => {
+      request.get('club/queryAllClubList').then((res) => {
         this.clubList = res.data
       })
     },
     getCaptainList() {
-      request.get('user/queryAllCaptainInfo').then(res => {
+      request.get('user/queryAllCaptainInfo').then((res) => {
         this.captainList = res.data
       })
     },
@@ -289,8 +382,12 @@ export default {
     createData() {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          request.post(this.baseUrl + 'addAdmin', JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))).then(
-            res => {
+          request
+            .post(
+              this.baseUrl + 'addAdmin',
+              JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))
+            )
+            .then((res) => {
               this.dialogCreatelFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
@@ -315,7 +412,12 @@ export default {
     handleDetail(row) {
       this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
       this.dialogStatus = 'detail'
-      this.textMap['detail'] = ((this.temp.type === 0) ? '用户' : ((this.temp.type === 2 ? '系统' : '社团') + '管理员')) + '详情——' + this.temp.realName
+      this.textMap['detail'] =
+        (this.temp.type === 0
+          ? '用户'
+          : (this.temp.type === 2 ? '系统' : '社团') + '管理员') +
+        '详情——' +
+        this.temp.realName
       this.dialogFormReadonly = true
       this.dialogDetailFormVisible = true
       this.formDisabled = false
@@ -337,9 +439,15 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.adminId = this.temp.userId
-          this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editAdminStatus', JSON.parse(JSON.stringify(this.temp, ['adminId', 'status']))).then(
-            res => {
+          this.temp.createTime = new Date(this.temp.createTime)
+            .toLocaleString()
+            .replaceAll('/', '-')
+          request
+            .post(
+              this.baseUrl + 'editAdminStatus',
+              JSON.parse(JSON.stringify(this.temp, ['adminId', 'status']))
+            )
+            .then((res) => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
@@ -366,18 +474,21 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.handleDelete(row, index)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
+        .then(() => {
+          this.handleDelete(row, index)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteAdminById?adminId=' + row.adminId).then(
-        res => {
+      request
+        .delete(this.baseUrl + 'deleteAdminById?adminId=' + row.adminId)
+        .then((res) => {
           if (res.code === 20000) {
             this.$notify({
               title: '成功',
@@ -387,11 +498,10 @@ export default {
             })
             this.list.splice(index, 1)
           }
-        }
-      )
+        })
     },
     handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
+      fetchPv(pv).then((response) => {
         this.pvData = response.data.pvData
         this.dialogPvVisible = true
       })
@@ -423,12 +533,12 @@ export default {
   margin: auto;
 }
 
-.el-form>>>.el-input {
-    width: 305px;
+.el-form >>> .el-input {
+  width: 305px;
 }
 
 @media (max-width: 870px) {
-  .el-form>>>.el-input {
+  .el-form >>> .el-input {
     width: auto;
   }
 }
@@ -445,5 +555,4 @@ export default {
     text-align: center;
   }
 }
-
 </style>

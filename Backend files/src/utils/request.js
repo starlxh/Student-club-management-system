@@ -6,8 +6,8 @@ import { getToken, setToken } from '@/utils/auth'
 // 创建一个axios实例
 const service = axios.create({
   // baseURL: 'http://localhost:9999/'
-  baseURL: 'http://www.shantouliu.site:4487/'
-  // baseURL: 'http://www.shantouliu.site:4485/'
+  // baseURL: 'http://www.shantouliu.site:4487/'
+  baseURL: 'http://www.shantouliu.site:4485/'
 })
 
 // 请求拦截器
