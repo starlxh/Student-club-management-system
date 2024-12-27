@@ -269,7 +269,7 @@ export default {
           this.temp.joinTime = new Date().toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'addClubMember', JSON.parse(JSON.stringify(this.temp, ['userId', 'joinTime', 'clubId']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',

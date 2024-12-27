@@ -298,7 +298,7 @@ export default {
         if (valid) {
           request.post(this.baseUrl + 'addAdmin', JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',

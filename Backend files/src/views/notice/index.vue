@@ -36,6 +36,11 @@
           <span>{{ row.content }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="社团名称" width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.clubName }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建者" width="150px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.realName }}</span>
@@ -62,14 +67,17 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :rules="rules" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="100px" class="notice-form">
-        <el-form-item v-if="dialogStatus==='detail'" label="公告ID">
-          <el-input v-model="temp.noticeId" :readonly="dialogFormReadonly" />
-        </el-form-item>
         <el-form-item v-if="dialogStatus==='detail'" label="创建者昵称">
           <el-input v-model="temp.userName" readonly />
         </el-form-item>
         <el-form-item v-if="dialogStatus==='detail'" label="创建者姓名">
           <el-input v-model="temp.realName" readonly />
+        </el-form-item>
+        <el-form-item label="社团名称" prop="clubName">
+          <el-input v-if="dialogStatus==='detail'" :value="temp.clubName" readonly />
+          <el-select v-else-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+          </el-select>
         </el-form-item>
         <el-form-item label="发布时间" prop="createTime">
           <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" :readonly="dialogFormReadonly" />
@@ -94,6 +102,11 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
       <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="notice-form">
+        <el-form-item label="社团名称" prop="clubName">
+          <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
+            <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="公告标题" prop="title">
           <el-input v-model="temp.title" :autosize="{ maxRows: 2 }" type="textarea" resize="none" class="notice-text" />
         </el-form-item>
@@ -176,11 +189,13 @@ export default {
       rules: {
         createTime: [{ required: true, message: '发布时间不能为空', trigger: 'blur' }],
         title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
+        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }],
+        clubName: [{ required: true, message: '请选择社团', trigger: 'blur' }]
       },
       createRules: {
         title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }]
+        content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }],
+        clubName: [{ required: true, message: '请选择社团', trigger: 'change' }]
       },
       downloadLoading: false
     }
@@ -234,7 +249,7 @@ export default {
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'addNotice', JSON.parse(JSON.stringify(this.temp, ['title', 'content', 'createTime']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',

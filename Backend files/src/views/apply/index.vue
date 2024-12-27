@@ -239,14 +239,14 @@
           <el-input v-model="temp.text" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
         </el-form-item>
         <el-form-item label="审核意见">
-          <el-input v-model="temp.content" :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
+          <el-input v-model="temp.content" :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" resize="none" placeholder="无" class="apply-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dialogFormCheckVisible = false">
+        <el-button type="danger" @click="handleJudge(2)">
           拒绝
         </el-button>
-        <el-button type="success">
+        <el-button type="success" @click="handleJudge(1)">
           通过
         </el-button>
       </div>
@@ -400,7 +400,7 @@ export default {
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'judge', JSON.parse(JSON.stringify(this.temp, ['applyInfoId', 'content', 'status', 'createTime']))).then(
             res => {
-              this.dialogDetailFormVisible = false
+              this.dialogFormCheckVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
@@ -409,7 +409,6 @@ export default {
                   duration: 2000
                 })
                 this.getList()
-                this.dialogFormCheckVisible = false
               } else {
                 this.$notify({
                   title: '失败',

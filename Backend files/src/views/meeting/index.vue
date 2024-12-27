@@ -88,20 +88,20 @@
           <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.endTime" type="datetime" placeholder="请选择结束时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="社团名称" prop="clubId">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.clubName" :readonly="dialogFormReadonly" />
+          <el-input v-if="dialogStatus==='detail'" :value="temp.clubName" :readonly="dialogFormReadonly" />
           <el-select v-else-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
         </el-form-item>
         <el-form-item label="会议密码" prop="password">
-          <el-input v-model="temp.password" />
+          <el-input v-model="temp.password" :readonly="dialogFormReadonly" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():handleUpdate()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
@@ -276,9 +276,9 @@ export default {
         if (valid) {
           this.temp.startTime = new Date(this.temp.startTime).toLocaleString().replaceAll('/', '-')
           this.temp.endTime = new Date(this.temp.endTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['name', 'startTime', 'endTime', 'clubId']))).then(
+          request.post(this.baseUrl + 'addMeetingInfo', JSON.parse(JSON.stringify(this.temp, ['name', 'startTime', 'endTime', 'clubId', 'password']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',
