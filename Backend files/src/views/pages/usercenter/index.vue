@@ -539,14 +539,44 @@ export default {
       return isJPG && isLt2M
     },
     handleCaptcha() {
-      request
-        .post('login/sendCaptcha?type=2&token=' + this.$store.getters.token)
-        .then((res) => {
-          this.$message({
-            message: '已发送验证码到您的邮箱！',
-            type: 'success'
+      if (this.editForm.label === '邮箱') {
+        if (this.editForm.value.trim()) {
+          this.$notify({
+            title: '提交成功',
+            message: '请等待系统发送验证码！',
+            type: 'success',
+            duration: 2000
           })
+          request
+            .post(
+              'login/sendCaptcha?type=4&email=' +
+                this.editForm.value +
+                '&token=' +
+                this.$store.getters.token
+            )
+            .then((res) => {
+              this.$message({
+                message: '已发送验证码到您的邮箱！',
+                type: 'success'
+              })
+            })
+        }
+      } else {
+        this.$notify({
+          title: '提交成功',
+          message: '请等待系统发送验证码！',
+          type: 'success',
+          duration: 2000
         })
+        request
+          .post('login/sendCaptcha?type=2&token=' + this.$store.getters.token)
+          .then((res) => {
+            this.$message({
+              message: '已发送验证码到您的邮箱！',
+              type: 'success'
+            })
+          })
+      }
     }
   }
 }

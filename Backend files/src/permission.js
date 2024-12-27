@@ -14,8 +14,8 @@ const whiteList = ['/',
   '/indexs',
   '/clublist',
   '/clubinfo',
+  '/clubnotice',
   '/noticeinfo',
-  '/notice_front',
   '/frontactivity'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {

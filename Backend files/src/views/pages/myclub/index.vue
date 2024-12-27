@@ -133,11 +133,19 @@
                         </button>
                       </td>
                     </tr>
-                    <button v-if="userInfo.type == 0" class="empty-words-club">
+                    <button
+                      v-if="userInfo.type == 0"
+                      class="empty-words-club"
+                      @click.prevent="becomeAdmin"
+                    >
                       <span>+</span>
                       请求成为社团管理员
                     </button>
-                    <button v-if="managedClubList" class="empty-words-club">
+                    <button
+                      v-if="managedClubList"
+                      class="empty-words-club"
+                      @click.prevent="toCreateClub"
+                    >
                       <span>+</span>
                       去创建一个社团
                     </button>
@@ -201,7 +209,7 @@
 
             <div class="content-box hidden">
               <section class="header">
-                <h1>我参加的活动</h1>
+                <h1>社团活动记录</h1>
                 <div class="input-group">
                   <input
                     type="search"
@@ -420,6 +428,9 @@ export default {
         )
       }
     },
+    toCreateClub() {
+      this.$router.push({ path: '/club' })
+    },
     toActivity(id) {
       this.$router.push({
         path: '/frontactivity',
@@ -434,6 +445,12 @@ export default {
         query: {
           clubId: id
         }
+      })
+    },
+    becomeAdmin() {
+      this.$message({
+        message: '请通过邮箱联系系统管理员申请社团管理员权限!',
+        type: 'warning'
       })
     },
     deleteApplyInfo(item) {

@@ -112,8 +112,13 @@ export default {
           }
         })
     },
-    copyMeetingPassword(title, id) {
-      navigator.clipboard.writeText(title).then(() => {
+    copyMeetingPassword(password, id) {
+      const textArea = document.createElement('textarea')
+      textArea.value = password
+      document.body.appendChild(textArea)
+      textArea.select()
+      try {
+        document.execCommand('copy')
         this.$message({
           message: `成功复制会议密码！两秒后跳转会议界面`,
           type: 'success'
@@ -126,7 +131,14 @@ export default {
             }
           })
         }, 2000)
-      })
+        console.log('Fallback: 成功复制到剪贴板')
+      } catch (err) {
+        console.error('Fallback: 无法复制到剪贴板', err)
+      }
+      document.body.removeChild(textArea)
+      // navigator.clipboard.writeText(title).then(() => {
+
+      // })
     },
     filteredItems(searchText) {
       this.tempList = this.meetInfoList
