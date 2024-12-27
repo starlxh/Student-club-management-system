@@ -275,7 +275,7 @@ export default {
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           request.post(this.baseUrl + 'addCostList', JSON.parse(JSON.stringify(this.temp, ['clubId', 'name', 'price', 'createTime', 'remarks']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',

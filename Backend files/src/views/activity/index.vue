@@ -95,7 +95,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :inline="true" :model="temp" label-position="right" label-width="80px" :disabled="formDisabled" class="activity-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" />
+          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" style="height: 150px" />
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="temp.name" readonly />
@@ -129,7 +129,7 @@
         <el-button :type="dialogStatus==='detail'?'':'danger'" @click="dialogStatus==='detail'?dialogDetailFormVisible = false:handleJudge(2)">
           {{ dialogStatus==='detail'?'关闭':'拒绝' }}
         </el-button>
-        <el-button v-if="$store.getters.roles.includes('Super')" :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
+        <el-button v-if="$store.getters.roles.includes('Super')" :type="dialogStatus==='detail'?'primary':'success'" :disabled="temp.status != 0" @click="dialogStatus==='detail'?handleCheck():handleJudge(1)">
           {{ dialogStatus==='detail'?'审核':'通过' }}
         </el-button>
       </div>
@@ -350,7 +350,7 @@ export default {
           }
           request.post(this.baseUrl + 'addActivity', JSON.parse(JSON.stringify(this.temp, ['name', 'clubId', 'tel', 'images', 'acInfo', 'acTime', 'acAddress', 'createTime', 'hostId', 'status']))).then(
             res => {
-              this.dialogCreatelFormVisible = false
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
                   title: '成功',

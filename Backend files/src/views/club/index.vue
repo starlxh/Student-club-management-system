@@ -50,11 +50,6 @@
           {{ row.clubName }}
         </template>
       </el-table-column>
-      <el-table-column label="社团简介" min-width="250px">
-        <template slot-scope="{row}">
-          {{ row.introduction }}
-        </template>
-      </el-table-column>
       <el-table-column label="社团类型" width="150px" align="center">
         <template slot-scope="{row}">
           <el-tag :type="row.categoryName | statusFilter">

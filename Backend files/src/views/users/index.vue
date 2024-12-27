@@ -76,35 +76,35 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailFormVisible">
       <el-form ref="dataForm" :rules="rules" :inline="true" :model="temp" :hide-required-asterisk="dialogFormReadonly" label-position="right" label-width="80px" class="admin-form">
         <el-form-item style="width: 100%; text-align: center">
-          <el-image v-model="temp.images" fit="cover" :src="temp.images | imgSrc" />
+          <el-image v-model="temp.image" fit="cover" :src="temp.image | imgSrc" style="height:150px" />
         </el-form-item>
         <el-form-item label="成员昵称" prop="userName">
-          <el-input v-model="temp.userName" readonly />
+          <el-input v-model="temp.userName" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
-          <el-input v-model="temp.realName" readonly />
+          <el-input v-model="temp.realName" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-input v-model="temp.sex" readonly />
+          <el-input v-model="temp.sex" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
           <el-input v-if="dialogStatus==='detail'" v-model="temp.createTime" readonly />
           <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.createTime" type="datetime" placeholder="请选择创建时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="电话" prop="tel">
-          <el-input v-model="temp.tel" readonly />
+          <el-input v-model="temp.tel" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="temp.email" readonly />
+          <el-input v-model="temp.email" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="QQ" prop="qq">
-          <el-input v-model="temp.qq" readonly />
+          <el-input v-model="temp.qq" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="微信" prop="wx">
-          <el-input v-model="temp.wx" readonly />
+          <el-input v-model="temp.wx" :readonly="dialogFormReadonly" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model.number="temp.password" readonly class="admin-text" />
+          <el-input v-model.number="temp.password" :readonly="dialogFormReadonly" class="admin-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

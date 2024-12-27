@@ -15,7 +15,7 @@
     <el-table
       :key="tableKey"
       v-loading="listLoading"
-      :data="listFilter"
+      :data="list"
       border
       fit
       highlight-current-row
@@ -156,11 +156,6 @@ export default {
       downloadLoading: false
     }
   },
-  computed: {
-    listFilter() {
-      return this.list.filter(item => item.categoryId > 0)
-    }
-  },
   created() {
     this.getList()
   },
@@ -271,7 +266,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-            this.list.splice(index, 1)
+            this.getList()
           }
         }
       )
