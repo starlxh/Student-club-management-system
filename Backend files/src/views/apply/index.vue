@@ -461,7 +461,7 @@ export default {
   }
 }
 
-@media (min-width: 166px) {
+@media (min-width: 1660px) {
   .apply-form {
     display: flex;
     flex-wrap: wrap;

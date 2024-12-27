@@ -57,6 +57,13 @@
           </el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="状态" width="80px" align="center">
+        <template slot-scope="{row}">
+          <el-tag :type="row.status === 0 ? 'danger' : 'success'">
+            <span>{{ row.status === 0 ? '禁用' : '正常' }}</span>
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" min-width="200px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -103,7 +110,7 @@
           <el-input v-model="temp.wx" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-input v-if="dialogStatus==='detail'" v-model="temp.status" :readonly="dialogFormReadonly" />
+          <el-input v-if="dialogStatus==='detail'" :value="temp.status === 0 ? '禁用' : '正常'" :readonly="dialogFormReadonly" />
           <el-select v-else-if="dialogStatus==='update'" v-model="temp.status" placeholder="修改状态" class="form-select">
             <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
           </el-select>
