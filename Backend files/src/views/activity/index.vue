@@ -289,7 +289,7 @@
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar" />
+            <img v-if="imageUrl" :src="imgBaseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -313,40 +313,40 @@
 </template>
 
 <script>
-import { fetchPv } from "@/api/article";
-import waves from "@/directive/waves"; // waves directive
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import request from "@/utils/request";
-import { getImgUrlHeader } from "@/utils/imagespath";
+import { fetchPv } from '@/api/article'
+import waves from '@/directive/waves' // waves directive
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import request from '@/utils/request'
+import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
-  name: "ComplexTable",
+  name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        0: "primary",
-        1: "success",
-        2: "danger",
-      };
-      return statusMap[status];
+        0: 'primary',
+        1: 'success',
+        2: 'danger'
+      }
+      return statusMap[status]
     },
     judgeStatusFilter(status) {
       const statusMap = {
-        0: "未审核",
-        1: "审核通过",
-        2: "已拒绝",
-      };
-      return statusMap[status];
+        0: '未审核',
+        1: '审核通过',
+        2: '已拒绝'
+      }
+      return statusMap[status]
     },
     imgSrc(url) {
-      return getImgUrlHeader() + url;
-    },
+      return getImgUrlHeader() + url
+    }
   },
   data() {
     return {
-      baseUrl: "activity/",
+      baseUrl: 'activity/',
       imgBaseUrl: request.defaults.baseURL.slice(0, -1),
       tableKey: 0,
       list: null,
@@ -360,247 +360,247 @@ export default {
         name: undefined,
         creatorName: undefined,
         clubId: undefined,
-        order: "ASC",
+        order: 'ASC'
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [
-        { label: "ID Ascending", key: "+id" },
-        { label: "ID Descending", key: "-id" },
+        { label: 'ID Ascending', key: '+id' },
+        { label: 'ID Descending', key: '-id' }
       ],
-      statusOptions: ["published", "draft", "deleted"],
+      statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {},
       dialogDetailFormVisible: false,
       dialogCreateFormVisible: false,
       formDisabled: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        detail: "社团活动详情",
-        update: "社团活动审核",
-        check: "申请社团活动",
+        detail: '社团活动详情',
+        update: '社团活动审核',
+        check: '申请社团活动'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        name: [{ required: true, message: "活动名称不能为空", trigger: "blur" }],
-        clubId: [{ required: true, message: "社团不能为空", trigger: "blur" }],
-        acAddress: [{ required: true, message: "活动地点不能为空", trigger: "blur" }],
-        acTime: [{ required: true, message: "活动时间不能为空", trigger: "blur" }],
-        tel: [{ required: true, message: "联系电话不能为空", trigger: "blur" }],
-        hostId: [{ required: true, message: "活动主持不能为空", trigger: "blur" }],
-        acInfo: [{ required: true, message: "活动详情不能为空", trigger: "blur" }],
+        name: [{ required: true, message: '活动名称不能为空', trigger: 'blur' }],
+        clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
+        acAddress: [{ required: true, message: '活动地点不能为空', trigger: 'blur' }],
+        acTime: [{ required: true, message: '活动时间不能为空', trigger: 'blur' }],
+        tel: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
+        hostId: [{ required: true, message: '活动主持不能为空', trigger: 'blur' }],
+        acInfo: [{ required: true, message: '活动详情不能为空', trigger: 'blur' }]
       },
       downloadLoading: false,
       imageUrl: null,
-      placeholder: "无",
-    };
+      placeholder: '无'
+    }
   },
   computed: {
     hostListFilter() {
-      return this.hostList.filter((item) => item.clubId === this.temp.clubId);
-    },
+      return this.hostList.filter((item) => item.clubId === this.temp.clubId)
+    }
   },
   created() {
-    this.getClubList();
-    this.getHostList();
-    this.getList();
+    this.getClubList()
+    this.getHostList()
+    this.getList()
   },
   methods: {
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       request
-        .get(this.baseUrl + "queryActivityList", { params: this.listQuery })
+        .get(this.baseUrl + 'queryActivityList', { params: this.listQuery })
         .then((res) => {
-          this.list = res.data;
-          this.total = res.total;
-          this.listLoading = false;
-        });
+          this.list = res.data
+          this.total = res.total
+          this.listLoading = false
+        })
     },
     getClubList() {
-      request.get("club/queryAllClubList").then((res) => {
-        this.clubList = res.data;
-      });
+      request.get('club/queryAllClubList').then((res) => {
+        this.clubList = res.data
+      })
     },
     getHostList() {
-      request.get("clubMember/queryClubMemberListByCaptainId").then((res) => {
-        this.hostList = res.data;
-      });
+      request.get('clubMember/queryClubMemberListByCaptainId').then((res) => {
+        this.hostList = res.data
+      })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     sortChange(data) {
-      const { prop, order } = data;
-      if (prop === "activityId") {
-        this.sortByID(order);
+      const { prop, order } = data
+      if (prop === 'activityId') {
+        this.sortByID(order)
       }
     },
     sortByID(order) {
-      if (order === "ascending") {
-        this.listQuery.order = "ASC";
+      if (order === 'ascending') {
+        this.listQuery.order = 'ASC'
       } else {
-        this.listQuery.order = "DESC";
+        this.listQuery.order = 'DESC'
       }
-      this.handleFilter();
+      this.handleFilter()
     },
     resetTemp() {
       this.temp = {
-        user: {},
-      };
+        user: {}
+      }
     },
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogCreateFormVisible = true;
-      this.placeholder = "";
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogCreateFormVisible = true
+      this.placeholder = ''
       this.$nextTick(() => {
-        this.$refs["createForm"].clearValidate();
-      });
+        this.$refs['createForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["createForm"].validate((valid) => {
+      this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          this.temp.status = 0;
-          this.temp.createTime = new Date().toLocaleString().replaceAll("/", "-");
+          this.temp.status = 0
+          this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
           this.temp.acTime = new Date(this.temp.acTime)
             .toLocaleString()
-            .replaceAll("/", "-");
+            .replaceAll('/', '-')
           if (this.imageUrl) {
-            this.temp.images = this.imageUrl;
+            this.temp.images = this.imageUrl
           }
           request
             .post(
-              this.baseUrl + "addActivity",
+              this.baseUrl + 'addActivity',
               JSON.parse(
                 JSON.stringify(this.temp, [
-                  "name",
-                  "clubId",
-                  "tel",
-                  "images",
-                  "acInfo",
-                  "acTime",
-                  "acAddress",
-                  "createTime",
-                  "hostId",
-                  "status",
+                  'name',
+                  'clubId',
+                  'tel',
+                  'images',
+                  'acInfo',
+                  'acTime',
+                  'acAddress',
+                  'createTime',
+                  'hostId',
+                  'status'
                 ])
               )
             )
             .then((res) => {
-              this.dialogCreateFormVisible = false;
+              this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
-                  title: "成功",
-                  message: "添加社团成员成功！",
-                  type: "success",
-                  duration: 2000,
-                });
-                this.getList();
+                  title: '成功',
+                  message: '添加社团成员成功！',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               } else {
                 this.$notify({
-                  title: "失败",
-                  message: "添加社团成员失败！",
-                  type: "fail",
-                  duration: 2000,
-                });
+                  title: '失败',
+                  message: '添加社团成员失败！',
+                  type: 'fail',
+                  duration: 2000
+                })
               }
-            });
+            })
         }
-      });
+      })
     },
     handleDetail(row) {
-      this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))); // 深拷贝
-      this.dialogStatus = "detail";
-      this.textMap["detail"] = "社团活动详情——" + this.temp.name;
-      this.dialogDetailFormVisible = true;
-      this.formDisabled = false;
-      this.placeholder = "无";
+      this.temp = Object.assign({}, JSON.parse(JSON.stringify(row))) // 深拷贝
+      this.dialogStatus = 'detail'
+      this.textMap['detail'] = '社团活动详情——' + this.temp.name
+      this.dialogDetailFormVisible = true
+      this.formDisabled = false
+      this.placeholder = '无'
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleCheck() {
-      this.dialogStatus = "check";
-      this.formDisabled = true;
-      this.placeholder = "";
+      this.dialogStatus = 'check'
+      this.formDisabled = true
+      this.placeholder = ''
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleJudge(status) {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.status = status;
+          this.temp.status = status
           request
             .post(
-              this.baseUrl + "editStatusById",
-              JSON.parse(JSON.stringify(this.temp, ["activityId", "status"]))
+              this.baseUrl + 'editStatusById',
+              JSON.parse(JSON.stringify(this.temp, ['activityId', 'status']))
             )
             .then((res) => {
-              this.dialogDetailFormVisible = false;
+              this.dialogDetailFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
-                  title: "成功",
-                  message: "社团活动审核成功！",
-                  type: "success",
-                  duration: 2000,
-                });
-                this.getList();
+                  title: '成功',
+                  message: '社团活动审核成功！',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               } else {
                 this.$notify({
-                  title: "失败",
-                  message: "社团活动审核失败！",
-                  type: "fail",
-                  duration: 2000,
-                });
+                  title: '失败',
+                  message: '社团活动审核失败！',
+                  type: 'fail',
+                  duration: 2000
+                })
               }
-            });
+            })
         }
-      });
+      })
     },
     handleDelete(row, index) {
       request
-        .delete(this.baseUrl + "deleteById?activityId=" + row.activityId)
+        .delete(this.baseUrl + 'deleteById?activityId=' + row.activityId)
         .then((res) => {
           if (res.code === 20000) {
             this.$notify({
-              title: "成功",
-              message: "删除社团活动成功！",
-              type: "success",
-              duration: 2000,
-            });
-            this.list.splice(index, 1);
+              title: '成功',
+              message: '删除社团活动成功！',
+              type: 'success',
+              duration: 2000
+            })
+            this.list.splice(index, 1)
           }
-        });
+        })
     },
     handleFetchPv(pv) {
       fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
+        this.pvData = response.data.pvData
+        this.dialogPvVisible = true
+      })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = res.data;
+      this.imageUrl = res.data
     },
     beforeAvatarUpload(file) {
-      const isRtype = file.type === "image/jpeg" || file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isRtype = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isRtype) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isRtype && isLt2M;
+      return isRtype && isLt2M
     },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort;
-      return sort === `+${key}` ? "ascending" : "descending";
-    },
-  },
-};
+    getSortClass: function(key) {
+      const sort = this.listQuery.sort
+      return sort === `+${key}` ? 'ascending' : 'descending'
+    }
+  }
+}
 </script>
 
 <style scoped>

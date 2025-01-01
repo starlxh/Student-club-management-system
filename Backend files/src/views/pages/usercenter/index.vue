@@ -225,6 +225,12 @@
                     <button class="jelly-btn" @click.prevent="loginOut">退出登录</button>
                   </div>
                 </div>
+                <div class="item">
+                  <div class="tag">注销账号</div>
+                  <div class="content">
+                    <button class="jelly-btn" @click.prevent="breakAccount">注销</button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -453,6 +459,26 @@ export default {
         store.commit('user/SET_ROLES', '')
         this.$router.push({ path: '/' })
       })
+    },
+    breakAccount() {
+      this.$confirm(`此操作将永久删除您的账号, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          request.delete('user/breakAccount').then(() => {
+            store.commit('user/SET_ROLES', '')
+            store.commit('user/SET_TOKEN', '')
+            this.$router.push({ path: '/' })
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消注销操作'
+          })
+        })
     },
     checkEditData() {
       this.$confirm(`此操作将修改${this.editForm.label}, 是否继续?`, '提示', {
