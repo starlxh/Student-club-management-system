@@ -2,6 +2,7 @@ package com.liu.club_ms.mapper;
 
 import com.liu.club_ms.model.ApplyInfo;
 import com.liu.club_ms.model.ApplyList;
+import com.liu.club_ms.model.Club;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,4 +51,10 @@ public interface ApplyMapper {
 
     // 通过用户ID和社团ID查看是否存在入团申请
     List<ApplyInfo> checkIsExitByUserIdAndClubId(Integer userId, Integer clubId);
+
+    // 通过入团申请ID查询相关社团ID
+    Integer getClubIdByApplyInfoId(Integer applyInfoId);
+
+    // 通过入团申请ID查询用户ID
+    Integer getUserIdByApplyInfoId(Integer applyInfoId);
 }

@@ -96,4 +96,15 @@ public class ClubMemberController {
         return Response.fail("删除社团成员失败！");
     }
 
+    // 退出社团
+    @DeleteMapping("/quit")
+    public Response quit(Integer clubId,
+                         HttpServletRequest request) {
+        String token = request.getHeader("token");
+        if(clubMemberService.quit(clubId, JWUtil.getUserId(token))){
+            return Response.ok();
+        }
+        return Response.fail("退出社团失败！");
+    }
+
 }

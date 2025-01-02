@@ -5,11 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.mapper.*;
 import com.liu.club_ms.model.ApplyInfo;
 import com.liu.club_ms.model.Club;
+import com.liu.club_ms.model.ClubMember;
 import com.liu.club_ms.service.ClubService;
+import com.liu.club_ms.util.Date2Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClubServiceImpl implements ClubService{
@@ -49,12 +53,31 @@ public class ClubServiceImpl implements ClubService{
     // 添加社团
     @Override
     public boolean addClub(Club club) {
+        ClubMember clubMember = new ClubMember();
+        clubMember.setClubId(club.getClubId());
+        clubMember.setUserId(club.getCaptainId());
+        clubMember.setJoinTime(Date2Str.getNowDate(new Date()));
+        clubMemberMapper.addClubMember(clubMember);
         return clubMapper.addClub(club) > 0;
     }
 
     // 编辑社团信息
     @Override
     public boolean editClub(Club club) {
+        Club club1 = clubMapper.queryClubInfoById(club.getClubId());
+        if(club1 != null && club.getCaptainId() != null){
+            if(!Objects.equals(club1.getCaptainId(), club.getCaptainId())){
+                activityMapper.updateUserIdByClubId(club.getClubId(), club.getCaptainId());
+                meetingInfoMapper.updateMeetingInfoUserIdByClubId(club.getClubId(), club.getCaptainId());
+                ClubMember clubMember = new ClubMember();
+                clubMember.setClubId(club.getClubId());
+                clubMember.setUserId(club.getCaptainId());
+                clubMember.setJoinTime(Date2Str.getNowDate(new Date()));
+                clubMemberMapper.addClubMember(clubMember);
+                clubMemberMapper.deleteClubMemberByUserId(club1.getCaptainId());
+            }
+        }
+
         return clubMapper.editClub(club) > 0;
     }
 
@@ -68,14 +91,13 @@ public class ClubServiceImpl implements ClubService{
                 applyMapper.deleteApplyListByApplyInfoId(applyInfo.getApplyInfoId());
             }
         }
-
-        return noticeMapper.deleteByClubId(clubId) > 0 &&
-                activityMapper.deleteActivityByClubId(clubId) > 0 &&
-                costListMapper.deleteCostListWhenDeleteClub(clubId) > 0 &&
-                leaveInfoMapper.deleteLeaveInfoWhenDeleteClub(clubId) > 0 &&
-                meetingInfoMapper.deleteMeetingInfoByClubId(clubId) > 0 &&
-                clubMemberMapper.deleteClubMemberWhenDeleteClub(clubId) > 0 &&
-                clubMapper.deleteById(clubId) > 0;
+        noticeMapper.deleteByClubId(clubId);
+        activityMapper.deleteActivityByClubId(clubId);
+        costListMapper.deleteCostListWhenDeleteClub(clubId);
+        leaveInfoMapper.deleteLeaveInfoWhenDeleteClub(clubId);
+        meetingInfoMapper.deleteMeetingInfoByClubId(clubId);
+        clubMemberMapper.deleteClubMemberWhenDeleteClub(clubId);
+        return  clubMapper.deleteById(clubId) > 0;
     }
 
     // 查询所有社团信息

@@ -78,23 +78,21 @@ public class UserServiceImpl
                 applyMapper.deleteApplyListByApplyInfoId(applyInfo.getApplyInfoId());
             }
         }
-
-        if(clubMemberMapper.deleteClubMemberByUserId(userId) <= 0 &&
-                leaveInfoMapper.deleteByUserId(userId) > 0 &&
-                activityMapper.updateActivityWhenHostDelete(userId) > 0)
-            return false;
+        clubMemberMapper.deleteClubMemberByUserId(userId);
+        leaveInfoMapper.deleteByUserId(userId);
+        activityMapper.updateActivityWhenHostDelete(userId);
 
         if(type == 0){
-            return  applyMapper.deleteApplyInfoByUserId(userId) > 0 &&
-                    userMapper.deleteUserById(userId) > 0;
+            applyMapper.deleteApplyInfoByUserId(userId);
+            return userMapper.deleteUserById(userId) > 0;
         }else {
-            return meetingInfoMapper.updateMeetingInfoWhenDeleteUser(userId) > 0 &&
-                    applyMapper.updateApplyInfoWhenDeleteAuthor(userId) > 0 &&
-                    activityMapper.updateActivityWhenUserDelete(userId) > 0 &&
-                    noticeMapper.updateNoticeWhenDeleteUser(userId) > 0 &&
-                    clubMapper.updateClubWhenDeleteCaptain(userId) > 0 &&
-                    userMapper.deleteAdminStatus(userId) > 0 &&
-                    userMapper.deleteUserById(userId) > 0;
+            meetingInfoMapper.updateMeetingInfoWhenDeleteUser(userId);
+            applyMapper.updateApplyInfoWhenDeleteAuthor(userId);
+            activityMapper.updateActivityWhenUserDelete(userId);
+            noticeMapper.updateNoticeWhenDeleteUser(userId);
+            clubMapper.updateClubWhenDeleteCaptain(userId);
+            userMapper.deleteAdminStatus(userId);
+            return userMapper.deleteUserById(userId) > 0;
         }
     }
 
@@ -150,6 +148,13 @@ public class UserServiceImpl
     // 编辑管理员状态
     @Override
     public boolean editAdminStatus(AdminStatus adminStatus) {
+        User user = userMapper.getUserInfoById(adminStatus.getAdminId());
+        if(adminStatus.getStatus() == 1){
+            user.setType(1);
+        }else if (adminStatus.getStatus() == 0){
+            user.setType(0);
+        }
+        userMapper.editUser(user);
         return userMapper.editAdminStatus(adminStatus) > 0;
     }
 
@@ -164,6 +169,12 @@ public class UserServiceImpl
     @Override
     public String getEmailByUserId(Integer userId) {
         return userMapper.getEmailByUserId(userId);
+    }
+
+    // 用于查询所有的社长
+    @Override
+    public List<User> queryAllCaptainInfo() {
+        return userMapper.queryAllCaptainInfo();
     }
 
 

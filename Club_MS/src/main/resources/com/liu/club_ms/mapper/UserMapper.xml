@@ -16,6 +16,7 @@
         <result column="image" property="image"/>
         <result column="type" property="type"/>
         <result column="create_time" property="createTime"/>
+        <result column="status" property="status"/>
     </resultMap>
 
     <!-- 用户管理相关 -->
@@ -175,7 +176,7 @@
     <!-- 分页查询或高级查询管理员 -->
     <select id="queryAdminList"
             resultMap="queryAdminListMap">
-        SELECT user_id,
+        SELECT DISTINCT user_id,
                user_name,
                password,
                real_name,
@@ -192,14 +193,12 @@
         LEFT JOIN admin_status
         ON user.user_id = admin_status.admin_id
         <where>
+            admin_status.status IS NOT NULL
             <if test="realName!=null and realName!=''">
                 and real_name LIKE CONCAT('%', #{realName}, '%')
             </if>
             <if test="type!=null">
                 and `type` = #{type}
-            </if>
-            <if test="type==null">
-                and `type` IN (1, 2)
             </if>
         </where>
         <if test="order!=null and order!=''">
@@ -287,4 +286,13 @@
         )
     </insert>
 
+    <!-- 用于查询所有的社长 -->
+    <select id="queryAllCaptainInfo"
+            resultMap="BaseResultMap">
+        SELECT DISTINCT user_id
+        FROM user
+        LEFT JOIN club
+        ON club.captain_id = user.user_id
+        WHERE club.captain_id = user.user_id
+    </select>
 </mapper>

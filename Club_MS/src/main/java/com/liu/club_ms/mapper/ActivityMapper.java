@@ -41,5 +41,7 @@ public interface ActivityMapper {
     // 通过活动ID查询活动信息
     Activity queryActivityListById(Integer activityId);
 
+    // 通过社团ID更新创建者ID
+    Integer updateUserIdByClubId(Integer clubId, Integer userId);
 
 }

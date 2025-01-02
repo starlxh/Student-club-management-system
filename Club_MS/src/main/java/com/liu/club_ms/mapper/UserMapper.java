@@ -53,4 +53,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     // 查询所有管理员
     List<User> queryAllAdminList();
+
+    // 用于查询所有的社长
+    List<User> queryAllCaptainInfo();
 }

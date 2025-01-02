@@ -78,10 +78,10 @@
     <select id="queryApplyListByApplyInfoId"
             resultType="com.liu.club_ms.model.ApplyList">
         SELECT al.apply_list_id,
-        al.content
+        al.content,
         al.create_time,
         al.author_id,
-        user_name as author_name
+        user.user_name as author_name
         FROM apply_list as al
         LEFT JOIN user
         ON user.user_id = al.author_id
@@ -104,9 +104,11 @@
     <insert id="addApplyList"
             parameterType="com.liu.club_ms.model.ApplyList">
         INSERT INTO apply_list(
+        <trim suffixOverrides=",">
         <if test="applyInfoId != null">apply_info_id,</if>
         <if test="content != null and content != ''">content,</if>
         <if test="authorId != null">author_id,</if>
+        </trim>
         )
         VALUES (
         <trim suffixOverrides=",">
@@ -115,7 +117,6 @@
             <if test="authorId != null">#{authorId},</if>
         </trim>
                )
-
     </insert>
 
     <!-- 添加入团申请详情 -->
@@ -224,5 +225,24 @@
                 and ai.user_id = #{userId}
             </if>
         </where>
+    </select>
+
+    <!-- 通过入团申请ID查询相关社团信息 -->
+    <select id="getClubIdByApplyInfoId"
+            resultType="java.lang.Integer">
+        SELECT apply_info.club_id
+        FROM apply_info
+        LEFT JOIN club
+        ON apply_info.club_id = club.club_id
+        WHERE apply_info.apply_info_id = #{applyInfoId}
+    </select>
+
+    <!-- 通过入团申请ID查询用户ID -->
+    <select id="getUserIdByApplyInfoId" resultType="java.lang.Integer">
+        SELECT apply_info.user_id
+        FROM apply_info
+        LEFT JOIN user
+        ON apply_info.user_id = user.user_id
+        WHERE apply_info.apply_info_id = #{applyInfoId}
     </select>
 </mapper>

@@ -57,4 +57,7 @@ public interface UserService extends IService<User> {
 
     // 通过ID获取邮箱
     String getEmailByUserId(Integer userId);
+
+    // 用于查询所有的社长
+    List<User> queryAllCaptainInfo();
 }

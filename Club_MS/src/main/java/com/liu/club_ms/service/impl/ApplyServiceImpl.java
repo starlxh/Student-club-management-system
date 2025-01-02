@@ -3,12 +3,16 @@ package com.liu.club_ms.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liu.club_ms.mapper.ApplyMapper;
+import com.liu.club_ms.mapper.ClubMemberMapper;
 import com.liu.club_ms.model.ApplyInfo;
 import com.liu.club_ms.model.ApplyList;
+import com.liu.club_ms.model.ClubMember;
 import com.liu.club_ms.service.ApplyService;
+import com.liu.club_ms.util.Date2Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,6 +20,9 @@ public class ApplyServiceImpl
         implements ApplyService {
     @Autowired
     ApplyMapper applyMapper;
+
+    @Autowired
+    ClubMemberMapper clubMemberMapper;
 
     // 分页查询或高级查询入团申请详情
     @Override
@@ -46,6 +53,13 @@ public class ApplyServiceImpl
     // 通过ID编辑入团申请详情状态
     @Override
     public boolean editApplyInfoStatusById(Integer status, Integer applyInfoId) {
+        if(status == 1){
+            ClubMember clubMember = new ClubMember();
+            clubMember.setClubId(applyMapper.getClubIdByApplyInfoId(applyInfoId));
+            clubMember.setUserId(applyMapper.getUserIdByApplyInfoId(applyInfoId));
+            clubMember.setJoinTime(Date2Str.getNowDate(new Date()));
+            clubMemberMapper.addClubMember(clubMember);
+        }
         return applyMapper.editApplyInfoStatusById(status, applyInfoId) > 0;
     }
 

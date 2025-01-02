@@ -20,4 +20,7 @@ public interface ClubMemberService {
 
     // 通过ID删除社团成员
     boolean deleteById(Integer clubMemberId);
+
+    // 退出社团
+    boolean quit(Integer clubId, Integer userId);
 }

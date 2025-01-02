@@ -49,4 +49,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         return clubMemberMapper.deleteById(clubMemberId) > 0;
     }
 
+    // 退出社团
+    @Override
+    public boolean quit(Integer clubId, Integer userId) {
+        return clubMemberMapper.quit(clubId, userId) > 0;
+    }
+
 }

@@ -33,4 +33,7 @@ public interface ClubMemberMapper {
 
     // 通过社团Id查询社团人数
     List<ClubMember> queryClubMemberCountByClubId(Integer clubId);
+
+    // 退出社团
+    Integer quit(Integer clubId, Integer userId);
 }
