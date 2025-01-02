@@ -108,6 +108,7 @@
         <if test="applyInfoId != null">apply_info_id,</if>
         <if test="content != null and content != ''">content,</if>
         <if test="authorId != null">author_id,</if>
+        <if test="createTime != null">create_time,</if>
         </trim>
         )
         VALUES (
@@ -115,6 +116,7 @@
             <if test="applyInfoId != null">#{applyInfoId},</if>
             <if test="content != null and content != ''">#{content},</if>
             <if test="authorId != null">#{authorId},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
                )
     </insert>

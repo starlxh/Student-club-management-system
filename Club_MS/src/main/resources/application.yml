@@ -39,8 +39,8 @@ spring:
 #      password: 123456
       password: yeaX6bBDz8jTP3hN
 server:
-  port: 9999
-#  port: 4486
+#  port: 9999
+  port: 4486
 mybatis-plus:
   type-aliases-package: com.liu.club_ms.model
   configuration:

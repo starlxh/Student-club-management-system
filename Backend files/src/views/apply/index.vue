@@ -1,22 +1,37 @@
 <template>
-
   <div class="app-container">
     <div class="filter-container">
       <el-input
         v-model="listQuery.realName"
         placeholder="真实姓名"
-        style="width: 200px; margin-left: 0px;"
+        style="width: 200px; margin-left: 0px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
 
-      <el-select v-model="listQuery.clubId" placeholder="选择社团" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
+      <el-select
+        v-model="listQuery.clubId"
+        placeholder="选择社团"
+        clearable
+        class="filter-item"
+        style="width: 130px"
+      >
+        <el-option
+          v-for="item in clubList"
+          :key="item.clubId"
+          :label="item.clubName"
+          :value="item.clubId"
+        />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
         查询
       </el-button>
-
     </div>
 
     <el-table
@@ -26,53 +41,59 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="applyInfoId" sortable="custom" align="center" width="120px">
-        <template slot-scope="{row}">
+      <el-table-column
+        label="编号"
+        prop="applyInfoId"
+        sortable="custom"
+        align="center"
+        width="120px"
+      >
+        <template slot-scope="{ row }">
           <span>{{ row.applyInfoId }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="真实姓名" align="center" width="150px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.user.realName }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="性别" align="center" width="50px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.user.sex }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="电话" align="center" width="150px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.user.tel }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="邮箱" align="center" min-width="150px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.user.email }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="申请社团" align="center" min-width="150px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.club.clubName }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="申请时间" align="center" min-width="200px">
-        <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        <template slot-scope="{ row }">
+          <span>{{ row.createTime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="状态" class-name="status-col" width="150px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-tag :type="row.status | statusFilter">
             <span v-if="row.status == 0">未审核</span>
             <span v-else-if="row.status == 1">审核通过</span>
@@ -81,15 +102,30 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Actions" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+      <el-table-column
+        label="Actions"
+        align="center"
+        min-width="230"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="{ row, $index }">
           <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
-          <el-button v-if="row.status == 0" type="success" size="mini" @click="handleCheck(row)">
+          <el-button
+            v-if="row.status == 0"
+            type="success"
+            size="mini"
+            @click="handleCheck(row)"
+          >
             审核
           </el-button>
-          <el-button v-if="$store.getters.roles.includes('Super')" size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button
+            v-if="$store.getters.roles.includes('Super')"
+            size="mini"
+            type="danger"
+            @click="handleDelete(row, $index)"
+          >
             删除
           </el-button>
         </template>
@@ -151,28 +187,37 @@
         </el-form-item>
 
         <el-form-item label="申请内容">
-          <el-input v-model="temp.text" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
+          <el-input
+            v-model="temp.text"
+            :autosize="{ maxRows: 6 }"
+            type="textarea"
+            resize="none"
+            readonly
+            placeholder="无"
+            class="apply-text"
+          />
         </el-form-item>
       </el-form>
 
-      <div style="margin: 0px 50px;">
+      <div style="margin: 0px 50px">
         <span
           style="
-        display: inline-block;
-        color: #606266;
-        font-weight: 700;
-        height: 36px;
-        line-height: 36px;
-        padding-left: 12px;"
+            display: inline-block;
+            color: #606266;
+            font-weight: 700;
+            height: 36px;
+            line-height: 36px;
+            padding-left: 12px;
+          "
         >审核记录</span>
 
         <hr
           style="
-        margin: 0px;
-        border: none;
-        border-top: 1px solid #ddd;
-        margin-bottom: 20px;
-        "
+            margin: 0px;
+            border: none;
+            border-top: 1px solid #ddd;
+            margin-bottom: 20px;
+          "
         >
 
         <div v-if="tempApplyList.length > 0" class="block">
@@ -180,9 +225,20 @@
             <el-timeline-item
               v-for="(applyList, index) in tempApplyList"
               :key="index"
-              :timestamp="applyList.createTime "
+              :timestamp="applyList.createTime"
               type="primary"
             >
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0px;
+                  color: #909399;
+                  font-size: 14px;
+                  right: 0px;
+                "
+              >
+                审核人: {{ applyList.authorName }}
+              </div>
               {{ applyList.content }}
             </el-timeline-item>
           </el-timeline>
@@ -190,17 +246,16 @@
         <span
           v-else
           style="
-        display: inline-block;
-        color: #606266;
-        height: 36px;
-        line-height: 36px;
-        padding-left: 12px;"
+            display: inline-block;
+            color: #606266;
+            height: 36px;
+            line-height: 36px;
+            padding-left: 12px;
+          "
         >暂无审核记录</span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormDetailVisible = false">
-          关闭
-        </el-button>
+        <el-button @click="dialogFormDetailVisible = false"> 关闭 </el-button>
         <el-button v-if="temp.status === 0" type="success" @click="handleCheck(temp)">
           进行审核
         </el-button>
@@ -236,19 +291,30 @@
           <el-input v-model="temp.user.email" readonly placeholder="无" />
         </el-form-item>
         <el-form-item label="申请内容">
-          <el-input v-model="temp.text" :autosize="{ maxRows: 6 }" type="textarea" resize="none" readonly placeholder="无" class="apply-text" />
+          <el-input
+            v-model="temp.text"
+            :autosize="{ maxRows: 6 }"
+            type="textarea"
+            resize="none"
+            readonly
+            placeholder="无"
+            class="apply-text"
+          />
         </el-form-item>
         <el-form-item label="审核意见">
-          <el-input v-model="temp.content" :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" resize="none" placeholder="无" class="apply-text" />
+          <el-input
+            v-model="temp.content"
+            :autosize="{ minRows: 2, maxRows: 10 }"
+            type="textarea"
+            resize="none"
+            placeholder="无"
+            class="apply-text"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handleJudge(2)">
-          拒绝
-        </el-button>
-        <el-button type="success" @click="handleJudge(1)">
-          通过
-        </el-button>
+        <el-button type="danger" @click="handleJudge(2)"> 拒绝 </el-button>
+        <el-button type="success" @click="handleJudge(1)"> 通过 </el-button>
       </div>
     </el-dialog>
 
@@ -265,7 +331,6 @@
 </template>
 
 <script>
-
 import waves from '@/directive/waves' // waves directive
 import request from '@/utils/request'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -316,9 +381,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        content: [
-          { required: true, message: '请输入审核意见', trigger: 'blur' }
-        ]
+        content: [{ required: true, message: '请输入审核意见', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -329,31 +392,33 @@ export default {
   },
   methods: {
     getClubList() {
-      request.get('club/queryAllClubList').then(res => {
+      request.get('club/queryAllClubList').then((res) => {
         this.clubList = res.data
       })
     },
     getApplyListByApplyInfoId(applyInfoId) {
-      request.get(this.baseUrl + 'queryApplyListByApplyInfoId?applyInfoId=' + applyInfoId).then(
-        res => {
+      request
+        .get(this.baseUrl + 'queryApplyListByApplyInfoId?applyInfoId=' + applyInfoId)
+        .then((res) => {
           this.tempApplyList = res.data
-        }
-      )
+          console.log(this.tempApplyList)
+        })
     },
     getList() {
       this.listLoading = true
-      request.get(this.baseUrl + 'queryApplyInfoList',
-        {
+      request
+        .get(this.baseUrl + 'queryApplyInfoList', {
           params: this.listQuery
-        }).then(res => {
-        this.list = res.data
-        this.list.forEach(item => {
-          item.text = item.content
-          item.content = ''
         })
-        this.total = res.total
-        this.listLoading = false
-      })
+        .then((res) => {
+          this.list = res.data
+          this.list.forEach((item) => {
+            item.text = item.content
+            item.content = ''
+          })
+          this.total = res.total
+          this.listLoading = false
+        })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -398,8 +463,19 @@ export default {
         if (valid) {
           this.temp.status = status
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'judge', JSON.parse(JSON.stringify(this.temp, ['applyInfoId', 'content', 'status', 'createTime']))).then(
-            res => {
+          request
+            .post(
+              this.baseUrl + 'judge',
+              JSON.parse(
+                JSON.stringify(this.temp, [
+                  'applyInfoId',
+                  'content',
+                  'status',
+                  'createTime'
+                ])
+              )
+            )
+            .then((res) => {
               this.dialogFormCheckVisible = false
               if (res.code === 20000) {
                 this.$notify({
@@ -422,8 +498,9 @@ export default {
       })
     },
     handleDelete(row, index) {
-      request.delete(this.baseUrl + 'deleteById?categoryId=' + row.applyInfoId).then(
-        res => {
+      request
+        .delete(this.baseUrl + 'deleteById?applyInfoId=' + row.applyInfoId)
+        .then((res) => {
           if (res.code === 20000) {
             this.$notify({
               title: '成功',
@@ -433,8 +510,7 @@ export default {
             })
             this.list.splice(index, 1)
           }
-        }
-      )
+        })
     }
   }
 }
@@ -450,12 +526,12 @@ export default {
   margin: auto;
 }
 
-.el-form>>>.el-input {
-    width: 305px;
+.el-form >>> .el-input {
+  width: 305px;
 }
 
 @media (max-width: 870px) {
-  .el-form>>>.el-input {
+  .el-form >>> .el-input {
     width: auto;
   }
 }

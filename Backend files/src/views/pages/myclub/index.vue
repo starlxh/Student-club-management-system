@@ -205,7 +205,11 @@
                         </button>
                       </td>
                     </tr>
-                    <button v-if="applyInfoList == 0" class="empty-words-club">
+                    <button
+                      v-if="applyInfoList == 0"
+                      class="empty-words-club"
+                      @click.prevent="toClubListPage()"
+                    >
                       <span>+</span>
                       前去加入社团
                     </button>
@@ -520,10 +524,11 @@ export default {
           request
             .delete('apply/deleteById', {
               params: {
-                applyInfoId: item.id
+                applyInfoId: item.applyInfoId
               }
             })
             .then(() => {
+              this.getApplyInfoList()
               this.$message({
                 message: '删除成功!',
                 type: 'success'
