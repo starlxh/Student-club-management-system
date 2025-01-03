@@ -95,7 +95,7 @@
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():handleUpdate()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
@@ -321,7 +321,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editCostLsit', JSON.parse(JSON.stringify(this.temp, ['costListId', 'name', 'price', 'createTime', 'remarks']))).then(
+          request.post(this.baseUrl + 'editCostList', JSON.parse(JSON.stringify(this.temp, ['costListId', 'name', 'price', 'createTime', 'remarks']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {
