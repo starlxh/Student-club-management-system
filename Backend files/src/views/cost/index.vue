@@ -88,14 +88,14 @@
           <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.createTime" type="datetime" placeholder="请选择创建时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
-          <el-input v-model="temp.remarks" :autosize="{ maxRows: 6 }" type="textarea" resize="none" :readonly="dialogFormReadonly" placeholder="无" class="cost-text" />
+          <el-input v-model="temp.remarks" :autosize="{ maxRows: 6 }" maxlength="300" show-word-limit type="textarea" resize="none" :readonly="dialogFormReadonly" placeholder="无" class="cost-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailFormVisible = false">
           关闭
         </el-button>
-        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():handleUpdate()">
+        <el-button :type="dialogStatus==='detail'?'primary':'success'" @click="dialogStatus==='detail'?handleUpdate():updateData()">
           {{ dialogStatus==='detail'?'修改':'提交' }}
         </el-button>
       </div>
@@ -115,7 +115,7 @@
           <el-input v-model.number="temp.price" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
-          <el-input v-model="temp.remarks" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" placeholder="请输入备注" class="cost-text" />
+          <el-input v-model="temp.remarks" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" maxlength="300" show-word-limit placeholder="请输入备注" class="cost-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -321,7 +321,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editCostLsit', JSON.parse(JSON.stringify(this.temp, ['costListId', 'name', 'price', 'createTime', 'remarks']))).then(
+          request.post(this.baseUrl + 'editCostList', JSON.parse(JSON.stringify(this.temp, ['costListId', 'name', 'price', 'createTime', 'remarks']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {

@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.realName" placeholder="发布者名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.title" placeholder="公告标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.realName" placeholder="发布者名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -73,7 +73,7 @@
         <el-form-item v-if="dialogStatus==='detail'" label="创建者姓名">
           <el-input v-model="temp.realName" readonly />
         </el-form-item>
-        <el-form-item label="社团名称" prop="clubName">
+        <el-form-item label="社团名称" prop="clubId">
           <el-input v-if="dialogStatus==='detail'" :value="temp.clubName" readonly />
           <el-select v-else-if="dialogStatus==='update'" v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
@@ -102,7 +102,7 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogCreateFormVisible">
       <el-form ref="createForm" :rules="createRules" :inline="true" :model="temp" label-position="right" label-width="80px" class="notice-form">
-        <el-form-item label="社团名称" prop="clubName">
+        <el-form-item label="社团名称" prop="clubId">
           <el-select v-model="temp.clubId" placeholder="选择社团" class="form-select">
             <el-option v-for="item in clubList" :key="item.clubId" :label="item.clubName" :value="item.clubId" />
           </el-select>
@@ -161,6 +161,7 @@ export default {
       baseUrl: 'notice/',
       tableKey: 0,
       list: null,
+      clubList: null,
       total: 0,
       listLoading: true,
       listQuery: {
@@ -190,18 +191,19 @@ export default {
         createTime: [{ required: true, message: '发布时间不能为空', trigger: 'blur' }],
         title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
         content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }],
-        clubName: [{ required: true, message: '请选择社团', trigger: 'blur' }]
+        clubId: [{ required: true, message: '请选择社团', trigger: 'blur' }]
       },
       createRules: {
         title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
         content: [{ required: true, message: '公告内容不能为空', trigger: 'blur' }],
-        clubName: [{ required: true, message: '请选择社团', trigger: 'change' }]
+        clubId: [{ required: true, message: '请选择社团', trigger: 'blur' }]
       },
       downloadLoading: false
     }
   },
   created() {
     this.getList()
+    this.getClubList()
   },
   methods: {
     getList() {
@@ -210,6 +212,11 @@ export default {
         this.list = res.data
         this.total = res.total
         this.listLoading = false
+      })
+    },
+    getClubList() {
+      request.get('club/queryAllClubList').then(res => {
+        this.clubList = res.data
       })
     },
     handleFilter() {
@@ -247,7 +254,7 @@ export default {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
           this.temp.createTime = new Date().toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'addNotice', JSON.parse(JSON.stringify(this.temp, ['title', 'content', 'createTime']))).then(
+          request.post(this.baseUrl + 'addNotice', JSON.parse(JSON.stringify(this.temp, ['title', 'content', 'createTime', 'clubId']))).then(
             res => {
               this.dialogCreateFormVisible = false
               if (res.code === 20000) {
@@ -291,7 +298,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.createTime = new Date(this.temp.createTime).toLocaleString().replaceAll('/', '-')
-          request.post(this.baseUrl + 'editNotice', JSON.parse(JSON.stringify(this.temp, ['noticeId', 'title', 'content', 'createTime']))).then(
+          request.post(this.baseUrl + 'editNotice', JSON.parse(JSON.stringify(this.temp, ['noticeId', 'title', 'content', 'createTime', 'clubId']))).then(
             res => {
               this.dialogDetailFormVisible = false
               if (res.code === 20000) {

@@ -60,7 +60,7 @@
         </el-form-item>
 
         <el-form-item label="备注">
-          <el-input v-model="temp.remarks" resize="none" :autosize="{ minRows: 2, maxRows: 10}" type="textarea" placeholder="请输入备注" />
+          <el-input v-model="temp.remarks" resize="none" :autosize="{ minRows: 2, maxRows: 10}" maxlength="300" show-word-limit type="textarea" placeholder="请输入备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
