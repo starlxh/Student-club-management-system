@@ -146,7 +146,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="社团简介">
-          <el-input v-model="temp.introduction" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" resize="none" class="club-text" />
+          <el-input v-model="temp.introduction" :autosize="{ minRows: 2, maxRows: 6 }" maxlength="300" show-word-limit type="textarea" resize="none" class="club-text" />
         </el-form-item>
         <el-form-item label="社团图片">
           <el-upload

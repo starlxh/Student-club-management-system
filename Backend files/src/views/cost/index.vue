@@ -88,7 +88,7 @@
           <el-date-picker v-else-if="dialogStatus==='update'" v-model="temp.createTime" type="datetime" placeholder="请选择创建时间" class="form-timestamp" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
-          <el-input v-model="temp.remarks" :autosize="{ maxRows: 6 }" type="textarea" resize="none" :readonly="dialogFormReadonly" placeholder="无" class="cost-text" />
+          <el-input v-model="temp.remarks" :autosize="{ maxRows: 6 }" maxlength="300" show-word-limit type="textarea" resize="none" :readonly="dialogFormReadonly" placeholder="无" class="cost-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -115,7 +115,7 @@
           <el-input v-model.number="temp.price" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
-          <el-input v-model="temp.remarks" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" placeholder="请输入备注" class="cost-text" />
+          <el-input v-model="temp.remarks" type="textarea" resize="none" :autosize="{ minRows: 2, maxRows: 10}" maxlength="300" show-word-limit placeholder="请输入备注" class="cost-text" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
