@@ -224,6 +224,7 @@ export default {
             })
             return
           }
+          this.dialogFormVisible = false
           this.$message({
             message: `提交入团申请成功!`,
             type: 'success'

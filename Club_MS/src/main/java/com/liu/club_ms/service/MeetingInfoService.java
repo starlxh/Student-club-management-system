@@ -10,7 +10,7 @@ public interface MeetingInfoService {
     // 分页查询或者高级查询会议记录
     PageInfo<MeetingInfo> queryMeetingInfoList(int page, int limit,
                                           String realName,
-                                          String title,
+                                          String name,
                                           Integer userId,
                                           String clubName,
                                                String order);

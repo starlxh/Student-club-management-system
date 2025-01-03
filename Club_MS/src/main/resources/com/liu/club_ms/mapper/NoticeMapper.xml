@@ -26,6 +26,7 @@
         SELECT n.notice_id,
         n.content,
         n.title,
+        n.club_id,
         n.create_time,
         u.user_name,
         u.real_name,
@@ -100,6 +101,7 @@
             <if test="clubId != null">#{clubId},</if>
             <if test="createTime != null and createTime != ''">#{createTime},</if>
         </trim>
+               )
     </insert>
 
     <!-- 通过ID删除公告 -->

@@ -29,6 +29,7 @@
         m.start_time,
         m.end_time,
         m.password,
+        m.club_id,
         u.user_name,
         u.real_name,
         c.club_name
@@ -42,7 +43,7 @@
                 and u.real_name LIKE CONCAT('%', #{realName}, '%')
             </if>
             <if test="name != null and name!=''">
-                and n.name LIKE CONCAT('%', #{name}, '%')
+                and m.name LIKE CONCAT('%', #{name}, '%')
             </if>
             <if test="clubName!=null and clubName!=''">
                 and c.club_name = CONCAT('%', #{clubName}, '%')
@@ -175,6 +176,7 @@
         </where>
     </select>
 
+    <!-- 通过会议名称获取会议信息 -->
     <select id="getMeetingInfoByName"
             resultMap="BaseResultMap">
         SELECT m.mi_id,
@@ -192,5 +194,16 @@
             </if>
         </where>
     </select>
+
+    <!-- 通过社团ID更新创建者ID -->
+    <update id="updateMeetingInfoUserIdByClubId">
+        UPDATE meeting_info
+        <set>
+            <trim suffixOverrides=",">
+                <if test="userId != null">user_id = #{userId},</if>
+            </trim>
+        </set>
+        WHERE club_id = #{clubId}
+    </update>
 
 </mapper>

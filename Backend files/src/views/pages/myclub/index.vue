@@ -78,13 +78,20 @@
                           style="color: #f44336"
                         >封禁中</span>
                       </td>
-                      <td>
+                      <td class="joined-club-button-box">
                         <button class="button" @click.prevent="toClubInfo(item.clubId)">
                           详情
                         </button>
+                        <button class="button" @click.prevent="quitClub(item.clubId)">
+                          退出
+                        </button>
                       </td>
                     </tr>
-                    <button v-if="joinedClubList == 0" class="empty-words-club">
+                    <button
+                      v-if="joinedClubList == 0"
+                      class="empty-words-club"
+                      @click.prevent="toClubListPage()"
+                    >
                       <span>+</span>
                       前去加入社团
                     </button>
@@ -142,7 +149,7 @@
                       请求成为社团管理员
                     </button>
                     <button
-                      v-if="managedClubList"
+                      v-if="userInfo.type != 0 && managedClubList == 0"
                       class="empty-words-club"
                       @click.prevent="toCreateClub"
                     >
@@ -198,7 +205,11 @@
                         </button>
                       </td>
                     </tr>
-                    <button v-if="applyInfoList == 0" class="empty-words-club">
+                    <button
+                      v-if="applyInfoList == 0"
+                      class="empty-words-club"
+                      @click.prevent="toClubListPage()"
+                    >
                       <span>+</span>
                       前去加入社团
                     </button>
@@ -447,10 +458,56 @@ export default {
         }
       })
     },
+    quitClub(id) {
+      this.$confirm(`此操作将会退出该社团, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          let isManaged = false
+          this.managedClubList.forEach((managedClub) => {
+            const index = this.joinedClubList.findIndex(
+              (joinedClub) => joinedClub.clubId === managedClub.clubId
+            )
+            if (index !== -1) {
+              isManaged = true
+            }
+          })
+          if (isManaged) {
+            this.$message.error(`您是该社团社长，需要转移社长职位才能退出！`)
+            return
+          }
+          request
+            .delete('clubMember/quit', {
+              params: {
+                clubId: id
+              }
+            })
+            .then(() => {
+              this.getJoinedClubList()
+              this.$message({
+                message: '退出社团成功!',
+                type: 'success'
+              })
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出！'
+          })
+        })
+    },
     becomeAdmin() {
       this.$message({
         message: '请通过邮箱联系系统管理员申请社团管理员权限!',
         type: 'warning'
+      })
+    },
+    toClubListPage() {
+      this.$router.push({
+        path: '/clublist'
       })
     },
     deleteApplyInfo(item) {
@@ -467,10 +524,11 @@ export default {
           request
             .delete('apply/deleteById', {
               params: {
-                applyInfoId: item.id
+                applyInfoId: item.applyInfoId
               }
             })
             .then(() => {
+              this.getApplyInfoList()
               this.$message({
                 message: '删除成功!',
                 type: 'success'
@@ -480,7 +538,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除！'
           })
         })
     }
@@ -967,6 +1025,11 @@ main {
   text-decoration: none;
   text-align: center;
   cursor: pointer;
+}
+
+.joined-club-button-box {
+  display: flex;
+  justify-content: space-around;
 }
 
 .styled-table tbody tr:nth-child(odd) .button:hover {

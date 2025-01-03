@@ -48,7 +48,7 @@ public class LoginController {
                                 String token,
                                 HttpServletResponse response) {
         if(type == null) return Response.fail("发生验证码失败");
-        if(type == 0){
+        if(type == 0 || type == 4){
             if(userService.emailIsExist(email)){
                 return Response.fail(600, "当前邮箱已被注册！");
             }

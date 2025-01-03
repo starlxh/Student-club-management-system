@@ -62,7 +62,7 @@ public class ApplyController {
     }
 
     // 用于审核入团申请
-    @GetMapping("/judge")
+    @PostMapping("/judge")
     public Response judge(@RequestBody ApplyList applyList,
                             HttpServletRequest request) {
         String token = request.getHeader("token");

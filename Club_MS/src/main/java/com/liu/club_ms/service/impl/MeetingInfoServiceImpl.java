@@ -25,14 +25,14 @@ public class MeetingInfoServiceImpl implements MeetingInfoService {
     @Override
     public PageInfo<MeetingInfo> queryMeetingInfoList(int page, int limit,
                                                       String realName,
-                                                      String title,
+                                                      String name,
                                                       Integer userId,
                                                       String clubName,
                                                       String order) {
         PageHelper.startPage(page, limit);
         List<MeetingInfo> list = meetingInfoMapper.queryMeetingInfoList(
                 realName,
-                title,
+                name,
                 userId,
                 clubName,
                 order);

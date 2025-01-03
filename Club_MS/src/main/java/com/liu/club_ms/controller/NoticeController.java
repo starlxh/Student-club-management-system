@@ -53,6 +53,29 @@ public class NoticeController {
         return response;
     }
 
+    // 分页查询或者高级查询公告公共接口
+    @GetMapping("/queryNoticeListPublic")
+    public Response queryNoticeListPublic(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        //通过token获取用户类型和ID
+        PageInfo<Notice> noticePageInfo;
+        noticePageInfo = noticeService.queryNoticeList(page,
+                limit,
+                null,
+                null,
+                null,
+                null,
+                "ASC");
+
+        long total = noticePageInfo.getTotal();
+        Response response = new Response();
+        response.setData(noticePageInfo.getList());
+        response.setTotal(total);
+        response.setCode(20000);
+        return response;
+    }
+
     // 编辑公告
     @PostMapping("/editNotice")
     public Response editNotice(@RequestBody Notice notice) {

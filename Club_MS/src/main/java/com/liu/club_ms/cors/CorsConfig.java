@@ -39,6 +39,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 "/login/findPassword",
                 "/club/queryClubList",
                 "/club/queryClubInfoById",
+                "/notice/queryNoticeListPublic",
+                "/notice/queryNoticeById",
                 "/leaveInfo/queryLeaveInfoListByClubId",
                 "/public/uploadImg"
                 );

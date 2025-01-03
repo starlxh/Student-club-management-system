@@ -66,9 +66,9 @@ public class ActivityController {
     }
 
     // 编辑活动状态
-    @GetMapping("/editStatusById")
-    public Response editStatusById(Integer status, Integer userId) {
-        if (activityService.editActivityStatusById(status, userId)){
+    @PostMapping("/editStatusById")
+    public Response editStatusById(@RequestBody Activity activity) {
+        if (activityService.editActivityStatusById(activity.getStatus(), activity.getActivityId())){
             return Response.ok();
         }else {
             return Response.fail("编辑活动状态失败");

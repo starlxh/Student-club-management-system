@@ -187,6 +187,7 @@
         </where>
     </select>
 
+    <!-- 通过活动ID查询活动信息 -->
     <select id="queryActivityListById"
             resultMap="queryActivityInfoListMap">
         SELECT
@@ -215,4 +216,11 @@
             </if>
         </where>
     </select>
+
+    <!-- 通过社团ID更新创建者ID -->
+    <update id="updateUserIdByClubId">
+        UPDATE activity
+        SET user_id = #{userId}
+        WHERE club_id = #{clubId}
+    </update>
 </mapper>

@@ -53,8 +53,10 @@ public class UserController {
     // 用于编辑用户信息
     @PostMapping("/editUser")
     public Response editUser(@RequestBody User user, String captcha, HttpServletRequest request) {
-        String token = request.getHeader("token");
-        user.setUserId(JWUtil.getUserId(token));
+        if(user.getUserId() == null){
+            String token = request.getHeader("token");
+            user.setUserId(JWUtil.getUserId(token));
+        }
 
         if(captcha != null){
             String storedCaptcha = redisService.getCaptcha(userService.getEmailByUserId(user.getUserId()));
@@ -92,6 +94,16 @@ public class UserController {
         return Response.fail("获取用户信息失败！");
     }
 
+    // 注销账号
+    @DeleteMapping("/breakAccount")
+    public Response breakAccount(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        if(userService.deleteById(JWUtil.getUserId(token), JWUtil.getType(token))){
+            return Response.ok();
+        }
+        return Response.fail("注销账号失败！");
+    }
+
 /* 管理员管理相关 */
     //用于分页查询或者高级查询管理员信息
     @GetMapping("/queryAdminList")
@@ -119,7 +131,7 @@ public class UserController {
         return Response.fail("查询用户信息失败！");
     }
 
-    // 用于删除用户
+    // 用于删除管理员
     @DeleteMapping("deleteAdminById")
     public Response deleteAdminById(Integer adminId) {
         if(userService.deleteAdminById(adminId)){
@@ -144,5 +156,11 @@ public class UserController {
             return Response.ok();
         }
         return Response.fail("添加用户失败！");
+    }
+
+    // 用于查询所有的社长
+    @GetMapping("/queryAllCaptainInfo")
+    public Response queryAllCaptainInfo() {
+        return Response.ok(userService.queryAllCaptainInfo());
     }
 }

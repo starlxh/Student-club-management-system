@@ -48,6 +48,7 @@ export default {
   },
   mounted() {
     this.role = this.$store.getters.roles[0]
+    console.log(this.role)
     this.nav = document.querySelector('#custom-nav')
   },
   methods: {

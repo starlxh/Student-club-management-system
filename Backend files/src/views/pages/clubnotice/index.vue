@@ -96,7 +96,7 @@ export default {
     parseTime,
     getNoticeList() {
       request
-        .get('notice/queryNoticeList', {
+        .get('notice/queryNoticeListPublic', {
           params: this.listQuery
         })
         .then((res) => {

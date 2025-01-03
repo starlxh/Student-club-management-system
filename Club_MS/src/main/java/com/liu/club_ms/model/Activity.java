@@ -49,4 +49,5 @@ public class Activity {
         this.activityId = activityId;
         this.images = images;
     }
+
 }

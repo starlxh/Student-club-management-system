@@ -10,7 +10,7 @@ public interface MeetingInfoMapper {
 
     // 分页查询或者高级查询会议记录
     List<MeetingInfo> queryMeetingInfoList(String realName,
-                                           String title,
+                                           String name,
                                            Integer userId,
                                            String clubName,
                                            String order);
@@ -38,4 +38,7 @@ public interface MeetingInfoMapper {
 
     // 通过会议名称获取会议信息
     MeetingInfo getMeetingInfoByName(String name, String curTime);
+
+    // 通过社团ID更新创建者ID
+    Integer updateMeetingInfoUserIdByClubId(Integer clubId, Integer userId);
 }

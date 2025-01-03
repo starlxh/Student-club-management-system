@@ -162,4 +162,11 @@
             </if>
         </where>
     </select>
+
+    <!-- 退出社团 -->
+    <delete id="quit">
+        Delete
+        FROM club_member
+        WHERE club_id = #{clubId} and user_id = #{userId}
+    </delete>
 </mapper>
