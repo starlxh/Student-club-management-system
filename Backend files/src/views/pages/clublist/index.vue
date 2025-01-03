@@ -118,7 +118,7 @@ export default {
     getList() {
       this.listLoading = true
       request
-        .get('club/queryClubList', {
+        .get('club/queryClubListPublic', {
           params: this.listQuery
         })
         .then((res) => {

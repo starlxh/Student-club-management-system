@@ -39,7 +39,7 @@
             <div>
               <button class="content-btn">
                 <i class="fa fa-group" />
-                <span>我参加的活动</span>
+                <span>社团活动记录</span>
               </button>
             </div>
           </nav>

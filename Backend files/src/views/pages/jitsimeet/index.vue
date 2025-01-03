@@ -108,9 +108,7 @@ export default {
         })
 
         api.addEventListener('passwordRequired', () => {
-          alert('yes')
           if (this.meetingInfo.userId !== this.userInfo.userId) {
-            alert('yes')
             const password = prompt('请输入会议密码：')
             if (password) {
               api.executeCommand('password', password)
