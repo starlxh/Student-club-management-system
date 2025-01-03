@@ -274,6 +274,8 @@
           <el-input
             v-model="temp.acInfo"
             type="textarea"
+            maxlength="300"
+            show-word-limit
             resize="none"
             :autosize="{ minRows: 2, maxRows: 10 }"
             placeholder="请输入活动详情"

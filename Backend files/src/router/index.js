@@ -279,7 +279,7 @@ export const asyncRoutes = [
           title: '在线留言管理',
           icon: 'message',
           noCache: true,
-          roles: ['Super']
+          roles: ['Super', 'Admin']
         }
       }
     ]
@@ -297,7 +297,7 @@ export const asyncRoutes = [
           title: '公告管理',
           icon: 'el-icon-s-order',
           noCache: true,
-          roles: ['Super']
+          roles: ['Super', 'Admin']
         }
       }
     ]
