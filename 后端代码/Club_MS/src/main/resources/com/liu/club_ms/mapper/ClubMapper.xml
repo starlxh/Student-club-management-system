@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.club_ms.mapper.ClubMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liu.club_ms.model.Club">
+        <id column="club_id" property="clubId"/>
+        <result column="club_name" property="clubName"/>
+        <result column="create_by" property="createBy"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="captain_id" property="captainId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="status" property="status"/>
+        <result column="images" property="images"/>
+    </resultMap>
+
+    <!--  queryClubList映射结果  -->
+    <resultMap id="queryClubListMap" type="com.liu.club_ms.model.Club"
+               extends="BaseResultMap">
+        <result column="category_name" property="categoryName"/>
+        <result column="creator_name" property="creatorName"/>
+        <result column="captain_name" property="captainName"/>
+    </resultMap>
+
+    <!--  分页查询和高级查询社团信息  -->
+    <select id="queryClubList"
+            resultMap="queryClubListMap"
+            parameterType="com.liu.club_ms.model.Club">
+        SELECT club.club_id,
+        club.club_name,
+        club.create_by,
+        club.category_id,
+        club.captain_id,
+        club.create_time,
+        club.status,
+        club.images,
+        club.introduction,
+        category.category_name,
+        c.real_name as creator_name,
+        user.real_name as captain_name
+        FROM club
+        left join category ON category.category_id = club.category_id
+        left join user ON user.user_id = club.captain_id
+        left join user as c ON c.user_id = club.create_by
+        <where>
+            <if test="clubName != null and clubName != ''">
+                and club.club_name like CONCAT('%', #{clubName}, '%')
+            </if>
+            <if test="categoryId != null">
+                and category.category_id = #{categoryId}
+            </if>
+            <if test="captainId != null">
+                and club.captain_id = #{captainId}
+            </if>
+        </where>
+        <if test="order!=null and order!=''">
+            ORDER BY club.club_id
+            <choose>
+                <when test="order == 'ASC'">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+
+    <!-- 添加社团 -->
+    <insert id="addClub">
+        INSERT INTO club (
+        <trim suffixOverrides=",">
+            <if test="clubName != null and clubName != ''">club_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="captainId != null">captain_id,</if>
+            <if test="createTime != null and createTime != ''">create_time,</if>
+            <if test="status != null">status,</if>
+            <if test="images != null and images != ''">images,</if>
+            <if test="introduction != null and introduction != ''">introduction,</if>
+        </trim>
+        )
+        VALUES (
+        <trim suffixOverrides=",">
+            <if test="clubName != null and clubName != ''">#{clubName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="captainId != null">#{captainId},</if>
+            <if test="createTime != null and createTime != ''">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="images != null and images != ''">#{images},</if>
+            <if test="introduction != null and introduction != ''">#{introduction},</if>
+        </trim>
+        )
+    </insert>
+
+    <!--  编辑社团信息  -->
+    <update id="editClub"
+            parameterType="com.liu.club_ms.model.Club">
+    UPDATE club
+        <set>
+            <trim suffixOverrides=",">
+                <if test="clubName != null and clubName != ''">club_name = #{clubName},</if>
+                <if test="createBy != null">create_by = #{createBy},</if>
+                <if test="categoryId != null">category_id = #{categoryId},</if>
+                <if test="captainId != null">captain_id = #{captainId},</if>
+                <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+                <if test="status != null">`status` = #{status},</if>
+                <if test="images != null  and createTime != ''">images = #{images},</if>
+                <if test="introduction != null and introduction != ''">introduction = #{introduction},</if>
+            </trim>
+        </set>
+    WHERE club_id = #{clubId}
+    </update>
+
+    <!--  通过ID删除社团  -->
+    <delete id="deleteById">
+        DELETE
+        FROM club
+        WHERE club_id = #{clubId}
+    </delete>
+
+    <!-- 通过删除的社长ID更新社团信息 -->
+    <update id="updateClubWhenDeleteCaptain">
+        UPDATE club
+        <trim suffixOverrides=",">
+            <set>
+                <if test="captainId != null">captain_id = -1,</if>
+                <if test="status != null">`status` = 0,</if>
+            </set>
+        </trim>
+        WHERE captain_id = #{captainId}
+    </update>
+
+    <!-- 通过删除的社团类型ID更新社团信息 -->
+    <update id="updateClubWhenDeleteCategory">
+        UPDATE club
+        <trim suffixOverrides=",">
+            <set>
+                <if test="categoryId != null">category_id = -1,</if>
+            </set>
+        </trim>
+        WHERE category_id = #{categoryId}
+    </update>
+
+    <!-- 通过删除的创建者ID更新社团信息 -->
+    <update id="updateClubWhenDeleteCreateBy">
+        UPDATE club
+        <trim suffixOverrides=",">
+            <set>
+                <if test="createBy != null">create_by = -1,</if>
+            </set>
+        </trim>
+        WHERE create_by = #{createBy}
+    </update>
+
+    <!-- 查询所有社团信息 -->
+    <select id="queryClubAllList"
+            resultMap="queryClubListMap">
+        SELECT club.club_id,
+               club.club_name,
+               club.create_by,
+               club.category_id,
+               club.captain_id,
+               club.create_time,
+               club.status,
+               club.images,
+               club.introduction,
+               category.category_name,
+               c.real_name as creator_name,
+               user.real_name as captain_name
+        FROM club
+        left join category ON category.category_id = club.category_id
+        left join user ON user.user_id = club.captain_id
+        left join user as c ON c.user_id = club.create_by
+        <where>
+            <if test="captainId != null">
+                and club.captain_id = #{captainId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过用户ID查询已加入的社团 -->
+    <select id="queryJoinedClubListByUserId"
+            resultMap="queryClubListMap">
+        SELECT club.club_id,
+        club.club_name,
+        club.create_time,
+        club.status,
+        category.category_name
+        FROM club
+        LEFT JOIN category ON category.category_id = club.category_id
+        LEFT JOIN club_member
+        ON club_member.club_id = club.club_id
+        <where>
+            <if test="userId != null">
+                and club_member.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过用户Id查询该用户管理的社团 -->
+    <select id="queryManagedClubListByUserId"
+            resultMap="queryClubListMap">
+        SELECT club.club_id,
+               club.club_name,
+               club.create_time,
+               club.status,
+               category.category_name
+        FROM club
+        LEFT JOIN category ON category.category_id = club.category_id
+        <where>
+            <if test="captainId != null">
+                and club.captain_id = #{captainId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过社团Id查询社团信息 -->
+    <select id="queryClubInfoById"
+            resultMap="queryClubListMap">
+        SELECT club.club_id,
+        club.club_name,
+        club.category_id,
+        club.captain_id,
+        club.create_time,
+        club.images,
+        club.introduction,
+        category.category_name,
+        user.real_name as captain_name
+        FROM club
+        left join category ON category.category_id = club.category_id
+        left join user ON user.user_id = club.captain_id
+        <where>
+            <if test="clubId != null">
+                and club.club_id = #{clubId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过用户ID和社团ID检查用户是否已经参加该社团 -->
+    <select id="checkIsJoinedById"
+            resultMap="BaseResultMap">
+        SELECT club.club_id
+        FROM club
+        left join club_member as cm
+        ON club.club_id = cm.club_id
+        <where>
+            <if test="clubId != null">
+                and club.club_id = #{clubId}
+            </if>
+            <if test="userId != null">
+                and cm.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: Club_MS
+  mvc:
+    static-path-pattern: /images/**
+  web:
+    resources:
+#      static-locations: file:E://images/
+      static-locations: file:/www/server/springboot_project/club_ms/images
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: studentclubmanager@qq.com
+    password: tqwhqiedhgfocjca
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+  devtools:
+    restart:
+      enabled: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://localhost:3306/club_ms?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/club_ms?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+#    password: LiuWanJia
+    password: 7f384b0161eea03d
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      connect-timeout: 1000ms
+#      password: 123456
+      password: yeaX6bBDz8jTP3hN
+server:
+#  port: 9999
+  port: 4486
+mybatis-plus:
+  type-aliases-package: com.liu.club_ms.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/liu/club_ms/mapper/*.xml
