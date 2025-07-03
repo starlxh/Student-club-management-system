@@ -23,7 +23,6 @@
         />
       </el-select>
       <el-button
-        v-waves
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -224,16 +223,14 @@
 </template>
 
 <script>
-import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import request from '@/utils/request'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
 import { getImgUrlHeader } from '@/utils/imagespath'
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
-  directives: { waves },
   filters: {
     statusFilter(status) {
       const statusMap = {

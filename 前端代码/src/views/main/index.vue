@@ -1,7 +1,11 @@
 <template>
   <div class="main-view">
     <div class="main-animation">
-      <bgAnimation bg-animation-path="./animation/BgAnimation.json" :speed="3" class-bind="animation" />
+      <bgAnimation
+        bg-animation-path="./animation/BgAnimation.json"
+        :speed="3"
+        class-bind="animation"
+      />
     </div>
     <div class="main-box">
       <navs />
@@ -43,23 +47,21 @@ export default {
 </script>
 
 <style scoped>
-@import "../../vendor/bootstrap/css/bootstrap.min.css";
 @import "../../assets/css/templatemo-edu-meeting.css";
 
-.main-view{
+.main-view {
   position: relative;
 }
 
-.main-animation{
+.main-animation {
   position: absolute;
   z-index: 0;
   margin-top: -40px;
 }
 
-.animation-footer{
+.animation-footer {
   position: absolute;
   z-index: 0;
   height: 300px;
 }
-
 </style>

@@ -11,8 +11,6 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
         <el-tooltip content="返回首页" effect="dark" placement="bottom">
           <back-home id="back-home" class="right-menu-item hover-effect" />
         </el-tooltip>
@@ -31,7 +29,6 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
 import BackHome from '@/components/BackHome'
 import Exit from '@/components/Exit/Exit.vue'
 
@@ -39,7 +36,6 @@ export default {
   components: {
     Breadcrumb,
     Hamburger,
-    ErrorLog,
     BackHome,
     Exit
   },
