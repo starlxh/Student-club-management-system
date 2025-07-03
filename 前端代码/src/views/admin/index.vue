@@ -92,9 +92,9 @@
         </template>
       </el-table-column>
       <el-table-column label="状态" width="80px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-tag :type="row.status === 0 ? 'danger' : 'success'">
-            <span>{{ row.status === 0 ? '禁用' : '正常' }}</span>
+            <span>{{ row.status === 0 ? "禁用" : "正常" }}</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -173,9 +173,23 @@
           <el-input v-model="temp.wx" readonly :disabled="formDisabled" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-input v-if="dialogStatus==='detail'" :value="temp.status === 0 ? '禁用' : '正常'" :readonly="dialogFormReadonly" />
-          <el-select v-else-if="dialogStatus==='update'" v-model="temp.status" placeholder="修改状态" class="form-select">
-            <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" :value="item.id" />
+          <el-input
+            v-if="dialogStatus === 'detail'"
+            :value="temp.status === 0 ? '禁用' : '正常'"
+            :readonly="dialogFormReadonly"
+          />
+          <el-select
+            v-else-if="dialogStatus === 'update'"
+            v-model="temp.status"
+            placeholder="修改状态"
+            class="form-select"
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -222,21 +236,10 @@
         <el-button type="primary" @click="createData()"> 添加 </el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
@@ -298,8 +301,6 @@ export default {
         update: '修改管理员详情',
         create: '添加社团管理员'
       },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
         status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
       },
@@ -375,8 +376,12 @@ export default {
     createData() {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
-          request.post(this.baseUrl + 'addAdmin', JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))).then(
-            res => {
+          request
+            .post(
+              this.baseUrl + 'addAdmin',
+              JSON.parse(JSON.stringify(this.temp, ['userId', 'type']))
+            )
+            .then((res) => {
               this.dialogCreateFormVisible = false
               if (res.code === 20000) {
                 this.$notify({
@@ -488,12 +493,6 @@ export default {
             this.list.splice(index, 1)
           }
         })
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
     },
     getSortClass: function(key) {
       const sort = this.listQuery.sort

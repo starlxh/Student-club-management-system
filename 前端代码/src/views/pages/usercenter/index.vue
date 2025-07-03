@@ -610,7 +610,7 @@ export default {
 
 <style scoped>
 @import "../../../assets/css/templatemo-edu-meeting.css";
-@import "../../../assets/css/custom/base.css";
+@import "../../../assets/css/base.css";
 
 /* -------背景圆点------ */
 .sec1_circle1 {

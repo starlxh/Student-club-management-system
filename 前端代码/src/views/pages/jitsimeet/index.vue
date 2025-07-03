@@ -1,69 +1,63 @@
 <template>
-  <div>
-    <div id="meet" class="meet-container" />
-  </div>
+  <div id="jitsi-container" ref="jitsiContainer" />
 </template>
 
 <script>
-import request from '@/utils/request'
+import { encodeWAVFromFloat32 } from '@/utils/encode-wav'
+import {
+  getMeetingInfoById,
+  getMeetingInfoByName,
+  getJitsiToken,
+  uploadAudio
+} from '@/api/meeting'
 
 export default {
-  name: 'Index',
+  name: 'JitsiWrapper',
   data() {
     return {
-      userInfo: {},
-      meetingInfo: {}
+      meetingInfo: {},
+      jitsiApi: null,
+      mediaStream: null,
+      audioContext: null,
+      processorNode: null,
+      isRecording: false,
+      silentCounter: 0,
+      audioChunks: []
     }
   },
-  mounted() {
-    this.getUserInfo()
+  async mounted() {
+    await this.getMeetingInfo()
+  },
+  beforeUnmount() {
+    this.cleanUp()
+  },
+  async beforeRouteLeave(to, from, next) {
+    await this.cleanUp()
+    window.location.href = to.fullPath
   },
   methods: {
-    getUserInfo() {
-      request.get('user/getUserInfoById').then((res) => {
-        if (res.code === 20000) {
-          this.userInfo = res.data
-          this.getMeetingInfo()
-        } else {
-          this.$router.push({ path: '/meet' })
-          this.$message.error('核对用户信息失败，请重试！')
-        }
-      })
-    },
     getMeetingInfo() {
       if (this.$route.query.miId) {
-        request
-          .get('meeting/getMeetingInfoById', {
-            params: {
-              miId: this.$route.query.miId
-            }
-          })
-          .then((res) => {
-            if (res.code === 20000) {
-              this.meetingInfo = res.data
-              this.loadJitsiScript()
-            }
-          })
+        getMeetingInfoById(this.$route.query.miId).then((res) => {
+          if (res.code === 20000) {
+            this.meetingInfo = res.data
+            this.loadJitsiScript()
+          }
+        })
       } else if (this.$route.query.name) {
-        request
-          .get('meeting/getMeetingInfoByName', {
-            params: {
-              name: this.$route.query.name
-            }
-          })
-          .then((res) => {
-            if (res.code === 20000) {
-              this.meetingInfo = res.data
-              this.loadJitsiScript()
-            }
-          })
+        getMeetingInfoByName(this.$route.query.name).then((res) => {
+          if (res.code === 20000) {
+            this.meetingInfo = res.data
+            this.loadJitsiScript()
+          }
+        })
       } else {
         this.$router.push({ path: '/meet' })
       }
     },
     loadJitsiScript() {
       const script = document.createElement('script')
-      script.src = 'https://shantouliu.site/external_api.js' // 确保此地址可访问
+      script.src = 'https://liudeproject.online/external_api.js'
       script.async = true
 
       script.onload = () => {
@@ -81,71 +75,178 @@ export default {
       document.body.appendChild(script)
     },
 
-    initializeJitsi() {
-      const domain = 'shantouliu.site'
-      const options = {
-        roomName: this.meetingInfo.name,
-        width: '100%',
-        height: '100%',
-        parentNode: document.querySelector('#meet'), // 容器 ID
-        configOverwrite: {
-          disableDeepLinking: true // 禁用移动设备强制下载 App
-        },
-        userInfo: {
-          displayName: this.userInfo.userName
-        }
-      }
+    async initializeJitsi() {
+      // 获取token
+      let token
 
       try {
-        const api = new window.JitsiMeetExternalAPI(domain, options)
+        token = (
+          await getJitsiToken(
+            this.meetingInfo,
+            this.meetingInfo.userId === this.$store.getters.id
+          )
+        ).data
+      } catch (error) {
+        console.error('获取token失败:', error)
+      }
 
-        api.addEventListener('videoConferenceJoined', () => {
-          if (this.meetingInfo.userId !== this.userInfo.userId) {
-            if (this.meetingInfo.password) {
-              api.executeCommand('password', this.meetingInfo.password)
-            }
-          }
-        })
+      if (!token) return
 
-        api.addEventListener('passwordRequired', () => {
-          if (this.meetingInfo.userId !== this.userInfo.userId) {
-            const password = prompt('请输入会议密码：')
-            if (password) {
-              api.executeCommand('password', password)
-            } else {
-              this.$message.error('密码不能为空，请重新输入！')
-            }
-          }
+      try {
+        // 初始化选项
+        const options = {
+          roomName: this.meetingInfo.name,
+          width: '100%',
+          height: '100%',
+          parentNode: this.$refs.jitsiContainer,
+          userInfo: {
+            id: this.$store.getters.id,
+            displayName: this.$store.getters.name
+          },
+          configOverwrite: {
+            startWithAudioMuted: false,
+            disableModeratorIndicator: false,
+            startScreenSharing: false,
+            prejoinPageEnabled: false
+          },
+          jwt: token
+        }
+
+        // 初始化API
+        this.jitsiApi = new window.JitsiMeetExternalAPI('liudeproject.online', options)
+
+        // 初始化监听器
+        this.setupEventListeners()
+      } catch (error) {
+        this.$message({
+          message: '脚本初始化失败，请重试',
+          type: 'warning'
         })
+        console.error('脚本初始化失败，请重试', error)
+      }
+    },
+    setupEventListeners() {
+      if (this.jitsiApi) {
+        // 麦克风状态变更（某人开始说话）
+        this.jitsiApi.addEventListener(
+          'audioMuteStatusChanged',
+          this.audioMuteStatusChanged
+        )
 
         // 监听会议结束事件
-        api.addEventListener('videoConferenceLeft', () => {
-          this.$router.push({ path: '/meet' })
-        })
-
-        // 监听用户加入
-        api.addEventListener('participantJoined', (event) => {
-          console.log(`新用户加入：${event.id}`)
-        })
-
-        // 监听用户离开
-        api.addEventListener('participantLeft', (event) => {
-          if (this.role === 'User') {
-            this.$router.push({ path: '/meet' })
-          }
-        })
-      } catch (error) {
-        this.$message.error('初始化会议失败，请检查网络连接!')
+        this.jitsiApi.addEventListener('videoConferenceLeft', this.exitMeeting)
       }
+    },
+    audioMuteStatusChanged(event) {
+      if (!event.muted) {
+        this.setupAudioCapture()
+      } else {
+        this.stopAudioCapture()
+      }
+    },
+    exitMeeting() {
+      console.log('会议结束')
+    },
+    async setupAudioCapture() {
+      try {
+        this.audioChunks = []
+        this.silentCounter = 0
+        this.isRecording = false
+
+        this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const source = this.audioContext.createMediaStreamSource(this.mediaStream)
+        this.processorNode = this.audioContext.createScriptProcessor(4096, 1, 1)
+
+        this.processorNode.onaudioprocess = (event) => {
+          const audioData = event.inputBuffer.getChannelData(0)
+          this.processAudioData(audioData)
+        }
+
+        source.connect(this.processorNode)
+        this.processorNode.connect(this.audioContext.destination)
+      } catch (error) {
+        console.error('Error setting up audio capture:', error)
+      }
+    },
+    processAudioData(audioData) {
+      const volume = this.calculateVolume(audioData)
+      const audioArray = Array.from(audioData)
+      if (volume > 0.03) {
+        // 正在说话，累积数据
+        this.isRecording = true
+        this.silentCounter = 0
+        this.audioChunks.push(...audioArray)
+      } else if (this.isRecording) {
+        // 静音中，但之前在说话：统计静音次数
+        this.silentCounter = (this.silentCounter || 0) + 1
+
+        if (this.silentCounter >= 5) {
+          this.isRecording = false
+
+          if (this.audioChunks.length > 16000) {
+            const floatData = new Float32Array(this.audioChunks)
+            const wavBlob = encodeWAVFromFloat32(floatData, 44100)
+            const formData = new FormData()
+            formData.append('audio', wavBlob, 'audio.wav')
+            formData.append('room', this.meetingInfo.name)
+            formData.append('userId', this.$store.getters.id)
+            formData.append('name', this.$store.getters.name)
+            uploadAudio(formData)
+            this.audioChunks = []
+          }
+          this.audioChunks = []
+          this.silentCounter = 0
+        } else {
+          this.audioChunks.push(...audioArray)
+        }
+      }
+    },
+    calculateVolume(audioData) {
+      let sum = 0.0
+      for (let i = 0; i < audioData.length; i++) {
+        sum += audioData[i] * audioData[i] // 平方
+      }
+      const rms = Math.sqrt(sum / audioData.length) // 均方根音量
+      return rms
+    },
+    stopAudioCapture() {
+      if (this.processorNode) {
+        this.processorNode.disconnect()
+        this.processorNode = null
+      }
+      if (this.audioContext) {
+        this.audioContext.close()
+        this.audioContext = null
+      }
+      if (this.mediaStream) {
+        this.mediaStream.getTracks().forEach((track) => track.stop())
+        this.mediaStream = null
+      }
+      this.isRecording = false
+      this.audioChunks = []
+      this.silentCounter = 0
+    },
+    cleanUp() {
+      if (this.jitsiApi) {
+        this.jitsiApi.removeEventListener(
+          'audioMuteStatusChanged',
+          this.audioMuteStatusChanged
+        )
+        this.jitsiApi.removeEventListener('videoConferenceLeft', this.exitMeeting)
+        this.jitsiApi.dispose()
+        this.jitsiApi = null
+      }
+      this.stopAudioCapture()
     }
   }
 }
 </script>
 
 <style scoped>
-.meet-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
+#jitsi-container {
+  width: 100%;
+  height: 500px;
 }
 </style>

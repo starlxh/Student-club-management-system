@@ -301,21 +301,10 @@
         <el-button type="primary" @click="createData()"> 申请 </el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import request from '@/utils/request'
@@ -381,8 +370,6 @@ export default {
         update: '社团活动审核',
         check: '申请社团活动'
       },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
         name: [{ required: true, message: '活动名称不能为空', trigger: 'blur' }],
         clubId: [{ required: true, message: '社团不能为空', trigger: 'blur' }],
@@ -575,12 +562,6 @@ export default {
             this.list.splice(index, 1)
           }
         })
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = res.data

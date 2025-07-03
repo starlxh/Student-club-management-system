@@ -6,16 +6,12 @@ const state = {
   token: getToken(),
   name: '',
   id: '',
-  introduction: '',
   roles: []
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
-  },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -29,9 +25,7 @@ const mutations = {
 }
 
 const actions = {
-  // user login
   login({ commit }, userInfo) {
-    // const { username, password } = userInfo
     const { email, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ email: email.trim(), password: password }).then(response => {
@@ -45,7 +39,6 @@ const actions = {
     })
   },
 
-  // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
@@ -54,7 +47,7 @@ const actions = {
           reject('验证失败，请重新登录!')
         }
 
-        const { roles, id } = data
+        const { roles, id, name } = data
 
         if (!roles || roles.length <= 0) {
           reject('getInfo: 角色必须是非空数组！')
@@ -62,6 +55,7 @@ const actions = {
 
         commit('SET_ROLES', roles)
         commit('SET_ID', id)
+        commit('SET_NAME', name)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -69,13 +63,13 @@ const actions = {
     })
   },
 
-  // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         commit('SET_ID', null)
+        commit('SET_NAME', '')
         removeToken()
         resetRouter()
 
